@@ -2,7 +2,7 @@ package me.kinomoto.proteam;
 
 import java.awt.Dimension;
 import java.awt.HeadlessException;
-
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
@@ -12,8 +12,11 @@ public class Main extends JFrame {
 		super("LightPath");
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(600, 400));
+		
+		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png"));
+		this.setIconImage(appIcon.getImage());
 	}
-	
+ 
 	public static void main(String[] args)
 	{
 		Main window = new Main();
