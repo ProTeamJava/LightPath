@@ -17,8 +17,8 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="LightPathIcon.svg"
    inkscape:export-filename="/home/oskar/POJAVA/LightPath/res/LightPathIcon.png"
-   inkscape:export-xdpi="57"
-   inkscape:export-ydpi="57">
+   inkscape:export-xdpi="57.599998"
+   inkscape:export-ydpi="57.599998">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.0000001"
-     inkscape:cx="84.303"
-     inkscape:cy="95.637053"
+     inkscape:zoom="2.8284272"
+     inkscape:cx="144.10623"
+     inkscape:cy="120.6262"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -65,7 +65,7 @@
        orientation="0,1"
        id="guide4194" />
     <sodipodi:guide
-       position="179.99999,139.99999"
+       position="179.99999,169.99999"
        orientation="1,0"
        id="guide4196" />
   </sodipodi:namedview>
@@ -77,7 +77,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -86,16 +86,24 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-852.36227)">
+    <path
+       style="fill:#f47750;fill-opacity:1;stroke:#f47750;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4.0999999;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 24.242638,872.36224 80.055592,13.43502 14.0015,10.16727 c 2.1841,0.86842 32.21928,-3.39149 33.34428,-1.76649 l 25.69391,23.78806 4.07628,33.61344 c -1.35366,11.72374 0.75871,29.9442 3.18197,41.31723 l -7.42893,16.76773 -111.817631,-2.9801 -18.479557,3.3839 c -2.312004,0.4234 -14.84924,-2.3223 -14.84924,-2.3223 0,0 -10.647462,-35.87911 -13.836371,-46.35575 4.498814,-7.23916 1.869688,-44.13819 0.754897,-58.08784 4.134378,-10.22162 2.952878,-30.96017 5.3033,-30.96017 z"
+       id="rect4150"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="sccccccccscccs"
+       inkscape:export-xdpi="57.599998"
+       inkscape:export-ydpi="57.599998" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:130.9462738px;line-height:125%;font-family:Swift;-inkscape-font-specification:Swift;letter-spacing:0px;word-spacing:0px;fill:#c90000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
-       x="27.506392"
-       y="1004.3444"
-       id="text3348"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:102.62575531px;line-height:125%;font-family:Swift;-inkscape-font-specification:Swift;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="47.622704"
+       y="990.30078"
+       id="text4146"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3350"
-         x="27.506392"
-         y="1004.3444">LP</tspan></text>
+         id="tspan4148"
+         x="47.622704"
+         y="990.30078">LP</tspan></text>
   </g>
 </svg>
