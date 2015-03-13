@@ -42,22 +42,24 @@ public class Main extends JFrame {
 
 	public Main() throws HeadlessException {
 		super("LightPath");
-		/*
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-		}
-		*/
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(600, 400));
+		this.setLayout(new BorderLayout());
 
 		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png"));
 		this.setIconImage(appIcon.getImage());
 		
 		initIcons();
 		initMenu();
+		initUI();
 		initListeners();
+		this.setVisible(true);
+	}
+
+	private void initUI() {
+		this.add(new JLabel("Left"), BorderLayout.WEST);
+		this.add(new JLabel("Center"), BorderLayout.CENTER);
+		this.add(new JLabel("Right"), BorderLayout.EAST);
 	}
 
 	private void initIcons() {
@@ -109,7 +111,9 @@ public class Main extends JFrame {
 		menubar.add(viewM);
 		
 		JMenu helpM = new JMenu(Messages.get("help"));
+		aboutA = new JMenuItem(Messages.get("about"));
 		
+		helpM.add(aboutA);
 		menubar.add(helpM);
 
 		setJMenuBar(menubar);
@@ -123,13 +127,21 @@ public class Main extends JFrame {
 				System.exit(0);				
 			}
 		});
+		
+		aboutA.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				AboutWindow about = new AboutWindow("About Light Path");
+				about.setVisible(true);
+			}
+		});
 	}
 
 	public static void main(String[] args)
 	{
 		Messages.setLocale(Locale.getDefault());
 		Main window = new Main();
-		window.setVisible(true);
 	}
 
 }
