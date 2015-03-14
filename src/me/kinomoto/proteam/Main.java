@@ -46,9 +46,10 @@ public class Main extends JFrame {
 		this.setMinimumSize(new Dimension(600, 400));
 		this.setLayout(new BorderLayout());
 
-		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png"));
+		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader()
+				.getResource("LightPathIcon.png"));
 		this.setIconImage(appIcon.getImage());
-		
+
 		initIcons();
 		initMenu();
 		initUI();
@@ -68,13 +69,12 @@ public class Main extends JFrame {
 		saveAsI = getIcon("document-save-as.png");
 		exitI = getIcon("application-exit.png");
 		undoI = getIcon("edit-undo.png");
-		redoI = getIcon("edit-redo.png");	
+		redoI = getIcon("edit-redo.png");
 		zoomInI = getIcon("zoom-in.png");
-		zoomOutI = getIcon("zoom-out.png");		
+		zoomOutI = getIcon("zoom-out.png");
 	}
-	
-	private ImageIcon getIcon(String name)
-	{
+
+	private ImageIcon getIcon(String name) {
 		return new ImageIcon(getClass().getClassLoader().getResource(name));
 	}
 
@@ -86,7 +86,7 @@ public class Main extends JFrame {
 		saveA = new JMenuItem(Messages.get("save"), saveI);
 		saveAsA = new JMenuItem(Messages.get("saveAs"), saveAsI);
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
-		
+
 		fileM.add(openA);
 		fileM.add(saveA);
 		fileM.add(saveAsA);
@@ -100,36 +100,34 @@ public class Main extends JFrame {
 		editM.add(undoA);
 		editM.add(redoA);
 		menubar.add(editM);
-		
 
 		JMenu viewM = new JMenu(Messages.get("view"));
 		zoomInA = new JMenuItem(Messages.get("zoomIn"), zoomInI);
 		zoomOutA = new JMenuItem(Messages.get("zoomOut"), zoomOutI);
-		
+
 		viewM.add(zoomInA);
 		viewM.add(zoomOutA);
 		menubar.add(viewM);
-		
+
 		JMenu helpM = new JMenu(Messages.get("help"));
 		aboutA = new JMenuItem(Messages.get("about"));
-		
+
 		helpM.add(aboutA);
 		menubar.add(helpM);
 
 		setJMenuBar(menubar);
 	}
-	
-	private void initListeners()
-	{
-		exitA.addActionListener(new ActionListener(){
+
+	private void initListeners() {
+		exitA.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);				
+				System.exit(0);
 			}
 		});
-		
+
 		aboutA.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				AboutWindow about = new AboutWindow("About Light Path");
@@ -138,8 +136,7 @@ public class Main extends JFrame {
 		});
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		Messages.setLocale(Locale.getDefault());
 		Main window = new Main();
 	}
