@@ -134,6 +134,6 @@ abstract public class AbstractOpticalElement {
 		return point;
 	}
 	
-	abstract void collisionSolution(Surroundings s);
+	abstract void collisionSolution(Surroundings s, Beam b);
 
 }

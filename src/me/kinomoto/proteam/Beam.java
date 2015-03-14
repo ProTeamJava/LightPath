@@ -1,9 +1,9 @@
 package me.kinomoto.proteam;
 
 public class Beam {
-	private Segment segment;
+	Segment segment;
 	private boolean checkedCollision = false;
-	private double wavelenght;
+	double wavelenght;
 
 	public Beam(Segment segment, double wavelenght) {
 		Point tmp = segment.end;
