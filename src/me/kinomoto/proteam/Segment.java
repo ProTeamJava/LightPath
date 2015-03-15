@@ -14,5 +14,4 @@ public class Segment {
 		this.end = end;
 	}
 
-	
 }

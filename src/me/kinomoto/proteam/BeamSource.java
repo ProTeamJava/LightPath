@@ -12,7 +12,7 @@ public class BeamSource {
 
 	public Beam getBeam()
 	{
-		return new Beam(segment, wavelenght);
+		return new Beam(segment, wavelenght, 1);
 	}
 
 }
