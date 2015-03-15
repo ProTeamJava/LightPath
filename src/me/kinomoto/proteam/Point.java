@@ -13,7 +13,6 @@ public class Point {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return new String("Point (" + String.valueOf(x) + "," + String.valueOf(y) + ")");
 	}
 

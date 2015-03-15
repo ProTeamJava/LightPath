@@ -9,7 +9,7 @@ public class Prism extends AbstractOpticalElement {
 	}
 
 	@Override
-	void collisionSolution(Surroundings s, Beam b) {
+	void collisionSolution(Surroundings s, Beam b, Segment seg) {
 		// TODO Auto-generated method stub
 		
 	}
