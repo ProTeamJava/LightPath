@@ -6,10 +6,13 @@ import java.util.List;
 abstract public class AbstractOpticalElement {
 	protected Point position;
 	protected List<Point> vertices;
+	
+	String name;
 
-	public AbstractOpticalElement(Point position, List<Point> vertices) {
+	public AbstractOpticalElement(Point position, List<Point> vertices, String name) {
 		this.position = position;
 		this.vertices = vertices;
+		this.name = name;
 	}
 
 	public AbstractOpticalElement(Point position) {
@@ -25,6 +28,8 @@ abstract public class AbstractOpticalElement {
 		tmp.add(new Point(0, 1));
 		return tmp;
 	}
+	
+	abstract public boolean isPointInside(Point p);
 
 	public static List<Point> getMirror() {
 		List<Point> tmp = new ArrayList<Point>();
@@ -66,7 +71,7 @@ abstract public class AbstractOpticalElement {
 				// collision
 				if (tmp == null) {
 					// 1st collision
-					tmp = new Collision(collisionPoint(get(i), get(j), s.begin, s.end), new Segment(get(i), get(j))) ;
+					tmp = new Collision(collisionPoint(get(i), get(j), s.begin, s.end), new Segment(get(i), get(j)));
 				} else {
 					// next collision
 					throw new MultipleCollisionsException();

@@ -17,15 +17,17 @@ public class Surroundings {
 	public void simulate() {
 		beams.clear();
 		for (BeamSource source : sources) {
-			System.out.println("source");
-			add(source.getBeam());
+			double ior = 1;
+			for(AbstractOpticalElement element : elements)
+				if(element.isPointInside(source.segment.begin))
+					ior = ((Prism) element).getRefractiveIndex();
+			add(source.getBeam(ior));
 		}
 
 		while (!simulated()) {
 			for (int ii = 0; ii < beams.size(); ii++) {
 				Beam beam = beams.get(ii);
 				if (!beam.getIfSimulated()) {
-					System.out.println("beam no: " + String.valueOf(ii));
 					beam.simulate(this);
 				}
 			}
@@ -44,7 +46,6 @@ public class Surroundings {
 	}
 
 	public void add(Beam b) {
-		System.out.println("new beam " + b.segment.begin.toString() + " " + b.segment.end.toString());
 		beams.add(b);
 	}
 

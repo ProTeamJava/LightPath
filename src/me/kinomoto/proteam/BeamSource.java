@@ -1,7 +1,7 @@
 package me.kinomoto.proteam;
 
 public class BeamSource {
-	private Segment segment;
+	Segment segment;
 	private double wavelenght;
 
 	public BeamSource(Segment segment, double wavelenght) {
@@ -10,9 +10,9 @@ public class BeamSource {
 		this.wavelenght = wavelenght;
 	}
 
-	public Beam getBeam()
+	public Beam getBeam(double refractiveIndex)
 	{
-		return new Beam(segment, wavelenght, 1);
+		return new Beam(segment, wavelenght, 1, refractiveIndex);
 	}
 
 }
