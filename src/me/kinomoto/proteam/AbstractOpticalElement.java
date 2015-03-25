@@ -3,6 +3,18 @@ package me.kinomoto.proteam;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * AbstractOplitalElement class is temporarily holding the prototype optical elements such:
+ * as triangular and square prism and flat mirror. It holds an implementation of beam collision with the object detection
+ * 
+ * @param posistion is the point of reference to the optical element
+ * @param vertices is the list of the vertex points of the optical element 
+ * 
+ * @method findCollision is the algorithm of beam collision with the object detection
+ * @method findCollisionPoint is to give exact point of collision
+ *
+ */
 abstract public class AbstractOpticalElement {
 	protected Point position;
 	protected List<Point> vertices;
@@ -71,7 +83,7 @@ abstract public class AbstractOpticalElement {
 				// collision
 				if (tmp == null) {
 					// 1st collision
-					tmp = new Collision(collisionPoint(get(i), get(j), s.begin, s.end), new Segment(get(i), get(j)));
+					tmp = new Collision(findCollisionPoint(get(i), get(j), s.begin, s.end), new Segment(get(i), get(j)));
 				} else {
 					// next collision
 					throw new MultipleCollisionsException();
@@ -91,7 +103,7 @@ abstract public class AbstractOpticalElement {
 		return 0;
 	}
 
-	private Point collisionPoint(Point p1, Point p2, Point p3, Point p4) {
+	private Point findCollisionPoint(Point p1, Point p2, Point p3, Point p4) {
 
 		Point point = null;
 
@@ -120,6 +132,6 @@ abstract public class AbstractOpticalElement {
 		return point;
 	}
 
-	abstract void collisionSolution(Surroundings s, Beam b, Segment seg);
+	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
 
 }
