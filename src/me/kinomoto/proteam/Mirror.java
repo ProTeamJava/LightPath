@@ -7,7 +7,7 @@ public class Mirror extends AbstractOpticalElement {
 	}
 
 	@Override
-	void collisionSolution(Surroundings s, Beam b, Segment seg) {
+	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
 		System.out.println("Collision with " + name);
 		double sy = seg.end.x - seg.begin.x;
 		double sx = seg.end.y - seg.begin.y;
@@ -25,10 +25,10 @@ public class Mirror extends AbstractOpticalElement {
 
 		Point end = new Point(b.segment.end.x + nx, b.segment.end.y + ny);
 
-		if(b.brightness > 0.01)
-		{
-			double bright = b.brightness*.99;
-			s.add(new Beam(new Segment(b.segment.end, end), b.wavelenght, bright, b.refractiveIndex));
+		if (b.brightness > 0.01) {
+			double bright = b.brightness * .99;
+			s.add(new Beam(new Segment(b.segment.end, end), b.wavelenght,
+					bright, b.refractiveIndex));
 		}
 	}
 

@@ -10,8 +10,7 @@ public class BeamSource {
 		this.wavelenght = wavelenght;
 	}
 
-	public Beam getBeam(double refractiveIndex)
-	{
+	public Beam getBeam(double refractiveIndex) {
 		return new Beam(segment, wavelenght, 1, refractiveIndex);
 	}
 
