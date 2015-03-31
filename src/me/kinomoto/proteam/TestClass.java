@@ -7,6 +7,7 @@ public class TestClass {
 	public TestClass() {
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		double x, y, angle;
 		System.out.println("Input x pos of beam source");

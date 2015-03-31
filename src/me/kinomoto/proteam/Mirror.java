@@ -27,8 +27,7 @@ public class Mirror extends AbstractOpticalElement {
 
 		if (b.brightness > 0.01) {
 			double bright = b.brightness * .99;
-			s.add(new Beam(new Segment(b.segment.end, end), b.wavelenght,
-					bright, b.refractiveIndex));
+			s.add(new Beam(new Segment(b.segment.end, end), b.wavelenght, bright, b.refractiveIndex));
 		}
 	}
 

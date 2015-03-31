@@ -39,6 +39,11 @@ public class Main extends JFrame {
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 	private ImageIcon aboutI;
+	
+	private SurroundingsView surroundingsView;
+
+	private JPanel toolBar;
+	private JPanel settingsPanel;
 
 	public Main() throws HeadlessException {
 		super("LightPath");
@@ -58,9 +63,15 @@ public class Main extends JFrame {
 	}
 
 	private void initUI() {
-		this.add(new JLabel("Left"), BorderLayout.WEST);
-		this.add(new JLabel("Center"), BorderLayout.CENTER);
-		this.add(new JLabel("Right"), BorderLayout.EAST);
+		
+		toolBar = new ToolBar();
+		surroundingsView = new SurroundingsView();
+		settingsPanel = new SettingsPanel();
+		JScrollPane scroll = new JScrollPane(surroundingsView);
+		
+		this.add(scroll, BorderLayout.CENTER);
+		this.add(toolBar, BorderLayout.WEST);
+		this.add(settingsPanel, BorderLayout.EAST);
 	}
 
 	private void initIcons() {
