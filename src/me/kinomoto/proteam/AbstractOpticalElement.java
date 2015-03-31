@@ -1,15 +1,18 @@
 package me.kinomoto.proteam;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 
- * AbstractOplitalElement class is temporarily holding the prototype optical elements such:
- * as triangular and square prism and flat mirror. It holds an implementation of beam collision with the object detection
+ * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds an implementation of beam collision with the object detection
  * 
- * @param posistion is the point of reference to the optical element
- * @param vertices is the list of the vertex points of the optical element 
+ * @param posistion
+ *            is the point of reference to the optical element
+ * @param vertices
+ *            is the list of the vertex points of the optical element
  * 
  * @method findCollision is the algorithm of beam collision with the object detection
  * @method findCollisionPoint is to give exact point of collision
@@ -18,7 +21,7 @@ import java.util.List;
 abstract public class AbstractOpticalElement {
 	protected Point position;
 	protected List<Point> vertices;
-	
+
 	String name;
 
 	public AbstractOpticalElement(Point position, List<Point> vertices, String name) {
@@ -40,23 +43,23 @@ abstract public class AbstractOpticalElement {
 		tmp.add(new Point(0, 1));
 		return tmp;
 	}
-	
+
 	abstract public boolean isPointInside(Point p);
 
 	public static List<Point> getMirror() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(-1, -1));
-		tmp.add(new Point(1, 1));
+		tmp.add(new Point(-10, -10));
+		tmp.add(new Point(10, 10));
 		return tmp;
 	}
 
 	public static List<Point> getSquare() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(-1, -1));
-		tmp.add(new Point(-1, 1));
-		tmp.add(new Point(1, 1));
-		tmp.add(new Point(1, -1));
-		tmp.add(new Point(-1, -1));
+		tmp.add(new Point(-10, -10));
+		tmp.add(new Point(-10, 10));
+		tmp.add(new Point(10, 10));
+		tmp.add(new Point(10, -10));
+		tmp.add(new Point(-10, -10));
 		return tmp;
 	}
 
@@ -133,5 +136,12 @@ abstract public class AbstractOpticalElement {
 	}
 
 	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
+
+	public void paint(Graphics2D g) {
+		g.setColor(Color.WHITE);
+		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
+			g.drawLine((int) get(i).x, (int) get(i).y, (int) get(j).x, (int) get(j).y);
+		}
+	}
 
 }

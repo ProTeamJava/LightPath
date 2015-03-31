@@ -1,5 +1,6 @@
 package me.kinomoto.proteam;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,8 @@ public class Surroundings {
 		beams.clear();
 		for (BeamSource source : sources) {
 			double ior = 1;
-			for(AbstractOpticalElement element : elements)
-				if(element.isPointInside(source.segment.begin))
+			for (AbstractOpticalElement element : elements)
+				if (element.isPointInside(source.segment.begin))
 					ior = ((Prism) element).getRefractiveIndex();
 			add(source.getBeam(ior));
 		}
@@ -55,6 +56,19 @@ public class Surroundings {
 				return false;
 		}
 		return true;
+	}
+
+	public void paint(Graphics2D g) {
+
+		for (AbstractOpticalElement abstractOpticalElement : elements) {
+			abstractOpticalElement.paint(g);
+		}
+		for (Beam beam : beams) {
+			beam.paint(g);
+		}
+		for (BeamSource beamSource : sources) {
+			beamSource.paint(g);
+		}
 	}
 
 }

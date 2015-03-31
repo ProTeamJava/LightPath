@@ -1,5 +1,9 @@
 package me.kinomoto.proteam;
 
+import java.awt.Graphics2D;
+
+import com.mindprod.wavelength.Wavelength;
+
 public class Beam {
 	Segment segment;
 	private boolean collisionChecked = false;
@@ -79,6 +83,11 @@ public class Beam {
 		}
 
 		collisionChecked = true;
+	}
+
+	public void paint(Graphics2D g) {
+		g.setColor(Wavelength.wvColor((float) wavelenght, (float) brightness));
+		g.drawLine((int) segment.begin.x, (int) segment.begin.y, (int) segment.end.x, (int) segment.end.y);
 	}
 
 }
