@@ -39,7 +39,7 @@ public class Main extends JFrame {
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 	private ImageIcon aboutI;
-	
+
 	private SurroundingsView surroundingsView;
 
 	private JPanel toolBar;
@@ -47,12 +47,18 @@ public class Main extends JFrame {
 
 	public Main() throws HeadlessException {
 		super("LightPath");
+
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(600, 400));
 		this.setLayout(new BorderLayout());
 
-		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader()
-				.getResource("LightPathIcon.png"));
+		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png"));
 		this.setIconImage(appIcon.getImage());
 
 		initIcons();
@@ -63,12 +69,12 @@ public class Main extends JFrame {
 	}
 
 	private void initUI() {
-		
+
 		toolBar = new ToolBar();
 		surroundingsView = new SurroundingsView();
 		settingsPanel = new SettingsPanel();
 		JScrollPane scroll = new JScrollPane(surroundingsView);
-		
+
 		this.add(scroll, BorderLayout.CENTER);
 		this.add(toolBar, BorderLayout.WEST);
 		this.add(settingsPanel, BorderLayout.EAST);
