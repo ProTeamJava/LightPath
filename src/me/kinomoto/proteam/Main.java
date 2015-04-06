@@ -59,6 +59,8 @@ public class Main extends JFrame {
 		initMenu();
 		initUI();
 		initListeners();
+
+		setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 
