@@ -1,20 +1,24 @@
 package me.kinomoto.proteam;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Locale;
-import java.util.TimerTask;
-import java.util.Timer;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 @SuppressWarnings("unused")
 public class Main extends JFrame {
@@ -56,6 +60,7 @@ public class Main extends JFrame {
 
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(600, 400));
+		this.setSize(1200, 600);
 		this.setLayout(new BorderLayout());
 
 		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png"));
@@ -72,14 +77,30 @@ public class Main extends JFrame {
 
 	private void initUI() {
 
-		toolBar = new ToolBar();
+		toolBar = new ToolBar(this);
 		surroundingsView = new SurroundingsView();
 		settingsPanel = new SettingsPanel();
 		JScrollPane scroll = new JScrollPane(surroundingsView);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		
+		Rectangle bounds = scroll.getViewport().getViewRect();
+		Dimension size = scroll.getViewport().getViewSize();
+		int x = (size.width - bounds.width) / 2;
+		int y = (size.height - bounds.height) / 2;
+		scroll.getViewport().setViewPosition(new java.awt.Point(x, y));
 
 		this.add(scroll, BorderLayout.CENTER);
 		this.add(toolBar, BorderLayout.WEST);
 		this.add(settingsPanel, BorderLayout.EAST);
+		
+		scroll.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println(e);
+				
+			}
+		});
 	}
 
 	private void initIcons() {
@@ -93,7 +114,7 @@ public class Main extends JFrame {
 		zoomOutI = getIcon("zoom-out.png");
 	}
 
-	private ImageIcon getIcon(String name) {
+	public ImageIcon getIcon(String name) {
 		return new ImageIcon(getClass().getClassLoader().getResource(name));
 	}
 
@@ -149,7 +170,7 @@ public class Main extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				AboutWindow about = new AboutWindow("About Light Path");
+				AboutWindow about = new AboutWindow(Messages.get("aboutTitle"));
 				about.setVisible(true);
 			}
 		});
