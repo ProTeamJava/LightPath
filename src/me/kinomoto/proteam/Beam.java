@@ -15,7 +15,7 @@ public class Beam {
 		double dx = segment.end.x - segment.begin.x;
 		double dy = segment.end.y - segment.begin.y;
 		double max = Math.abs(dx) < Math.abs(dy) ? Math.abs(dy) : Math.abs(dx);
-		double times = 1000.0 / max;
+		double times = 5000.0 / max;
 		segment.end.x = segment.begin.x + dx * times;
 		segment.end.y = segment.begin.y + dy * times;
 

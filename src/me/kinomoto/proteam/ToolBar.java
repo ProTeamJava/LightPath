@@ -8,13 +8,13 @@ public class ToolBar extends JPanel {
 
 	private static final long serialVersionUID = 9011244837363357691L;
 
-	public ToolBar() {
+	public ToolBar(Main main) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		JButton pointerSelectButton = new JButton("Pointer");
-		JButton mirrorSelectButton = new JButton("Mirror");
-		JButton triangularPrismButton = new JButton("Triangle");
-		JButton squarePrismButton = new JButton("Square");
+		JButton pointerSelectButton = new JButton(main.getIcon("transform-move.png"));
+		JButton mirrorSelectButton = new JButton(main.getIcon("draw-line.png"));
+		JButton triangularPrismButton = new JButton(main.getIcon("draw-triangle1.png"));
+		JButton squarePrismButton = new JButton(main.getIcon("draw-rectangle.png"));
 
 		this.add(pointerSelectButton);
 		this.add(mirrorSelectButton);

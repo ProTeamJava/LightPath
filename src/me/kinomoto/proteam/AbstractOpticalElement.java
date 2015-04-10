@@ -1,5 +1,6 @@
 package me.kinomoto.proteam;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -138,9 +139,11 @@ abstract public class AbstractOpticalElement {
 	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
 
 	public void paint(Graphics2D g) {
-		g.setColor(Color.WHITE);
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setColor(Color.BLACK);
+		g2.setStroke(new BasicStroke(2));
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
-			g.drawLine((int) get(i).x, (int) get(i).y, (int) get(j).x, (int) get(j).y);
+			g2.drawLine((int) get(i).x, (int) get(i).y, (int) get(j).x, (int) get(j).y);
 		}
 	}
 
