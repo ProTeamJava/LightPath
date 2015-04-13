@@ -33,10 +33,10 @@ public class BeamSourceSettingsPanel extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
-		JLabel lblBeamSourceNo = new JLabel("Beam Source no 1");
+		JLabel lblBeamSourceNo = new JLabel("Beam Source 1");
 		add(lblBeamSourceNo, "2, 2, 5, 1, center, default");
 		
-		JLabel lblWaveLenght = new JLabel("Wave lenght");
+		JLabel lblWaveLenght = new JLabel("Wavelength");
 		add(lblWaveLenght, "2, 4, right, default");
 		
 		JSpinner spinner = new JSpinner();

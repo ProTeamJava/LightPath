@@ -26,8 +26,8 @@ public class SurroundingsSettingsPanel extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
-		JLabel lblSurrandings = new JLabel("Surrandings");
-		add(lblSurrandings, "2, 2");
+		JLabel lblSurroundings = new JLabel("Surroundings");
+		add(lblSurroundings, "2, 2");
 		
 		JLabel lblIor = new JLabel("IOR");
 		add(lblIor, "2, 4");
