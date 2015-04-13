@@ -6,16 +6,16 @@ import java.awt.Graphics2D;
 
 public class BeamSource {
 	Segment segment;
-	private double wavelenght;
+	private double wavelength;
 
-	public BeamSource(Segment segment, double wavelenght) {
+	public BeamSource(Segment segment, double wavelength) {
 		super();
 		this.segment = segment;
-		this.wavelenght = wavelenght;
+		this.wavelength = wavelength;
 	}
 
 	public Beam getBeam(double refractiveIndex) {
-		return new Beam(segment, wavelenght, 1, refractiveIndex);
+		return new Beam(segment, wavelength, 1, refractiveIndex);
 	}
 	
 	public double getAngle() {
