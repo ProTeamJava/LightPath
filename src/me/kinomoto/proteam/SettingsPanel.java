@@ -1,15 +1,13 @@
 package me.kinomoto.proteam;
 
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 
 public class SettingsPanel extends JPanel {
 	private static final long serialVersionUID = 7756992612679667166L;

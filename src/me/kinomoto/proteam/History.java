@@ -25,7 +25,7 @@ public class History {
 	static public void foward() {
 		if(!isForwardable()) return;
 		HistoryNodeAbstract node = future.getLast();
-		node.undo();
+		node.redo();
 		future.remove(node);
 		past.add(node);
 	}
