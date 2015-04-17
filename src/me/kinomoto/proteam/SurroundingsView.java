@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
@@ -31,6 +34,37 @@ public class SurroundingsView extends JPanel {
 		surroundings.add(new BeamSource(new Segment(new Point(200, 0), new Point(70, 150)), 650));
 		surroundings.add(new BeamSource(new Segment(new Point(50, 100), new Point(100, 90)), 550));
 		surroundings.add(new BeamSource(new Segment(new Point(150, 250), new Point(120, 150)), 450));
+		
+		this.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Point t = (new Point(e.getPoint())).min(new Point(1920, 1080));
+				surroundings.mousePressed(t);
+				
+			}
+		});
+		
+		this.addMouseMotionListener(new MouseMotionListener() {
+			
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	@Override

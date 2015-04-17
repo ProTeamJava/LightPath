@@ -89,6 +89,7 @@ public class Prism extends AbstractOpticalElement {
 		return refractiveIndex;
 	}
 
+	//TODO check if it is good
 	@Override
 	public boolean isPointInside(Point p) {
 		boolean out = false;
