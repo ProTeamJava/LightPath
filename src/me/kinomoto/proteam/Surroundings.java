@@ -16,10 +16,10 @@ public class Surroundings {
 	private SurroundingsView view;
 
 	private enum SelectionType {
-		SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, NOTHING
+		SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, SURROUNDINGS
 	};
 
-	private SelectionType selection = SelectionType.NOTHING;
+	private SelectionType selection = SelectionType.SURROUNDINGS;
 	private BeamSource selectedBeamSource = null;
 	private AbstractOpticalElement selectedElement = null;
 
@@ -91,7 +91,7 @@ public class Surroundings {
 	}
 
 	public void mousePressed(Point p) {
-		selection = SelectionType.NOTHING;
+		selection = SelectionType.SURROUNDINGS;
 		selectedBeamSource = null;
 		selectedElement = null;
 
@@ -114,7 +114,7 @@ public class Surroundings {
 
 	public JPanel getSelectedSettingsPanel() {
 		switch (selection) {
-		case NOTHING:
+		case SURROUNDINGS:
 			return new SurroundingsSettingsPanel(this);
 		case SELECTED_BEAM_SOURCE:
 			return new BeamSourceSettingsPanel(selectedBeamSource, this);

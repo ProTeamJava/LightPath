@@ -32,11 +32,11 @@ public class SurroundingsView extends JPanel {
 		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
 
 		surroundings.add(new Mirror(new Point(100, 100)));
-		surroundings.add(new Prism(new Point(150, 180), 1));
+		surroundings.add(new Prism(new Point(150, 180), 1.5));
 		surroundings.add(new Mirror(new Point(75, 200)));
 		surroundings.add(new BeamSource(new Segment(new Point(200, 0), new Point(70, 150)), 650));
 		surroundings.add(new BeamSource(new Segment(new Point(50, 100), new Point(100, 90)), 550));
-		surroundings.add(new BeamSource(new Segment(new Point(190, 250), new Point(120, 150)), 450));
+		surroundings.add(new BeamSource(new Segment(new Point(210, 250), new Point(100, 150)), 450));
 		
 		this.addMouseListener(new MouseAdapter() {
 			
@@ -48,7 +48,7 @@ public class SurroundingsView extends JPanel {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				Point t = (new Point(e.getPoint())).min(new Point(1920, 1080));
+				Point t = (new Point(e.getPoint())).mul(1/scale).min(new Point(baseWidth / 2, baseHeight / 2));
 				surroundings.mousePressed(t);
 				settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
 			}
