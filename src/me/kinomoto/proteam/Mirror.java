@@ -1,6 +1,18 @@
 package me.kinomoto.proteam;
 
+import javax.swing.JPanel;
+
 public class Mirror extends AbstractOpticalElement {
+	
+	private double absorption = .99; 
+
+	public double getAbsorption() {
+		return absorption;
+	}
+
+	public void setAbsorption(double absorption) {
+		this.absorption = absorption;
+	}
 
 	public Mirror(Point position) {
 		super(position, AbstractOpticalElement.getMirror());
@@ -31,8 +43,8 @@ public class Mirror extends AbstractOpticalElement {
 
 		Point end = new Point(b.segment.end.x + nx, b.segment.end.y + ny);
 
-		if (b.brightness > 0.01) {
-			double bright = b.brightness * .99;
+		if (b.brightness*absorption > 0.01) {
+			double bright = b.brightness * absorption;
 			Segment tmp = new Segment(b.segment.end, end);
 			if(tmp.end.x - tmp.begin.x == 0 && tmp.end.y - tmp.begin.y == 0) {
 				System.out.println("err");
@@ -76,6 +88,11 @@ public class Mirror extends AbstractOpticalElement {
 				return true;
 		
 		return false;
+	}
+
+	@Override
+	public JPanel getSettingsPanel(Surroundings s) {
+		return new MirrorSettingsPanel(this, s);
 	}
 
 }

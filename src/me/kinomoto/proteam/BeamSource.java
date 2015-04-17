@@ -8,6 +8,14 @@ public class BeamSource {
 	Segment segment;
 	private double wavelength;
 
+	public double getWavelength() {
+		return wavelength;
+	}
+
+	public void setWavelength(double wavelength) {
+		this.wavelength = wavelength;
+	}
+
 	public BeamSource(Segment segment, double wavelength) {
 		super();
 		this.segment = segment;

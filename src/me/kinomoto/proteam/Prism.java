@@ -1,8 +1,10 @@
 package me.kinomoto.proteam;
 
+import javax.swing.JPanel;
+
 public class Prism extends AbstractOpticalElement {
 
-	private double refractiveIndex = 1;
+	private double refractiveIndex;
 
 	public Prism(Point position, double ior) {
 		super(position, AbstractOpticalElement.getSquare());
@@ -97,6 +99,19 @@ public class Prism extends AbstractOpticalElement {
 			if (((get(i).y > p.y) != (get(j).y > p.y)) && (p.x < (get(j).x - get(i).x) * (p.y - get(i).y) / (get(j).y - get(i).y) + get(i).x))
 				out = !out;
 		return out;
+	}
+
+	@Override
+	public JPanel getSettingsPanel(Surroundings s) {
+		return new PrismSettingsPanel(this, s);
+	}
+	
+	public double getIOR(){
+		return refractiveIndex;
+	}
+	
+	public void setIOR(double ior) {
+		refractiveIndex = ior;
 	}
 
 }
