@@ -13,77 +13,74 @@ public class Prism extends AbstractOpticalElement {
 
 	@Override
 	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
-		/*
-		 * wsp odbicia = ((n cos b - cos a)/(n cos b + cos a))^2
-		 * a - kąt padania
-		 * b - kąt załamania
-		 * n - wzgledny wsp załamania ośrodka wzgleðem którego odbija się swiatło
-		 */
-			//System.out.println("Collision with " + name);
-			
-		    // wektor padający
-			double sy = seg.end.x - seg.begin.x;
-			double sx = seg.end.y - seg.begin.y;
-			sy *= -1;
 
-			//wektor prisma
-			//obliczenie wektora normalnego do pow prisma 
-			double nx = b.segment.end.x - b.segment.begin.x;
-			double ny = b.segment.end.y - b.segment.begin.y;
-			ny *= -1;
-			
-			//stusunek wspolczynników 
-			//padający do odbitego
-			double n12 = s.ior / refractiveIndex;
-			//odbity do padającego
-			double n21 = refractiveIndex / s.ior;
+		// incident beam unit vector coordinates
+		double sx = b.segment.end.x - b.segment.begin.x;
+		double sy = b.segment.end.y - b.segment.begin.y;
+		
+		double sl = sx * sx + sy * sy;
+		double div2 = Math.sqrt(sl);
+		sy /= div2;
+		sx /= div2;
+		// sufrace normal unit vertor coordinates
+		double ny = seg.begin.x - seg.end.x;
+		double nx = seg.begin.y - seg.end.y;
+		nx *= -1;
+		
+		double nl = nx * nx + ny * ny;
+		double div = Math.sqrt(nl);
+		ny /= div;
+		nx /= div;
 
-			//chcę 
-			double rx;
-			double ry;
-			
+		// cooeficient ratio
+		// incident to reflected
+		double nir = s.ior / refractiveIndex;
+		// reflected to incident
+		double nri = refractiveIndex / s.ior;
 
-			Point end = new Point(b.segment.end.x + nx, b.segment.end.y + ny);
+		// refracted or reflected beam vector coordinates
+		double rx;
+		double ry;
 
-			if (b.brightness > 0.01) {
-				double bright = b.brightness * .99;
-				Segment tmp = new Segment(b.segment.end, end);
-				if(tmp.end.x - tmp.begin.x == 0 && tmp.end.y - tmp.begin.y == 0) {
-					System.out.println("err");
-				}
-				s.add(new Beam(tmp, b.wavelenght, bright, b.refractiveIndex));
+		double nDotI, nDotI2, a, k, kk, D2;
+
+		nDotI = nx * sx + ny * sy;
+		nDotI2 = nDotI * nDotI;
+		if (nDotI >= 0.0) {
+			k = nir;
+			kk = k * k;
+		} else {
+			k = nri;
+			kk = k * k;
+		}
+		D2 = 1.0 - kk * (1.0 - nDotI2);
+
+		if (D2 >= 0.0) {
+			if (nDotI >= 0.0) {
+				a = k * nDotI - Math.sqrt(D2);
+			} else {
+				a = k * nDotI + Math.sqrt(D2);
 			}
-			
-			/*
-			 *     vector* Refract_Unnormalized(vector N, vector I) 
-    {
-        vector* T = new vector();
-        float a,two_ndoti,ndoti;
-         // ------REFRACTION----------------------- //
-         // New vector T = refraction of I through surface with normal N.
-         // assumes r = ki/kr and invr = kr/ki are known constants.
-         
-         ndoti = N.x * I.x + N.y * I.y + N.z * I.z;    // 3 muls, 2 adds
-         
-         /// ---begin changes---------------=========
-         g = gLUT[(int)(ndoti*scalefac)];  // 1 mul
-         if (g != TIRflag) 
-         {
-            T->x = g*N.x - I.x;            // 3 muls, 3 adds
-            T->y = g*N.y - I.y;            // --total------------
-            T->z = g*N.z - I.z;            // total: 7 muls, 5 adds, 1 lookup
-         /// ---end changes -----------------========            
-         } else {
-            // total internal reflection
-            // this usually doesn't happen, so I don't count it.
-            two_ndoti = ndoti + ndoti;     // +1 add
-            T->x = two_ndoti * N.x - I.x;  // +3 adds, +3 muls
-            T->y = two_ndoti * N.y - I.y;
-            T->z = two_ndoti * N.z - I.z;
-         }
-         return T;
-    }
-			 */
+			rx = (a * nx - k * sx);
+			ry = (a * ny - k * sy);
+
+		} else {
+
+			rx = 2 * nDotI * nx - sx;
+			ry = 2 * nDotI * ny - sy;
+
+		}
+
+		Point end = new Point(b.segment.end.x - rx, b.segment.end.y - ry);
+
+		if (b.brightness > 0.01) {
+			double bright = b.brightness * .99;
+			Segment tmp = new Segment(b.segment.end, end);
+			if (tmp.end.x - tmp.begin.x == 0 && tmp.end.y - tmp.begin.y == 0) {
+				System.out.println("err");
+			}
+			s.add(new Beam(tmp, b.wavelenght, bright, b.refractiveIndex));
+		}
 
 	}
 
@@ -91,7 +88,7 @@ public class Prism extends AbstractOpticalElement {
 		return refractiveIndex;
 	}
 
-	//TODO check if it is good
+	// TODO check if it is good
 	@Override
 	public boolean isPointInside(Point p) {
 		boolean out = false;
