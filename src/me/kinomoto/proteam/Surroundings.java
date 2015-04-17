@@ -59,13 +59,15 @@ public class Surroundings {
 	}
 
 	public void paint(Graphics2D g) {
-
+		
 		for (Beam beam : beams) {
 			beam.paint(g);
 		}
+		
 		for (BeamSource beamSource : sources) {
 			beamSource.paint(g);
 		}
+		
 		for (AbstractOpticalElement abstractOpticalElement : elements) {
 			abstractOpticalElement.paint(g);
 		}

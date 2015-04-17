@@ -4,14 +4,13 @@ public class Prism extends AbstractOpticalElement {
 
 	private double refractiveIndex = 1;
 
-	public Prism(Point position, String name, double ior) {
-		super(position, AbstractOpticalElement.getSquare(), name);
+	public Prism(Point position, double ior) {
+		super(position, AbstractOpticalElement.getSquare());
 		refractiveIndex = ior;
 	}
 
 	@Override
 	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
-		System.out.println("Collision with " + name);
 		/*
 		 * wsp odbicia = ((n cos b - cos a)/(n cos b + cos a))^2
 		 * a - kąt padania

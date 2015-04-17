@@ -23,12 +23,10 @@ abstract public class AbstractOpticalElement {
 	protected Point position;
 	protected List<Point> vertices;
 
-	String name;
 
-	public AbstractOpticalElement(Point position, List<Point> vertices, String name) {
+	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
 		this.vertices = vertices;
-		this.name = name;
 	}
 
 	public AbstractOpticalElement(Point position) {
