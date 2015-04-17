@@ -32,11 +32,11 @@ public class SurroundingsView extends JPanel {
 		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
 
 		surroundings.add(new Mirror(new Point(100, 100)));
-		surroundings.add(new Prism(new Point(150, 180), 1.33));
+		surroundings.add(new Prism(new Point(150, 180), 1));
 		surroundings.add(new Mirror(new Point(75, 200)));
 		surroundings.add(new BeamSource(new Segment(new Point(200, 0), new Point(70, 150)), 650));
 		surroundings.add(new BeamSource(new Segment(new Point(50, 100), new Point(100, 90)), 550));
-		surroundings.add(new BeamSource(new Segment(new Point(150, 250), new Point(120, 150)), 450));
+		surroundings.add(new BeamSource(new Segment(new Point(190, 250), new Point(120, 150)), 450));
 		
 		this.addMouseListener(new MouseAdapter() {
 			

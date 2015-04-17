@@ -8,10 +8,9 @@ import javax.swing.JPanel;
 
 public class Surroundings {
 	List<AbstractOpticalElement> elements;
-	private List<BeamSource> sources;
+	List<BeamSource> sources;
 	private List<Beam> beams;
-
-	double ior = 1;
+	double ior = 4;
 	
 	private SurroundingsView view;
 
