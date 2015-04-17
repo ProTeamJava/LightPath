@@ -15,7 +15,7 @@ public class Beam {
 		double dx = segment.end.x - segment.begin.x;
 		double dy = segment.end.y - segment.begin.y;
 		double max = Math.abs(dx) < Math.abs(dy) ? Math.abs(dy) : Math.abs(dx);
-		double times = 5000.0 / max;
+		double times = 4500.0 / max;
 		segment.end.x = segment.begin.x + dx * times;
 		segment.end.y = segment.begin.y + dy * times;
 
@@ -24,7 +24,7 @@ public class Beam {
 		this.refractiveIndex = refractiveIndex;
 		this.brightness = lightness;
 
-		System.out.println("Beam " + segment.begin + " " + segment.end + " Brightness " + String.valueOf(lightness) + " IOR: " + String.valueOf(refractiveIndex));
+		//System.out.println("Beam " + segment.begin + " " + segment.end + " Brightness " + String.valueOf(lightness) + " IOR: " + String.valueOf(refractiveIndex));
 	}
 
 	public boolean getIfSimulated() {
@@ -70,7 +70,7 @@ public class Beam {
 				collisionElement.findCollisionSolution(s, this, collision.segment);
 				break;
 			} else if (collisionNum == 0 && end == 1) {
-				System.out.println("no collision");
+				//System.out.println("no collision");
 				break;
 			} else if (collisionNum == 0) {
 				start = end;

@@ -1,18 +1,22 @@
 package me.kinomoto.proteam;
 
 import javax.swing.JPanel;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
+
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+
 import java.awt.Dimension;
 
 public class BeamSourceSettingsPanel extends JPanel {
 	private static final long serialVersionUID = 5668064404100316575L;
 	
+	@SuppressWarnings("unused")
 	private BeamSource beamSource;
 
 	/**

@@ -49,6 +49,8 @@ public class Main extends JFrame {
 	private JPanel toolBar;
 	private JPanel settingsPanel;
 
+	private JScrollPane scroll;
+
 	public Main() throws HeadlessException {
 		super("LightPath");
 
@@ -73,6 +75,12 @@ public class Main extends JFrame {
 
 		setLocationRelativeTo(null);
 		this.setVisible(true);
+		
+		Rectangle bounds = scroll.getViewport().getViewRect();
+		Dimension size = scroll.getViewport().getViewSize();
+		int x = (size.width - bounds.width) / 2;
+		int y = (size.height - bounds.height) / 2;
+		scroll.getViewport().setViewPosition(new java.awt.Point(x, y));
 	}
 
 	private void initUI() {
@@ -80,15 +88,9 @@ public class Main extends JFrame {
 		toolBar = new ToolBar(this);
 		surroundingsView = new SurroundingsView();
 		settingsPanel = new SettingsPanel();
-		JScrollPane scroll = new JScrollPane(surroundingsView);
+		scroll = new JScrollPane(surroundingsView);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		
-		Rectangle bounds = scroll.getViewport().getViewRect();
-		Dimension size = scroll.getViewport().getViewSize();
-		int x = (size.width - bounds.width) / 2;
-		int y = (size.height - bounds.height) / 2;
-		scroll.getViewport().setViewPosition(new java.awt.Point(x, y));
-
 		this.add(scroll, BorderLayout.CENTER);
 		this.add(toolBar, BorderLayout.WEST);
 		this.add(settingsPanel, BorderLayout.EAST);
@@ -96,8 +98,7 @@ public class Main extends JFrame {
 		scroll.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				// TODO Auto-generated method stub
-				System.out.println(e);
+				// TODO scrollPane, resizing and sliders
 				
 			}
 		});
