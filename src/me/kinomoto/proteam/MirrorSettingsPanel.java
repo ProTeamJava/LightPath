@@ -1,30 +1,33 @@
 package me.kinomoto.proteam;
 
-import javax.swing.JPanel;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.SpinnerNumberModel;
 
-public class SurroundingsSettingsPanel extends JPanel {
-	private static final long serialVersionUID = -8039564944519925324L;
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
+
+public class MirrorSettingsPanel extends JPanel {
+	private static final long serialVersionUID = -724826379637207733L;
+
 	
 	private Surroundings s;
+	private Mirror m;
 
 	private JSpinner spinner;
-
+	
 	/**
 	 * Create the panel.
 	 */
-	public SurroundingsSettingsPanel(final Surroundings s) {
+	public MirrorSettingsPanel(final Mirror m, final Surroundings s) {
 		this.s = s;
+		this.m = m;
+		
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
@@ -36,23 +39,24 @@ public class SurroundingsSettingsPanel extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
-		JLabel lblSurroundings = new JLabel("Surroundings");
+		JLabel lblSurroundings = new JLabel("Mirror");
 		add(lblSurroundings, "2, 2, 3, 1, center, default");
 		
-		JLabel lblIor = new JLabel("IOR");
+		JLabel lblIor = new JLabel("Absorption");
 		add(lblIor, "2, 4");
 		
 		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(s.getIOR(), 1.0, 10.0, 0.1));
+		spinner.setModel(new SpinnerNumberModel(m.getAbsorption(), 0.0, .99, 0.01));
 		add(spinner, "4, 4");
 		
 		spinner.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
-				s.setIOR((double) spinner.getValue());				
+				m.setAbsorption((double) spinner.getValue());
+				s.simulate();
 			}
 		});
-
 	}
+
 }

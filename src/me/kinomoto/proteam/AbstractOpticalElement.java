@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
+
 /**
  * 
  * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds an implementation of beam collision with the object detection
@@ -144,5 +146,7 @@ abstract public class AbstractOpticalElement {
 			g2.drawLine((int) get(i).x, (int) get(i).y, (int) get(j).x, (int) get(j).y);
 		}
 	}
+
+	public abstract JPanel getSettingsPanel(Surroundings s);
 
 }

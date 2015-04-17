@@ -47,7 +47,7 @@ public class Main extends JFrame {
 	private SurroundingsView surroundingsView;
 
 	private JPanel toolBar;
-	private JPanel settingsPanel;
+	private SettingsPanel settingsPanel;
 
 	private JScrollPane scroll;
 
@@ -86,8 +86,8 @@ public class Main extends JFrame {
 	private void initUI() {
 
 		toolBar = new ToolBar(this);
-		surroundingsView = new SurroundingsView();
 		settingsPanel = new SettingsPanel();
+		surroundingsView = new SurroundingsView(settingsPanel);
 		scroll = new JScrollPane(surroundingsView);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		
@@ -102,6 +102,8 @@ public class Main extends JFrame {
 				
 			}
 		});
+		
+		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
 	}
 
 	private void initIcons() {
@@ -145,6 +147,26 @@ public class Main extends JFrame {
 		JMenu viewM = new JMenu(Messages.get("view"));
 		zoomInA = new JMenuItem(Messages.get("zoomIn"), zoomInI);
 		zoomOutA = new JMenuItem(Messages.get("zoomOut"), zoomOutI);
+		
+		zoomInA.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveSliderPositions();
+				surroundingsView.scaleUp();
+				restoreSliderPositions();
+			}
+		});
+		
+		zoomOutA.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveSliderPositions();
+				surroundingsView.scaleDown();
+				restoreSliderPositions();
+			}
+		});
 
 		viewM.add(zoomInA);
 		viewM.add(zoomOutA);
@@ -180,6 +202,24 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		Messages.setLocale(Locale.getDefault());
 		Main window = new Main();
+	}
+	
+	private double vSliderPos;
+	private double hSliderPos;
+	
+	private void saveSliderPositions() {
+		Rectangle rect = scroll.getViewport().getViewRect();
+		Dimension size = scroll.getViewport().getViewSize();
+		vSliderPos = (rect.width / 2 + rect.x)/size.getWidth();
+		hSliderPos = (rect.height / 2 + rect.y)/size.getHeight();
+	}
+	
+	private void restoreSliderPositions() {
+		Rectangle rect = scroll.getViewport().getViewRect();
+		Dimension size = scroll.getViewport().getViewSize();
+		int nx = (int) (vSliderPos * size.getWidth() - rect.width/2);
+		int ny = (int) (hSliderPos * size.getHeight() - rect.height/2);
+		scroll.getViewport().setViewPosition(new java.awt.Point(nx, ny));
 	}
 
 }
