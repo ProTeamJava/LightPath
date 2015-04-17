@@ -8,6 +8,7 @@ public class Surroundings {
 	List<AbstractOpticalElement> elements;
 	List<BeamSource> sources;
 	List<Beam> beams;
+	double ior;
 
 	public Surroundings() {
 		elements = new ArrayList<AbstractOpticalElement>();
