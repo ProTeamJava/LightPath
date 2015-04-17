@@ -19,7 +19,7 @@ public class SurroundingsSettingsPanel extends JPanel {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,},
+				ColumnSpec.decode("min:grow"),},
 			new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
@@ -27,7 +27,7 @@ public class SurroundingsSettingsPanel extends JPanel {
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
 		JLabel lblSurroundings = new JLabel("Surroundings");
-		add(lblSurroundings, "2, 2");
+		add(lblSurroundings, "2, 2, 3, 1, center, default");
 		
 		JLabel lblIor = new JLabel("IOR");
 		add(lblIor, "2, 4");
