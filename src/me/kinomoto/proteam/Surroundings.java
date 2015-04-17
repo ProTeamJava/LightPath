@@ -7,9 +7,9 @@ import java.util.List;
 public class Surroundings {
 	List<AbstractOpticalElement> elements;
 	List<BeamSource> sources;
-	List<Beam> beams;
-	double ior;
 	private List<Beam> beams;
+	double ior = 4;
+
 	
 	private enum SelectionType {SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, NOTHING};
 	private SelectionType selection = SelectionType.NOTHING;

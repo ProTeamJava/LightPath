@@ -13,12 +13,12 @@ public class Mirror extends AbstractOpticalElement {
 		double sx = seg.end.y - seg.begin.y;
 		sy *= -1;
 		double sl = sx * sx + sy * sy;
-		/*
+		
 		double div = Math.sqrt(sl);
 		sy /= div;
 		sx /= div;
 		sl = sx * sx + sy * sy;
-		*/
+		
 
 		double dx = b.segment.end.x - b.segment.begin.x;
 		double dy = b.segment.end.y - b.segment.begin.y;

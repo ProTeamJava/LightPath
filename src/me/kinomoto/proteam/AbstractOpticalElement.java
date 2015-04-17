@@ -54,11 +54,11 @@ abstract public class AbstractOpticalElement {
 
 	public static List<Point> getSquare() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(-10, -10));
-		tmp.add(new Point(-10, 10));
-		tmp.add(new Point(10, 10));
-		tmp.add(new Point(10, -10));
-		tmp.add(new Point(-10, -10));
+		tmp.add(new Point(-20, -20));
+		tmp.add(new Point(-20, 20));
+		tmp.add(new Point(20, 20));
+		tmp.add(new Point(20, -20));
+		tmp.add(new Point(-20, -20));
 		return tmp;
 	}
 
