@@ -31,4 +31,14 @@ public class BeamSource {
 		p.fillRect(-20, -10, 40, 20);
 
 	}
+
+	public boolean isPointInside(Point p) {
+		Point t = p.min(segment.begin);
+		double angle = this.getAngle();
+		double x = t.x * Math.cos(angle) - t.y * Math.sin(angle);
+		double y = t.x * Math.sin(angle) + t.y * Math.cos(angle);
+		if(x < 10 && x > -10 && y < 20 && y > -20)
+			return true;
+		return false;
+	}
 }

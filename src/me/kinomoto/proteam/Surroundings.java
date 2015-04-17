@@ -9,6 +9,12 @@ public class Surroundings {
 	List<BeamSource> sources;
 	List<Beam> beams;
 	double ior;
+	private List<Beam> beams;
+	
+	private enum SelectionType {SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, NOTHING};
+	private SelectionType selection = SelectionType.NOTHING;
+	private BeamSource selectedBeamSource = null;
+	private AbstractOpticalElement selectedElement = null;
 
 	public Surroundings() {
 		elements = new ArrayList<AbstractOpticalElement>();
@@ -71,6 +77,30 @@ public class Surroundings {
 		
 		for (AbstractOpticalElement abstractOpticalElement : elements) {
 			abstractOpticalElement.paint(g);
+		}
+	}
+	
+	public void mousePressed(Point p) {
+		selection = SelectionType.NOTHING;
+		selectedBeamSource = null;
+		selectedElement = null;
+		
+		for (BeamSource beamSource : sources) {
+			if(beamSource.isPointInside(p)) {
+				selection = SelectionType.SELECTED_BEAM_SOURCE;
+				selectedBeamSource = beamSource;
+				System.out.println("Selected source");
+				return;
+			}
+		}
+		
+		for (AbstractOpticalElement element : elements) {
+			if(element.isPointInside(p)) {
+				selection = SelectionType.SELECTED_ELEMENT;
+				selectedElement = element;
+				System.out.println("Selected element");
+				return;
+			}
 		}
 	}
 
