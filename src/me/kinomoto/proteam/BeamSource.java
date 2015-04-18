@@ -21,9 +21,14 @@ public class BeamSource {
 		this.segment = segment;
 		this.wavelength = wavelength;
 	}
+	
+	public BeamSource(Point pos, double angle, double wavelength) {
+		this.segment = new Segment(pos, new Point(pos.x + Math.cos(angle), pos.y + Math.sin(angle)));
+		this.wavelength = wavelength;
+	}
 
-	public Beam getBeam(double refractiveIndex) {
-		return new Beam(segment, wavelength, 1, refractiveIndex);
+	public Beam getBeam() {
+		return new Beam(segment, wavelength, 1);
 	}
 	
 	public double getAngle() {

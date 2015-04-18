@@ -32,11 +32,7 @@ public class Surroundings {
 	public void simulate() {
 		beams.clear();
 		for (BeamSource source : sources) {
-			double ior = 1;
-			for (AbstractOpticalElement element : elements)
-				if (element.isPointInside(source.segment.begin))
-					ior = ((Prism) element).getRefractiveIndex();
-			add(source.getBeam(ior));
+			add(source.getBeam());
 		}
 
 		while (!simulated()) {
@@ -127,11 +123,14 @@ public class Surroundings {
 	public void setIOR(double ior) {
 		this.ior = ior;
 		this.simulate();
-		System.out.println(ior);
 	}
 
 	public double getIOR() {
 		return ior;
+	}
+	
+	public void updateSettingsPanel() {
+		view.settingsPanel.setPanel(getSelectedSettingsPanel());
 	}
 
 }

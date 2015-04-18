@@ -17,9 +17,6 @@ import java.awt.Dimension;
 
 public class BeamSourceSettingsPanel extends JPanel {
 	private static final long serialVersionUID = 5668064404100316575L;
-	
-	private BeamSource beamSource;
-	private Surroundings s;
 
 	private JSpinner spinner;
 
@@ -27,8 +24,6 @@ public class BeamSourceSettingsPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public BeamSourceSettingsPanel(final BeamSource beamSource, final Surroundings s) {
-		this.beamSource = beamSource;
-		this.s = s;
 		
 		setMinimumSize(new Dimension(120, 50));
 		setLayout(new FormLayout(new ColumnSpec[] {

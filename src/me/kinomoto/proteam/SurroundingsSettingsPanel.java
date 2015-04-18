@@ -15,16 +15,10 @@ import javax.swing.SpinnerNumberModel;
 
 public class SurroundingsSettingsPanel extends JPanel {
 	private static final long serialVersionUID = -8039564944519925324L;
-	
-	private Surroundings s;
 
 	private JSpinner spinner;
 
-	/**
-	 * Create the panel.
-	 */
 	public SurroundingsSettingsPanel(final Surroundings s) {
-		this.s = s;
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
@@ -50,6 +44,7 @@ public class SurroundingsSettingsPanel extends JPanel {
 			
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
+				History.addNode(new HistoryNodeSurroundings(s));
 				s.setIOR((double) spinner.getValue());				
 			}
 		});
