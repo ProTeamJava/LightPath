@@ -76,10 +76,7 @@ public class Prism extends AbstractOpticalElement {
 		if (b.brightness > 0.01) {
 			double bright = b.brightness * .99;
 			Segment tmp = new Segment(b.segment.end, end);
-			if (tmp.end.x - tmp.begin.x == 0 && tmp.end.y - tmp.begin.y == 0) {
-				System.out.println("err");
-			}
-			s.add(new Beam(tmp, b.wavelenght, bright, b.refractiveIndex));
+			s.add(new Beam(tmp, b.wavelenght, bright));
 		}
 
 	}

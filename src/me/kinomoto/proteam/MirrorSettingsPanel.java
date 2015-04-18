@@ -15,18 +15,12 @@ import com.jgoodies.forms.layout.RowSpec;
 public class MirrorSettingsPanel extends JPanel {
 	private static final long serialVersionUID = -724826379637207733L;
 
-	
-	private Surroundings s;
-	private Mirror m;
-
 	private JSpinner spinner;
 	
 	/**
 	 * Create the panel.
 	 */
 	public MirrorSettingsPanel(final Mirror m, final Surroundings s) {
-		this.s = s;
-		this.m = m;
 		
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,

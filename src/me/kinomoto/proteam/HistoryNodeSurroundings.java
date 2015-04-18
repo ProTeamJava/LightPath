@@ -4,19 +4,26 @@ public class HistoryNodeSurroundings extends HistoryNodeAbstract {
 	private double ior;
 	
 	public HistoryNodeSurroundings(Surroundings s) {
-		super(s);		
+		super(s);
+		ior = s.getIOR();
 	}
 
 	@Override
 	public void undo() {
-		// TODO Auto-generated method stub
-
+		double tmp = s.getIOR();
+		s.setIOR(ior);
+		ior = tmp;
+		s.simulate();
+		s.updateSettingsPanel();
 	}
 
 	@Override
 	public void redo() {
-		// TODO Auto-generated method stub
-
+		double tmp = s.getIOR();
+		s.setIOR(ior);
+		ior = tmp;
+		s.simulate();
+		s.updateSettingsPanel();
 	}
 
 }

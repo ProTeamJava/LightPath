@@ -9,22 +9,21 @@ public class Beam {
 	private boolean collisionChecked = false;
 	double wavelenght;
 	double brightness = 1;
-	double refractiveIndex;
+	
+	private static int maxLength = 4500;
+	private static double stepSize = 200.0/maxLength; 
 
-	public Beam(Segment segment, double wavelenght, double lightness, double refractiveIndex) {
+	public Beam(Segment segment, double wavelenght, double lightness) {
 		double dx = segment.end.x - segment.begin.x;
 		double dy = segment.end.y - segment.begin.y;
 		double max = Math.abs(dx) < Math.abs(dy) ? Math.abs(dy) : Math.abs(dx);
-		double times = 4500.0 / max;
+		double times = maxLength / max;
 		segment.end.x = segment.begin.x + dx * times;
 		segment.end.y = segment.begin.y + dy * times;
 
 		this.segment = segment;
 		this.wavelenght = wavelenght;
-		this.refractiveIndex = refractiveIndex;
 		this.brightness = lightness;
-
-		//System.out.println("Beam " + segment.begin + " " + segment.end + " Brightness " + String.valueOf(lightness) + " IOR: " + String.valueOf(refractiveIndex));
 	}
 
 	public boolean getIfSimulated() {
@@ -70,14 +69,14 @@ public class Beam {
 				collisionElement.findCollisionSolution(s, this, collision.segment);
 				break;
 			} else if (collisionNum == 0 && end == 1) {
-				//System.out.println("no collision");
 				break;
 			} else if (collisionNum == 0) {
 				start = end;
 				end += step;
 			} else {
 				end = (end - start) / 1.5;
-				step /= 1.5;
+				if(step == 1) step = stepSize;
+				else step /= 1.5;
 			}
 			collisionNum = 0;
 		}

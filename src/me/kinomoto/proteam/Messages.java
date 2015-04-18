@@ -29,4 +29,12 @@ public class Messages {
 			return '!' + key + '!';
 		}
 	}
+
+	public static char getChar(String key) {
+		try {
+			return resourceBundle.getString(key).charAt(0);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 }

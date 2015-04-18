@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -17,6 +18,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -126,9 +128,19 @@ public class Main extends JFrame {
 
 		JMenu fileM = new JMenu(Messages.get("file"));
 		openA = new JMenuItem(Messages.get("open"), openI);
+		openA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("openM")));
+		openA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+
 		saveA = new JMenuItem(Messages.get("save"), saveI);
+		saveA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("saveM")));
+		saveA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		
 		saveAsA = new JMenuItem(Messages.get("saveAs"), saveAsI);
+		saveAsA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("saveAsM")));
+		saveAsA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK));
+		
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
+		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
 
 		fileM.add(openA);
 		fileM.add(saveA);
@@ -137,17 +149,35 @@ public class Main extends JFrame {
 		menubar.add(fileM);
 
 		JMenu editM = new JMenu(Messages.get("edit"));
-		undoA = new JMenuItem(Messages.get("undo"), undoI);
+		
+		undoA = new JMenuItem(Messages.get("undo"), undoI);	
+		undoA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
+		undoA.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				History.back();				
+			}
+		});
+		
 		redoA = new JMenuItem(Messages.get("redo"), redoI);
+		redoA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK));
+		redoA.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				History.foward();				
+			}
+		});
 
 		editM.add(undoA);
 		editM.add(redoA);
 		menubar.add(editM);
 
 		JMenu viewM = new JMenu(Messages.get("view"));
-		zoomInA = new JMenuItem(Messages.get("zoomIn"), zoomInI);
-		zoomOutA = new JMenuItem(Messages.get("zoomOut"), zoomOutI);
 		
+		zoomInA = new JMenuItem(Messages.get("zoomIn"), zoomInI);
+		zoomInA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, KeyEvent.CTRL_DOWN_MASK));
 		zoomInA.addActionListener(new ActionListener() {
 			
 			@Override
@@ -158,6 +188,8 @@ public class Main extends JFrame {
 			}
 		});
 		
+		zoomOutA = new JMenuItem(Messages.get("zoomOut"), zoomOutI);
+		zoomOutA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK));
 		zoomOutA.addActionListener(new ActionListener() {
 			
 			@Override
