@@ -253,7 +253,7 @@ public class Surroundings {
 			selectedBeamSource.moveBy(x, y);
 			break;
 		case SELECTED_ELEMENT:
-			selectedElement.MoveBy(x, y);
+			selectedElement.moveBy(x, y);
 			break;
 		case SURROUNDINGS:
 			break;
