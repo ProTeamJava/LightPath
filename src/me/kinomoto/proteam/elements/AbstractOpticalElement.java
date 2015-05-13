@@ -161,7 +161,7 @@ abstract public class AbstractOpticalElement {
 		
 	}
 	
-	public void MoveBy(int x, int y){
+	public void moveBy(int x, int y){
 		position.x += x;
 		position.y += y;
 	}
