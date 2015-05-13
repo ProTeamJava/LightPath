@@ -120,7 +120,7 @@ public class SurroundingsView extends JPanel {
 		updateSize();
 	}
 
-	public void save() {
+	public void saveAsPng() {
 
 		Image png = createImage(this.getWidth(), this.getHeight());
 		Graphics2D paint = (Graphics2D) png.getGraphics();
@@ -132,8 +132,7 @@ public class SurroundingsView extends JPanel {
 					System.out.println("-- saved");
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//TODO save error
 			}
 		}
 	}

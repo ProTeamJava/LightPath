@@ -1,5 +1,8 @@
 package me.kinomoto.proteam;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import javax.swing.JPanel;
 
 public class Mirror extends AbstractOpticalElement {
@@ -89,6 +92,14 @@ public class Mirror extends AbstractOpticalElement {
 	@Override
 	public JPanel getSettingsPanel(Surroundings s) {
 		return new MirrorSettingsPanel(this, s);
+	}
+
+	@Override
+	public void save(DataOutputStream os) throws IOException {
+		// save magic
+		saveAbstract(os);
+		// save abs
+		
 	}
 
 }

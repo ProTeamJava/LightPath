@@ -23,27 +23,7 @@ public class OpenAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		JFileChooser chooser = new JFileChooser();
-
-		int ret = chooser.showOpenDialog(main);
-
-		if (ret == JFileChooser.APPROVE_OPTION) {
-			File file = chooser.getSelectedFile();
-			main.path = Paths.get(file.getAbsolutePath());
-			// byte[] encoded = Files.readAllBytes(main.path);
-			// main.text.setText(new String(encoded, "UTF-8"));
-			img = null;
-			try {
-				img = ImageIO.read(file);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// ImageIO.
-			// main.surroundingsView.add
-			main.modyfied = false;
-		}
+		//TODO
 	}
 
 }

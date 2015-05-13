@@ -31,8 +31,9 @@ public class Main extends JFrame {
 	private static final long serialVersionUID = 9128707449024404584L;
 
 	private JMenuItem openA;
-	private JMenuItem saveA;
+	private JMenuItem exportA;
 	private JMenuItem saveAsA;
+	private JMenuItem saveA;
 	private JMenuItem exitA;
 	private JMenuItem undoA;
 	private JMenuItem redoA;
@@ -43,6 +44,7 @@ public class Main extends JFrame {
 	private ImageIcon openI;
 	private ImageIcon saveI;
 	private ImageIcon saveAsI;
+	private ImageIcon exportI;
 	private ImageIcon exitI;
 	private ImageIcon undoI;
 	private ImageIcon redoI;
@@ -51,11 +53,11 @@ public class Main extends JFrame {
 	private ImageIcon aboutI;
 	
 	OpenAction open;
-	SaveAction save;
+	SaveAsPngAction savePng;
 	SaveAsAction saveas; 
 	
-	boolean modyfied = false;
-	Path path;
+	//boolean modyfied = false;
+	//Path path;
 
 	public SurroundingsView surroundingsView;
 
@@ -122,6 +124,7 @@ public class Main extends JFrame {
 		openI = getIcon("document-open.png");
 		saveI = getIcon("document-save.png");
 		saveAsI = getIcon("document-save-as.png");
+		exportI = getIcon("document-export.png");
 		exitI = getIcon("application-exit.png");
 		undoI = getIcon("edit-undo.png");
 		redoI = getIcon("edit-redo.png");
@@ -142,8 +145,11 @@ public class Main extends JFrame {
 		openA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
 
 		saveA = new JMenuItem(Messages.get("save"), saveI);
-		saveA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("saveM")));
+		saveA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("exportM")));
 		saveA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		
+		exportA = new JMenuItem(Messages.get("export"), exportI);
+		exportA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("exportM")));
 		
 		saveAsA = new JMenuItem(Messages.get("saveAs"), saveAsI);
 		saveAsA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("saveAsM")));
@@ -153,16 +159,18 @@ public class Main extends JFrame {
 		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
 
 		open = new OpenAction(this, openA);
-		save = new SaveAction(this, saveA);
+		savePng = new SaveAsPngAction(this, exportA);
 		saveas = new SaveAsAction(this, saveAsA);
 		
 		openA.addActionListener(open);
-		saveA.addActionListener(save);
+		exportA.addActionListener(savePng);
 		saveAsA.addActionListener(saveas);
 				
 		fileM.add(openA);
 		fileM.add(saveA);
 		fileM.add(saveAsA);
+		fileM.addSeparator();
+		fileM.add(exportA);
 		fileM.add(exitA);
 		menubar.add(fileM);
 
@@ -235,14 +243,14 @@ public class Main extends JFrame {
 		exitA.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(modyfied)
+				if(surroundingsView.surroundings.isModyfied())
 				{
 					if (JOptionPane.showConfirmDialog(Main.this, 
 							"Do you want to save file?", "Not saved modyfications!", 
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
 					{
-						save.actionPerformed(null);
+						savePng.actionPerformed(null);
 					}
 				}
 				System.exit(0);

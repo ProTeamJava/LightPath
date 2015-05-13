@@ -3,6 +3,9 @@ package me.kinomoto.proteam;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class BeamSource {
 	Segment segment;
@@ -14,6 +17,11 @@ public class BeamSource {
 
 	public void setWavelength(double wavelength) {
 		this.wavelength = wavelength;
+	}
+	
+	public BeamSource(DataInputStream is) throws IOException {
+		segment = new Segment(is);
+		wavelength = is.readDouble();
 	}
 
 	public BeamSource(Segment segment, double wavelength) {
@@ -53,5 +61,10 @@ public class BeamSource {
 		if(x < 10 && x > -10 && y < 20 && y > -20)
 			return true;
 		return false;
+	}
+	
+	public void save(DataOutputStream os) throws IOException {
+		segment.save(os);
+		os.writeDouble(wavelength);
 	}
 }
