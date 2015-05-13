@@ -30,7 +30,7 @@ public class Surroundings {
 	private String path = "/home/oskar/test";
 	private boolean modyfied = false;
 
-	private enum SelectionType {
+	public enum SelectionType {
 		SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, SURROUNDINGS
 	};
 
@@ -110,13 +110,13 @@ public class Surroundings {
 	}
 
 	public void mousePressed(Point p) {
-		selection = SelectionType.SURROUNDINGS;
+		setSelection(SelectionType.SURROUNDINGS);
 		selectedBeamSource = null;
 		selectedElement = null;
 
 		for (BeamSource beamSource : sources) {
 			if (beamSource.isPointInside(p)) {
-				selection = SelectionType.SELECTED_BEAM_SOURCE;
+				setSelection(SelectionType.SELECTED_BEAM_SOURCE);
 				selectedBeamSource = beamSource;
 				return;
 			}
@@ -124,7 +124,7 @@ public class Surroundings {
 
 		for (AbstractOpticalElement element : getElements()) {
 			if (element.isPointInside(p)) {
-				selection = SelectionType.SELECTED_ELEMENT;
+				setSelection(SelectionType.SELECTED_ELEMENT);
 				selectedElement = element;
 				return;
 			}
@@ -132,7 +132,7 @@ public class Surroundings {
 	}
 
 	public JPanel getSelectedSettingsPanel() {
-		switch (selection) {
+		switch (getSelection()) {
 		case SURROUNDINGS:
 			return new SurroundingsSettingsPanel(this);
 		case SELECTED_BEAM_SOURCE:
@@ -208,7 +208,7 @@ public class Surroundings {
 	}
 
 	public void deleteSelected() {
-		switch (selection) {
+		switch (getSelection()) {
 		case SELECTED_BEAM_SOURCE:
 			sources.remove(selectedBeamSource);
 			selectedBeamSource = null;
@@ -221,8 +221,29 @@ public class Surroundings {
 		case SURROUNDINGS:
 			break;
 		}
-		selection = SelectionType.SURROUNDINGS;
+		setSelection(SelectionType.SURROUNDINGS);
 		simulate();
 		view.settingsPanel.setPanel(getSelectedSettingsPanel());
+	}
+
+	public SelectionType getSelection() {
+		return selection;
+	}
+
+	public void setSelection(SelectionType selection) {
+		this.selection = selection;
+	}
+	
+	public void moveBy(int x, int y ) {
+		switch(selection) {
+		case SELECTED_BEAM_SOURCE:
+			selectedBeamSource.moveBy(x, y);
+			break;
+		case SELECTED_ELEMENT:
+			selectedElement.MoveBy(x, y);
+			break;
+		case SURROUNDINGS:
+			break;
+		}
 	}
 }
