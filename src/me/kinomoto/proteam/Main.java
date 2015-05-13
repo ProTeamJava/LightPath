@@ -44,6 +44,7 @@ public class Main extends JFrame {
 	private JMenuItem exitA;
 	private JMenuItem undoA;
 	private JMenuItem redoA;
+	private JMenuItem deleteA;
 	private JMenuItem zoomInA;
 	private JMenuItem zoomOutA;
 	private JMenuItem aboutA;
@@ -55,6 +56,7 @@ public class Main extends JFrame {
 	private ImageIcon exitI;
 	private ImageIcon undoI;
 	private ImageIcon redoI;
+	private ImageIcon deleteI;
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 	private ImageIcon aboutI;
@@ -135,6 +137,7 @@ public class Main extends JFrame {
 		exitI = getIcon("application-exit.png");
 		undoI = getIcon("edit-undo.png");
 		redoI = getIcon("edit-redo.png");
+		deleteI = getIcon("edit-delete.png");
 		zoomInI = getIcon("zoom-in.png");
 		zoomOutI = getIcon("zoom-out.png");
 	}
@@ -202,7 +205,20 @@ public class Main extends JFrame {
 				History.foward();				
 			}
 		});
-
+		
+		deleteA = new JMenuItem(Messages.get("delete"), deleteI);	
+		deleteA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0));
+		deleteA.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				surroundingsView.surroundings.deleteSelected();				
+			}
+		});
+		
+		
+		editM.add(deleteA);
+		editM.addSeparator();
 		editM.add(undoA);
 		editM.add(redoA);
 		menubar.add(editM);

@@ -24,7 +24,7 @@ public class Surroundings {
 	private double ior = 1;
 
 	private SurroundingsView view;
-	
+
 	private static final int magicNumber = 0x5F6C7068;
 
 	private String path = "/home/oskar/test";
@@ -37,7 +37,7 @@ public class Surroundings {
 	private SelectionType selection = SelectionType.SURROUNDINGS;
 	private BeamSource selectedBeamSource = null;
 	private AbstractOpticalElement selectedElement = null;
-	
+
 	public Surroundings(SurroundingsView view, String path) {
 		this.path = path;
 		//
@@ -163,15 +163,15 @@ public class Surroundings {
 			os.writeInt(magicNumber);
 			os.writeDouble(getIor());
 			os.writeInt(sources.size());
-			
-			for(BeamSource s : sources) {
+
+			for (BeamSource s : sources) {
 				s.save(os);
 			}
-			
-			for(AbstractOpticalElement element : getElements()) {
+
+			for (AbstractOpticalElement element : getElements()) {
 				element.save(os);
 			}
-			
+
 			os.close();
 		} catch (IOException e) {
 			// TODO save error
@@ -207,4 +207,22 @@ public class Surroundings {
 		this.elements = elements;
 	}
 
+	public void deleteSelected() {
+		switch (selection) {
+		case SELECTED_BEAM_SOURCE:
+			sources.remove(selectedBeamSource);
+			selectedBeamSource = null;
+			
+			break;
+		case SELECTED_ELEMENT:
+			elements.remove(selectedElement);
+			selectedElement = null;
+			break;
+		case SURROUNDINGS:
+			break;
+		}
+		selection = SelectionType.SURROUNDINGS;
+		simulate();
+		view.settingsPanel.setPanel(getSelectedSettingsPanel());
+	}
 }
