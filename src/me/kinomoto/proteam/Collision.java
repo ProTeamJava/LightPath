@@ -1,5 +1,7 @@
 package me.kinomoto.proteam;
 
+
+
 public class Collision {
 	Point point;
 	Segment segment;
