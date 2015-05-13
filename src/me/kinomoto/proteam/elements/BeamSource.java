@@ -67,4 +67,11 @@ public class BeamSource {
 		segment.save(os);
 		os.writeDouble(wavelength);
 	}
+	
+	public void moveBy(int x, int y) {
+		segment.begin.x += x;
+		segment.begin.y += y;
+		segment.end.x += x;
+		segment.end.y += y;
+	}
 }

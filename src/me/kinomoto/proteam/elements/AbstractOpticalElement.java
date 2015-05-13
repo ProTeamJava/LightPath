@@ -160,5 +160,10 @@ abstract public class AbstractOpticalElement {
 	protected void saveAbstract(DataOutputStream os) throws IOException {
 		
 	}
+	
+	public void MoveBy(int x, int y){
+		position.x += x;
+		position.y += y;
+	}
 
 }

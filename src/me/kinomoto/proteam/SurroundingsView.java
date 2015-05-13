@@ -40,6 +40,11 @@ public class SurroundingsView extends JPanel {
 	private int viewHeight = baseHeight;
 
 	private double scale = 1;
+	
+
+	
+	int x = 0;
+	int y = 0;
 
 	public SurroundingsView(final SettingsPanel settingsPanel, Main ref) {
 		this.settingsPanel = settingsPanel;
@@ -68,6 +73,8 @@ public class SurroundingsView extends JPanel {
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(baseWidth / 2, baseHeight / 2));
 				surroundings.mousePressed(t);
 				settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
+				x = e.getX();
+				y = e.getY();
 			}
 		});
 
@@ -79,9 +86,19 @@ public class SurroundingsView extends JPanel {
 
 			}
 
+
+			
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				// TODO Auto-generated method stub
+				if(surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS)
+				{
+					int nx = e.getX();
+					int ny = e.getY();
+					surroundings.moveBy(nx - x, ny - y);
+					x = nx;
+					y = ny;
+					surroundings.simulate();
+				}
 
 			}
 		});
