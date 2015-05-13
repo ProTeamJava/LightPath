@@ -3,6 +3,8 @@ package me.kinomoto.proteam;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,5 +150,11 @@ abstract public class AbstractOpticalElement {
 	}
 
 	public abstract JPanel getSettingsPanel(Surroundings s);
+	
+	public abstract void save(DataOutputStream os) throws IOException;
+	
+	protected void saveAbstract(DataOutputStream os) throws IOException {
+		
+	}
 
 }

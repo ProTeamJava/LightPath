@@ -1,18 +1,28 @@
 package me.kinomoto.proteam;
 
 import java.awt.Graphics2D;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.xml.transform.Source;
 
 public class Surroundings {
 	List<AbstractOpticalElement> elements;
 	List<BeamSource> sources;
 	private List<Beam> beams;
-	double ior = 4;
-	
+
+	double ior = 1;
+
 	private SurroundingsView view;
+	
+	private static final int magicNumber = 0x5F6C7068;
+
+	private String path = "/home/oskar/test";
+	private boolean modyfied = false;
 
 	private enum SelectionType {
 		SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, SURROUNDINGS
@@ -21,6 +31,11 @@ public class Surroundings {
 	private SelectionType selection = SelectionType.SURROUNDINGS;
 	private BeamSource selectedBeamSource = null;
 	private AbstractOpticalElement selectedElement = null;
+	
+	public Surroundings(SurroundingsView view, String path) {
+		this.path = path;
+		//
+	}
 
 	public Surroundings(SurroundingsView view) {
 		elements = new ArrayList<AbstractOpticalElement>();
@@ -43,22 +58,25 @@ public class Surroundings {
 				}
 			}
 		}
-		
-		view.repaint();
 
+		view.repaint();
+		save();
 	}
 
 	public void add(AbstractOpticalElement e) {
+		modyfied = true;
 		elements.add(e);
 		simulate();
 	}
 
 	public void add(BeamSource s) {
+		modyfied = true;
 		sources.add(s);
 		simulate();
 	}
 
 	public void add(Beam b) {
+		modyfied = true;
 		beams.add(b);
 	}
 
@@ -119,7 +137,7 @@ public class Surroundings {
 			return null;
 		}
 	}
-	
+
 	public void setIOR(double ior) {
 		this.ior = ior;
 		this.simulate();
@@ -128,9 +146,43 @@ public class Surroundings {
 	public double getIOR() {
 		return ior;
 	}
-	
+
 	public void updateSettingsPanel() {
 		view.settingsPanel.setPanel(getSelectedSettingsPanel());
+	}
+
+	public void save() {
+		try {
+			DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
+			os.writeInt(magicNumber);
+			os.writeDouble(ior);
+			os.writeInt(sources.size());
+			
+			for(BeamSource s : sources) {
+				s.save(os);
+			}
+			
+			for(AbstractOpticalElement element : elements) {
+				element.save(os);
+			}
+			
+			os.close();
+		} catch (IOException e) {
+			// TODO save error
+		}
+	}
+
+	public void saveAs(String path) {
+		this.path = path;
+		save();
+	}
+
+	public boolean isModyfied() {
+		return modyfied;
+	}
+
+	public void setModyfied(boolean is) {
+		modyfied = is;
 	}
 
 }

@@ -1,7 +1,16 @@
 package me.kinomoto.proteam;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class Point {
 	double x, y;
+	
+	public Point(DataInputStream is) throws IOException {
+		x = is.readDouble();
+		y = is.readDouble();
+	}
 
 	public Point(java.awt.Point p) {
 		this.x = p.getX();
@@ -24,6 +33,11 @@ public class Point {
 	
 	public Point mul(double s) {
 		return new Point(x * s, y * s);
+	}
+	
+	public void save(DataOutputStream os) throws IOException {
+		os.writeDouble(x);
+		os.writeDouble(y);
 	}
 	
 	

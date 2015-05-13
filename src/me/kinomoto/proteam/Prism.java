@@ -1,5 +1,8 @@
 package me.kinomoto.proteam;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import javax.swing.JPanel;
 
 public class Prism extends AbstractOpticalElement {
@@ -106,6 +109,14 @@ public class Prism extends AbstractOpticalElement {
 	
 	public void setIOR(double ior) {
 		refractiveIndex = ior;
+	}
+
+	@Override
+	public void save(DataOutputStream os) throws IOException {
+		// save magic
+		saveAbstract(os);
+		// save ior
+		
 	}
 
 }
