@@ -49,8 +49,16 @@ public class Surroundings {
 		beams = new ArrayList<Beam>();
 		this.view = view;
 	}
+	
+	private boolean isSimulating = false;
+	private boolean simQueue = false;
 
 	public void simulate() {
+		if(isSimulating) {
+			simQueue = true;
+			return;
+		}
+		isSimulating = true;
 		beams.clear();
 		for (BeamSource source : sources) {
 			add(source.getBeam());
@@ -65,8 +73,13 @@ public class Surroundings {
 			}
 		}
 
+		isSimulating = false;
+		if(simQueue) {
+			simQueue = false;
+			simulate();
+			return;
+		}
 		view.repaint();
-		save();
 	}
 
 	public void add(AbstractOpticalElement e) {
