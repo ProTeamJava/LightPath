@@ -1,5 +1,7 @@
 package me.kinomoto.proteam;
 
+
+
 public class Segment {
 	public Point begin, end;
 

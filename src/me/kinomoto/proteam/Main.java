@@ -1,6 +1,7 @@
 package me.kinomoto.proteam;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
@@ -9,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -16,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -45,8 +49,15 @@ public class Main extends JFrame {
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 	private ImageIcon aboutI;
+	
+	OpenAction open;
+	SaveAction save;
+	SaveAsAction saveas; 
+	
+	boolean modyfied = false;
+	Path path;
 
-	private SurroundingsView surroundingsView;
+	public SurroundingsView surroundingsView;
 
 	private JPanel toolBar;
 	private SettingsPanel settingsPanel;
@@ -88,7 +99,7 @@ public class Main extends JFrame {
 
 		toolBar = new ToolBar(this);
 		settingsPanel = new SettingsPanel();
-		surroundingsView = new SurroundingsView(settingsPanel);
+		surroundingsView = new SurroundingsView(settingsPanel, this);
 		scroll = new JScrollPane(surroundingsView);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		
@@ -141,6 +152,14 @@ public class Main extends JFrame {
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
 		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
 
+		open = new OpenAction(this, openA);
+		save = new SaveAction(this, saveA);
+		saveas = new SaveAsAction(this, saveAsA);
+		
+		openA.addActionListener(open);
+		saveA.addActionListener(save);
+		saveAsA.addActionListener(saveas);
+				
 		fileM.add(openA);
 		fileM.add(saveA);
 		fileM.add(saveAsA);
@@ -216,6 +235,16 @@ public class Main extends JFrame {
 		exitA.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(modyfied)
+				{
+					if (JOptionPane.showConfirmDialog(Main.this, 
+							"Do you want to save file?", "Not saved modyfications!", 
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+					{
+						save.actionPerformed(null);
+					}
+				}
 				System.exit(0);
 			}
 		});
