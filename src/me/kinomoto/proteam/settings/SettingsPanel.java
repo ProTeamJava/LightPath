@@ -1,4 +1,4 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.settings;
 
 import java.awt.Dimension;
 

@@ -8,14 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
-import javax.xml.transform.Source;
+
+import me.kinomoto.proteam.elements.AbstractOpticalElement;
+import me.kinomoto.proteam.elements.Beam;
+import me.kinomoto.proteam.elements.BeamSource;
+import me.kinomoto.proteam.elements.Point;
+import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
+import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
 public class Surroundings {
-	List<AbstractOpticalElement> elements;
+	private List<AbstractOpticalElement> elements;
 	private List<BeamSource> sources;
 	private List<Beam> beams;
 
-	double ior = 1;
+	private double ior = 1;
 
 	private SurroundingsView view;
 	
@@ -38,7 +44,7 @@ public class Surroundings {
 	}
 
 	public Surroundings(SurroundingsView view) {
-		elements = new ArrayList<AbstractOpticalElement>();
+		setElements(new ArrayList<AbstractOpticalElement>());
 		sources = new ArrayList<BeamSource>();
 		beams = new ArrayList<Beam>();
 		this.view = view;
@@ -65,7 +71,7 @@ public class Surroundings {
 
 	public void add(AbstractOpticalElement e) {
 		modyfied = true;
-		elements.add(e);
+		getElements().add(e);
 		simulate();
 	}
 
@@ -98,7 +104,7 @@ public class Surroundings {
 			beamSource.paint(g);
 		}
 
-		for (AbstractOpticalElement abstractOpticalElement : elements) {
+		for (AbstractOpticalElement abstractOpticalElement : getElements()) {
 			abstractOpticalElement.paint(g);
 		}
 	}
@@ -116,7 +122,7 @@ public class Surroundings {
 			}
 		}
 
-		for (AbstractOpticalElement element : elements) {
+		for (AbstractOpticalElement element : getElements()) {
 			if (element.isPointInside(p)) {
 				selection = SelectionType.SELECTED_ELEMENT;
 				selectedElement = element;
@@ -139,12 +145,12 @@ public class Surroundings {
 	}
 
 	public void setIOR(double ior) {
-		this.ior = ior;
+		this.setIor(ior);
 		this.simulate();
 	}
 
 	public double getIOR() {
-		return ior;
+		return getIor();
 	}
 
 	public void updateSettingsPanel() {
@@ -155,14 +161,14 @@ public class Surroundings {
 		try {
 			DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
 			os.writeInt(magicNumber);
-			os.writeDouble(ior);
+			os.writeDouble(getIor());
 			os.writeInt(sources.size());
 			
 			for(BeamSource s : sources) {
 				s.save(os);
 			}
 			
-			for(AbstractOpticalElement element : elements) {
+			for(AbstractOpticalElement element : getElements()) {
 				element.save(os);
 			}
 			
@@ -183,6 +189,22 @@ public class Surroundings {
 
 	public void setModyfied(boolean is) {
 		modyfied = is;
+	}
+
+	public double getIor() {
+		return ior;
+	}
+
+	public void setIor(double ior) {
+		this.ior = ior;
+	}
+
+	public List<AbstractOpticalElement> getElements() {
+		return elements;
+	}
+
+	public void setElements(List<AbstractOpticalElement> elements) {
+		this.elements = elements;
 	}
 
 }

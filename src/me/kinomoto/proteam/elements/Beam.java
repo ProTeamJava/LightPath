@@ -1,6 +1,10 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.elements;
 
 import java.awt.Graphics2D;
+
+import me.kinomoto.proteam.Collision;
+import me.kinomoto.proteam.MultipleCollisionsException;
+import me.kinomoto.proteam.Surroundings;
 
 import com.mindprod.wavelength.Wavelength;
 
@@ -49,7 +53,7 @@ public class Beam {
 			double step = 1;
 
 			Segment tmp = new Segment(new Point(nbx, nby), new Point(nex, ney));
-			for (AbstractOpticalElement e : s.elements) {
+			for (AbstractOpticalElement e : s.getElements()) {
 
 				try {
 					Collision p = e.collision(tmp);
@@ -65,8 +69,8 @@ public class Beam {
 			}
 
 			if (collisionNum == 1) {
-				segment.end = collision.point;
-				collisionElement.findCollisionSolution(s, this, collision.segment);
+				segment.end = collision.getPoint();
+				collisionElement.findCollisionSolution(s, this, collision.getSegment());
 				break;
 			} else if (collisionNum == 0 && end == 1) {
 				break;

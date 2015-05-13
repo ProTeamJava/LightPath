@@ -1,9 +1,12 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.elements;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import javax.swing.JPanel;
+
+import me.kinomoto.proteam.Surroundings;
+import me.kinomoto.proteam.settings.PrismSettingsPanel;
 
 public class Prism extends AbstractOpticalElement {
 
@@ -37,9 +40,9 @@ public class Prism extends AbstractOpticalElement {
 
 		// cooeficient ratio
 		// incident to reflected
-		double nir = s.ior / refractiveIndex;
+		double nir = s.getIor() / refractiveIndex;
 		// reflected to incident
-		double nri = refractiveIndex / s.ior;
+		double nri = refractiveIndex / s.getIor();
 
 		// refracted or reflected beam vector coordinates
 		double rx;

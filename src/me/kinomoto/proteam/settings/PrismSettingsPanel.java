@@ -1,4 +1,4 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.settings;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -6,6 +6,9 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import me.kinomoto.proteam.Surroundings;
+import me.kinomoto.proteam.elements.Prism;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;

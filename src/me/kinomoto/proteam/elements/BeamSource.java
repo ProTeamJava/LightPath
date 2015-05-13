@@ -1,4 +1,4 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.elements;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

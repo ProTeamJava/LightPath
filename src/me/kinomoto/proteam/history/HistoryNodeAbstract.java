@@ -1,4 +1,6 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.history;
+
+import me.kinomoto.proteam.Surroundings;
 
 public abstract class HistoryNodeAbstract {
 	protected Surroundings s;

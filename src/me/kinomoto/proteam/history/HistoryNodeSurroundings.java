@@ -1,4 +1,6 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.history;
+
+import me.kinomoto.proteam.Surroundings;
 
 public class HistoryNodeSurroundings extends HistoryNodeAbstract {
 	private double ior;

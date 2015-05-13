@@ -1,4 +1,4 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.settings;
 
 import javax.swing.JPanel;
 
@@ -12,6 +12,10 @@ import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.SpinnerNumberModel;
+
+import me.kinomoto.proteam.Surroundings;
+import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeSurroundings;
 
 public class SurroundingsSettingsPanel extends JPanel {
 	private static final long serialVersionUID = -8039564944519925324L;

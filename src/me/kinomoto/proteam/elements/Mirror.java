@@ -1,9 +1,12 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.elements;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import javax.swing.JPanel;
+
+import me.kinomoto.proteam.Surroundings;
+import me.kinomoto.proteam.settings.MirrorSettingsPanel;
 
 public class Mirror extends AbstractOpticalElement {
 	
@@ -96,7 +99,7 @@ public class Mirror extends AbstractOpticalElement {
 
 	@Override
 	public void save(DataOutputStream os) throws IOException {
-		// save magic
+		// save magicx
 		saveAbstract(os);
 		// save abs
 		
