@@ -26,6 +26,13 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import me.kinomoto.proteam.action.OpenAction;
+import me.kinomoto.proteam.action.SaveAsAction;
+import me.kinomoto.proteam.action.SaveAsPngAction;
+import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.settings.SettingsPanel;
+import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
+
 @SuppressWarnings("unused")
 public class Main extends JFrame {
 	private static final long serialVersionUID = 9128707449024404584L;

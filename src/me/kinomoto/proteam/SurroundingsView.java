@@ -16,6 +16,13 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
+import me.kinomoto.proteam.elements.BeamSource;
+import me.kinomoto.proteam.elements.Mirror;
+import me.kinomoto.proteam.elements.Point;
+import me.kinomoto.proteam.elements.Prism;
+import me.kinomoto.proteam.elements.Segment;
+import me.kinomoto.proteam.settings.SettingsPanel;
+
 public class SurroundingsView extends JPanel {
 
 	private static final long serialVersionUID = 5447523639086911950L;

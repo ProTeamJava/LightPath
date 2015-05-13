@@ -1,4 +1,4 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.history;
 
 import java.util.LinkedList;
 

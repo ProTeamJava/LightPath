@@ -1,15 +1,12 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.action;
 
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+
+import me.kinomoto.proteam.Main;
 
 public class OpenAction extends AbstractAction {
 	private static final long serialVersionUID = -2316184093044173420L;

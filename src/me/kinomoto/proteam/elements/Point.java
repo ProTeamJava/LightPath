@@ -1,4 +1,4 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.elements;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,4 +1,4 @@
-package me.kinomoto.proteam;
+package me.kinomoto.proteam.elements;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import me.kinomoto.proteam.Collision;
+import me.kinomoto.proteam.MultipleCollisionsException;
+import me.kinomoto.proteam.Surroundings;
 
 /**
  * 
