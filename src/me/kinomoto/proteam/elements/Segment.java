@@ -27,8 +27,18 @@ public class Segment {
 		end.save(os);
 	}
 
-	public boolean equals(Segment s) {
-		return s.begin.equals(begin) && s.end.equals(end);
+	public boolean equals(Object obj) {
+		try {
+			Segment s = (Segment) obj;
+			return s.begin.equals(begin) && s.end.equals(end);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return begin.hashCode() * 103456 + end.hashCode();
 	}
 
 }

@@ -12,25 +12,17 @@ import me.kinomoto.proteam.Surroundings.PointPosition;
 
 public class BeamSource {
 	// must by divisible by 2
-	private static final int width = 40;
-	private static final int height = 20;
-	private static final int margin = 10;
-	private static final int widthM = width + 2 * margin;
-	private static final int heightM = height + 2 * margin;
+	private static final int WIDTH = 40;
+	private static final int HIEGHT = 20;
+	private static final int MARGIN = 10;
+	private static final int WIDTH_M = WIDTH + 2 * MARGIN;
+	private static final int HEIGHT_M = HIEGHT + 2 * MARGIN;
 
 	Segment segment;
 	private double wavelength;
 	private double angle;
 	private double cosA;
 	private double sinA;
-
-	public double getWavelength() {
-		return wavelength;
-	}
-
-	public void setWavelength(double wavelength) {
-		this.wavelength = wavelength;
-	}
 
 	public BeamSource(DataInputStream is) throws IOException {
 		segment = new Segment(is);
@@ -49,6 +41,15 @@ public class BeamSource {
 		this.angle = angle;
 		updateTrig();
 		this.segment = new Segment(pos, new Point(pos.x + cosA, pos.y + sinA));
+	}
+
+
+	public double getWavelength() {
+		return wavelength;
+	}
+
+	public void setWavelength(double wavelength) {
+		this.wavelength = wavelength;
 	}
 
 	public Beam getBeam() {
@@ -82,7 +83,7 @@ public class BeamSource {
 		p.setColor(Color.YELLOW);
 		p.translate(segment.begin.x, segment.begin.y);
 		p.rotate(angle);
-		p.fillRect(-width / 2, -height / 2, width, height);
+		p.fillRect(-WIDTH / 2, -HIEGHT / 2, WIDTH, HIEGHT);
 
 	}
 
@@ -95,16 +96,16 @@ public class BeamSource {
 				BasicStroke.JOIN_BEVEL, // Join style
 				10.0f, // Miter limit
 				new float[] { 2.0f, 2.0f }, // Dash pattern
-				0.0f)); // Dash phase);
+				0.0f)); // Dash phase
 		p.setColor(Color.BLACK);
-		p.drawRect(-widthM / 2, -heightM / 2, widthM, heightM);
-		p.translate(-widthM / 2, -heightM / 2);
+		p.drawRect(-WIDTH_M / 2, -HEIGHT_M / 2, WIDTH_M, HEIGHT_M);
+		p.translate(-WIDTH_M / 2, -HEIGHT_M / 2);
 		p.fillRect(-2, -2, 4, 4);
-		p.translate(widthM, 0);
+		p.translate(WIDTH_M, 0);
 		p.fillRect(-2, -2, 4, 4);
-		p.translate(0, heightM);
+		p.translate(0, HEIGHT_M);
 		p.fillRect(-2, -2, 4, 4);
-		p.translate(-widthM, 0);
+		p.translate(-WIDTH_M, 0);
 		p.fillRect(-2, -2, 4, 4);
 
 	}
@@ -114,18 +115,15 @@ public class BeamSource {
 		Point t = p.min(segment.begin); // czemu abs to nie wiem :(
 		double x = Math.abs(t.x * cosA + t.y * sinA);
 		double y = Math.abs(t.x * sinA - t.y * cosA);
-
-		System.out.println(x);
-		System.out.println(y);
 		
-		double ax = x - widthM / 2;
-		double ay = y - heightM / 2;
+		double ax = x - WIDTH_M / 2;
+		double ay = y - HEIGHT_M / 2;
 
 		if (selected == this && ax > -4 && ax < 7 && ay > -4 && ay < 7)
 			return PointPosition.POINT_ROTATE;
-		if (y <= height / 2 && x <= width / 2)
+		if (y <= HIEGHT / 2 && x <= WIDTH / 2)
 			return PointPosition.POINT_INSIDE;
-		if (selected == this && y <= heightM / 2 && x <= widthM / 2)
+		if (selected == this && y <= HEIGHT_M / 2 && x <= WIDTH_M / 2)
 			return PointPosition.POINT_INSIDE;
 
 		return PointPosition.POINT_OUTSIDE;

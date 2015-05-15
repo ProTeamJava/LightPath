@@ -19,6 +19,8 @@ import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
 public class Surroundings {
+	private static final int MAGIC_NUMBER = 0x5F6C7068;
+
 	private List<AbstractOpticalElement> elements;
 	private List<BeamSource> sources;
 	private List<Beam> beams;
@@ -27,10 +29,11 @@ public class Surroundings {
 
 	private SurroundingsView view;
 
-	private static final int magicNumber = 0x5F6C7068;
-
 	private String path = "";
 	private boolean modyfied = false;
+
+	private boolean isSimulating = false;
+	private boolean simQueue = false;
 
 	public enum PointPosition {
 		POINT_INSIDE, POINT_ROTATE, POINT_OUTSIDE
@@ -38,7 +41,7 @@ public class Surroundings {
 
 	public enum SelectionType {
 		SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, SURROUNDINGS
-	};
+	}
 
 	private SelectionType selection = SelectionType.SURROUNDINGS;
 	private BeamSource selectedBeamSource = null;
@@ -46,7 +49,8 @@ public class Surroundings {
 
 	public Surroundings(SurroundingsView view, String path) {
 		this.path = path;
-		//
+		this.view = view;
+		// load
 	}
 
 	public Surroundings(SurroundingsView view) {
@@ -55,9 +59,6 @@ public class Surroundings {
 		beams = new ArrayList<Beam>();
 		this.view = view;
 	}
-
-	private boolean isSimulating = false;
-	private boolean simQueue = false;
 
 	public void simulate() {
 		if (isSimulating) {
@@ -192,7 +193,7 @@ public class Surroundings {
 	public void save() {
 		try {
 			DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
-			os.writeInt(magicNumber);
+			os.writeInt(MAGIC_NUMBER);
 			os.writeDouble(getIor());
 			os.writeInt(sources.size());
 
@@ -250,7 +251,7 @@ public class Surroundings {
 			elements.remove(selectedElement);
 			selectedElement = null;
 			break;
-		case SURROUNDINGS:
+		default:
 			break;
 		}
 		setSelection(SelectionType.SURROUNDINGS);
@@ -275,6 +276,9 @@ public class Surroundings {
 			selectedElement.moveBy(x, y);
 			break;
 		case SURROUNDINGS:
+			// TODO scroll?
+			break;
+		default:
 			break;
 		}
 	}

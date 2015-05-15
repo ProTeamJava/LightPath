@@ -12,16 +12,16 @@ public class Mirror extends AbstractOpticalElement {
 
 	private double absorption = .99;
 
+	public Mirror(Point position) {
+		super(position, AbstractOpticalElement.getMirror());
+	}
+
 	public double getAbsorption() {
 		return absorption;
 	}
 
 	public void setAbsorption(double absorption) {
 		this.absorption = absorption;
-	}
-
-	public Mirror(Point position) {
-		super(position, AbstractOpticalElement.getMirror());
 	}
 
 	@Override
@@ -34,22 +34,15 @@ public class Mirror extends AbstractOpticalElement {
 		double div = Math.sqrt(nl);
 		ny /= div;
 		nx /= div;
-		// sl = sx * sx + sy * sy;
-		// sl = 1;
-		
-		// sy , sx prawidłowe
 
 		double dx = b.segment.end.x - b.segment.begin.x;
 		double dy = b.segment.end.y - b.segment.begin.y;
 
 		double dot = dx * nx + dy * ny;
-		// double w = 2 * dot / sl;
 		double w = 2 * dot;
 
 		double rx = dx - w * nx;
 		double ry = dy - w * ny;
-		
-		if(dx*dy*rx*ry == 0) return;
 
 		Point end = new Point(b.segment.end.x + rx, b.segment.end.y + ry);
 
@@ -92,8 +85,8 @@ public class Mirror extends AbstractOpticalElement {
 	}
 
 	@Override
-	public boolean isPointInside(Point p) {
-		p = p.min(position);
+	public boolean isPointInside(Point point) {
+		Point p = point.min(position);
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++)
 			if (pointNearLine(vertices.get(i), vertices.get(j), p))
 				return true;

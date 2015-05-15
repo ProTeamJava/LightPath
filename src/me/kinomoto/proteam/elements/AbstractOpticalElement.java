@@ -28,7 +28,9 @@ import me.kinomoto.proteam.Surroundings;
  * @method findCollisionPoint is to give exact point of collision
  *
  */
-abstract public class AbstractOpticalElement {
+public abstract class AbstractOpticalElement {
+	private static final int STROKE_WIDTH = 2;
+
 	protected Point position;
 	protected List<Point> vertices;
 
@@ -51,7 +53,7 @@ abstract public class AbstractOpticalElement {
 		return tmp;
 	}
 
-	abstract public boolean isPointInside(Point p);
+	public abstract boolean isPointInside(Point p);
 
 	public static List<Point> getMirror() {
 		List<Point> tmp = new ArrayList<Point>();
@@ -86,8 +88,10 @@ abstract public class AbstractOpticalElement {
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
 			Segment checkingSegment = new Segment(get(i), get(j));
 
-			if (lastSegmentColision != null && lastSegmentColision.equals(checkingSegment))
-				continue; // protection against multiple collisions with the same segment
+			if (lastSegmentColision != null && lastSegmentColision.equals(checkingSegment)) {
+				// protection against multiple collisions with the same segment
+				continue;
+			}
 
 			short d1 = direction(checkingSegment.begin, checkingSegment.end, s.begin);
 			short d2 = direction(checkingSegment.begin, checkingSegment.end, s.end);
@@ -110,7 +114,7 @@ abstract public class AbstractOpticalElement {
 	}
 
 	private short direction(Point pi, Point pj, Point pk) {
-		double tmp = ((pk.x - pi.x) * (pj.y - pi.y) - (pj.x - pi.x) * (pk.y - pi.y));
+		double tmp = (pk.x - pi.x) * (pj.y - pi.y) - (pj.x - pi.x) * (pk.y - pi.y);
 		if (tmp > 0)
 			return 1;
 		if (tmp < 0)
@@ -152,7 +156,7 @@ abstract public class AbstractOpticalElement {
 	public void paint(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setColor(Color.BLACK);
-		g2.setStroke(new BasicStroke(2));
+		g2.setStroke(new BasicStroke(STROKE_WIDTH));
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
 			g2.drawLine((int) get(i).x, (int) get(i).y, (int) get(j).x, (int) get(j).y);
 		}

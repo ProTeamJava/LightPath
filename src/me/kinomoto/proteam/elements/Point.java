@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Point {
 	double x, y;
-	
+
 	public Point(DataInputStream is) throws IOException {
 		x = is.readDouble();
 		y = is.readDouble();
@@ -24,32 +24,43 @@ public class Point {
 
 	@Override
 	public String toString() {
-		return new String("Point (" + String.valueOf(x) + "," + String.valueOf(y) + ")");
+		return new String("Point (" + x + "," + y + ")");
 	}
-	
+
 	public Point min(Point p) {
 		return new Point(x - p.x, y - p.y);
 	}
-	
+
 	public Point mul(double s) {
 		return new Point(x * s, y * s);
 	}
-	
+
 	public void save(DataOutputStream os) throws IOException {
 		os.writeDouble(x);
 		os.writeDouble(y);
 	}
 
 	public Point moveBy(Point dp) {
-		return new Point(x + dp.x, y + dp.y);		
+		return new Point(x + dp.x, y + dp.y);
 	}
 
-	public boolean equals(Point p) {
-		return p.x == x && p.y == y;
+	public boolean equals(Object obj) {
+		try {
+			Point p = (Point) obj;
+			return p.x == x && p.y == y;
+		} catch (Exception e) {
+			return false;
+		}
+
 	}
-	
+
 	public Point abs() {
 		return new Point(Math.abs(x), Math.abs(y));
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return (int) (x * 1e10 + y);
+	}
+
 }

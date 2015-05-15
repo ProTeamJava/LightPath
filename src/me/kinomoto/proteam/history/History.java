@@ -1,36 +1,42 @@
 package me.kinomoto.proteam.history;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class History {
-	static private LinkedList<HistoryNodeAbstract> past = new LinkedList<>();
-	static private LinkedList<HistoryNodeAbstract> future = new LinkedList<>();
-	
-	static public boolean isBackable() {
-		return past.size() > 0;
+	private static List<HistoryNodeAbstract> past = new LinkedList<>();
+	private static List<HistoryNodeAbstract> future = new LinkedList<>();
+
+	private History() {
 	}
-	
-	static public boolean isForwardable() {
-		return future.size() > 0;
+
+	public static boolean isBackable() {
+		return !past.isEmpty();
 	}
-	
-	static public void back() {
-		if(!isBackable()) return;
-		HistoryNodeAbstract node = past.getLast();
+
+	public static boolean isForwardable() {
+		return !future.isEmpty();
+	}
+
+	public static void back() {
+		if (!isBackable())
+			return;
+		HistoryNodeAbstract node = ((LinkedList<HistoryNodeAbstract>) past).getLast();
 		node.undo();
 		past.remove(node);
 		future.add(node);
 	}
-	
-	static public void foward() {
-		if(!isForwardable()) return;
-		HistoryNodeAbstract node = future.getLast();
+
+	public static void foward() {
+		if (!isForwardable())
+			return;
+		HistoryNodeAbstract node = ((LinkedList<HistoryNodeAbstract>) future).getLast();
 		node.redo();
 		future.remove(node);
 		past.add(node);
 	}
-	
-	static public void addNode(HistoryNodeAbstract node) {
+
+	public static void addNode(HistoryNodeAbstract node) {
 		past.add(node);
 		future.clear();
 	}

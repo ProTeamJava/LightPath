@@ -46,17 +46,17 @@ public class AboutWindow extends JFrame {
 		lblLightpath.setFont(new Font("Dialog", Font.BOLD, 22));
 		getContentPane().add(lblLightpath, "1, 4, center, default");
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png")));
-		getContentPane().add(lblNewLabel, "1, 2, center, default");
+		JLabel iconLabel = new JLabel("");
+		iconLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png")));
+		getContentPane().add(iconLabel, "1, 2, center, default");
 		
 		JLabel lblAuthors = new JLabel(Messages.get("authors"));
 		lblAuthors.setFont(new Font("Dialog", Font.BOLD, 16));
 		getContentPane().add(lblAuthors, "1, 8, center, default");
 		
-		JLabel lblNewLabel_1 = new JLabel(Messages.get("authorsNames"));
-		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		getContentPane().add(lblNewLabel_1, "1, 10, center, default");
+		JLabel authorsNamesLabel = new JLabel(Messages.get("authorsNames"));
+		authorsNamesLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		getContentPane().add(authorsNamesLabel, "1, 10, center, default");
 		
 		JLabel lblx = new JLabel("GNU GPLv2");
 		lblx.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -64,6 +64,7 @@ public class AboutWindow extends JFrame {
 		
 		JButton btnZ = new JButton(Messages.get("close"), new ImageIcon(getClass().getClassLoader().getResource("close.png")));
 		btnZ.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				AboutWindow.this.setVisible(false);
 			}
