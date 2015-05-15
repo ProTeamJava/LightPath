@@ -37,7 +37,7 @@ public class Beam {
 		return collisionChecked;
 	}
 
-	public void simulate(Surroundings s) {
+	public void simulate(Surroundings s){
 		int collisionNum = 0;
 		Collision collision = null;
 		AbstractOpticalElement collisionElement = null;
@@ -54,9 +54,12 @@ public class Beam {
 			double nby = segment.begin.y + start * dy;
 
 			double step = 1;
+			
+			//AbstractOpticalElement skip = null;
 
 			Segment tmp = new Segment(new Point(nbx, nby), new Point(nex, ney));
 			for (AbstractOpticalElement e : s.getElements()) {
+				//if(e == skip) continue;
 				try {
 					Collision p = e.collision(tmp, lastColision);
 					if (p != null) {
@@ -87,6 +90,11 @@ public class Beam {
 					step /= 1.5;
 			}
 			collisionNum = 0;
+
+			// magic fix
+			if(end - start < 1e-200) {
+				break;
+			}
 		}
 
 		collisionChecked = true;

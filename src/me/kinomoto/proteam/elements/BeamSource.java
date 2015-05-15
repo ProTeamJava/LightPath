@@ -111,15 +111,18 @@ public class BeamSource {
 
 	public Surroundings.PointPosition isPointInside(Point p, BeamSource selected) {
 		// TODO fix :(
-		Point t = p.min(segment.begin).abs(); // czemu abs to nie wiem :(
-		double x = Math.abs(t.x * cosA - t.y * sinA);
-		double y = Math.abs(t.x * sinA + t.y * cosA);
+		Point t = p.min(segment.begin); // czemu abs to nie wiem :(
+		double x = Math.abs(t.x * cosA + t.y * sinA);
+		double y = Math.abs(t.x * sinA - t.y * cosA);
 
-		// double ax = x - widthM / 2;
-		// double ay = y - heightM / 2;
+		System.out.println(x);
+		System.out.println(y);
+		
+		double ax = x - widthM / 2;
+		double ay = y - heightM / 2;
 
-		// if (selected == this && ax > -4 && ax < 7 && ay > -4 && ay < 7)
-		// return PointPosition.POINT_ROTATE;
+		if (selected == this && ax > -4 && ax < 7 && ay > -4 && ay < 7)
+			return PointPosition.POINT_ROTATE;
 		if (y <= height / 2 && x <= width / 2)
 			return PointPosition.POINT_INSIDE;
 		if (selected == this && y <= heightM / 2 && x <= widthM / 2)
