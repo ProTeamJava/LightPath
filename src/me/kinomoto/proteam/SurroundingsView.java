@@ -66,11 +66,13 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(baseWidth / 2, baseHeight / 2));
+				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(baseWidth / 2.0, baseHeight / 2.0));
 				surroundings.mousePressed(t);
+				surroundings.mouseOver(SurroundingsView.this, t);
 				settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
 				x = e.getX();
 				y = e.getY();
+				repaint();
 			}
 		});
 
@@ -78,6 +80,8 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
+				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(baseWidth / 2.0, baseHeight / 2.0));
+				surroundings.mouseOver(SurroundingsView.this, t);
 			}
 
 			@Override
@@ -90,15 +94,12 @@ public class SurroundingsView extends JPanel {
 					y = ny;
 					surroundings.simulate();
 				}
-
 			}
 		});
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		Graphics2D g2 = (Graphics2D) g;
@@ -107,7 +108,6 @@ public class SurroundingsView extends JPanel {
 		g2.translate(baseWidth / 2, baseHeight / 2);
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		surroundings.paint(g2);
-
 	}
 
 	private void updateSize() {

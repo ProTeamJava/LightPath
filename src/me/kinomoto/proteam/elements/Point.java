@@ -48,4 +48,8 @@ public class Point {
 		return p.x == x && p.y == y;
 	}
 	
+	public Point abs() {
+		return new Point(Math.abs(x), Math.abs(y));
+	}
+	
 }
