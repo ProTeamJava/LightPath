@@ -39,7 +39,13 @@ public class Point {
 		os.writeDouble(x);
 		os.writeDouble(y);
 	}
-	
-	
 
+	public Point moveBy(Point dp) {
+		return new Point(x + dp.x, y + dp.y);		
+	}
+
+	public boolean equals(Point p) {
+		return p.x == x && p.y == y;
+	}
+	
 }

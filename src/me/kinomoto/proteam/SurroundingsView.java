@@ -40,9 +40,7 @@ public class SurroundingsView extends JPanel {
 	private int viewHeight = baseHeight;
 
 	private double scale = 1;
-	
 
-	
 	int x = 0;
 	int y = 0;
 
@@ -64,8 +62,6 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -82,16 +78,11 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
-
 			}
 
-
-			
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				if(surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS)
-				{
+				if (surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS) {
 					int nx = e.getX();
 					int ny = e.getY();
 					surroundings.moveBy(nx - x, ny - y);
@@ -110,7 +101,6 @@ public class SurroundingsView extends JPanel {
 
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
-		g.drawImage(main.open.img, 0, 0, null);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.scale(scale, scale);
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -152,11 +142,11 @@ public class SurroundingsView extends JPanel {
 		int returnVal = fc.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
-				if (ImageIO.write((RenderedImage) png, "png", fc.getSelectedFile())) {
-					System.out.println("-- saved");
+				if (!ImageIO.write((RenderedImage) png, "png", fc.getSelectedFile())) {
+					// TODO save error
 				}
 			} catch (IOException e) {
-				//TODO save error
+				// TODO save error
 			}
 		}
 	}

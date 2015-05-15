@@ -18,7 +18,7 @@ public class BeamSource {
 	public void setWavelength(double wavelength) {
 		this.wavelength = wavelength;
 	}
-	
+
 	public BeamSource(DataInputStream is) throws IOException {
 		segment = new Segment(is);
 		wavelength = is.readDouble();
@@ -29,16 +29,19 @@ public class BeamSource {
 		this.segment = segment;
 		this.wavelength = wavelength;
 	}
-	
+
 	public BeamSource(Point pos, double angle, double wavelength) {
 		this.segment = new Segment(pos, new Point(pos.x + Math.cos(angle), pos.y + Math.sin(angle)));
 		this.wavelength = wavelength;
 	}
 
 	public Beam getBeam() {
-		return new Beam(segment, wavelength, 1);
+		double a = getAngle();
+		double x = 20 * Math.cos(a);
+		double y = 20 * Math.sin(a);
+		return new Beam(segment.moveBy(new Point(x, y)), wavelength, 1, null);
 	}
-	
+
 	public double getAngle() {
 		return Math.atan2(segment.end.y - segment.begin.y, segment.end.x - segment.begin.x);
 	}
@@ -58,20 +61,17 @@ public class BeamSource {
 		double angle = this.getAngle();
 		double x = t.x * Math.cos(angle) - t.y * Math.sin(angle);
 		double y = t.x * Math.sin(angle) + t.y * Math.cos(angle);
-		if(x < 10 && x > -10 && y < 20 && y > -20)
+		if (x < 10 && x > -10 && y < 20 && y > -20)
 			return true;
 		return false;
 	}
-	
+
 	public void save(DataOutputStream os) throws IOException {
 		segment.save(os);
 		os.writeDouble(wavelength);
 	}
-	
-	public void moveBy(int x, int y) {
-		segment.begin.x += x;
-		segment.begin.y += y;
-		segment.end.x += x;
-		segment.end.y += y;
+
+	public void moveBy(int dx, int dy) {
+		segment = segment.moveBy(new Point(dx, dy));
 	}
 }

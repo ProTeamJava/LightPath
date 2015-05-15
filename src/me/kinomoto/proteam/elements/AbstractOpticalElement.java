@@ -16,7 +16,8 @@ import me.kinomoto.proteam.Surroundings;
 
 /**
  * 
- * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds an implementation of beam collision with the object detection
+ * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds
+ * an implementation of beam collision with the object detection
  * 
  * @param posistion
  *            is the point of reference to the optical element
@@ -30,7 +31,6 @@ import me.kinomoto.proteam.Surroundings;
 abstract public class AbstractOpticalElement {
 	protected Point position;
 	protected List<Point> vertices;
-
 
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
@@ -80,20 +80,25 @@ abstract public class AbstractOpticalElement {
 	 * @throws MultipleCollisionsException
 	 *             if there is more than one collision
 	 */
-	public Collision collision(Segment s) throws MultipleCollisionsException {
+	public Collision collision(Segment s, Segment lastSegmentColision) throws MultipleCollisionsException {
 		Collision tmp = null;
 
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
-			short d1 = direction(get(i), get(j), s.begin);
-			short d2 = direction(get(i), get(j), s.end);
-			short d3 = direction(s.begin, s.end, get(i));
-			short d4 = direction(s.begin, s.end, get(j));
+			Segment checkingSegment = new Segment(get(i), get(j));
+
+			if (lastSegmentColision != null && lastSegmentColision.equals(checkingSegment))
+				continue; // protection against multiple collisions with the same segment
+
+			short d1 = direction(checkingSegment.begin, checkingSegment.end, s.begin);
+			short d2 = direction(checkingSegment.begin, checkingSegment.end, s.end);
+			short d3 = direction(s.begin, s.end, checkingSegment.begin);
+			short d4 = direction(s.begin, s.end, checkingSegment.end);
 
 			if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
 				// collision
 				if (tmp == null) {
 					// 1st collision
-					tmp = new Collision(findCollisionPoint(get(i), get(j), s.begin, s.end), new Segment(get(i), get(j)));
+					tmp = new Collision(findCollisionPoint(checkingSegment.begin, checkingSegment.end, s.begin, s.end), checkingSegment);
 				} else {
 					// next collision
 					throw new MultipleCollisionsException();
@@ -154,14 +159,14 @@ abstract public class AbstractOpticalElement {
 	}
 
 	public abstract JPanel getSettingsPanel(Surroundings s);
-	
+
 	public abstract void save(DataOutputStream os) throws IOException;
-	
+
 	protected void saveAbstract(DataOutputStream os) throws IOException {
-		
+
 	}
-	
-	public void moveBy(int x, int y){
+
+	public void moveBy(int x, int y) {
 		position.x += x;
 		position.y += y;
 	}

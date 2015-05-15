@@ -9,8 +9,8 @@ import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.settings.MirrorSettingsPanel;
 
 public class Mirror extends AbstractOpticalElement {
-	
-	private double absorption = .99; 
+
+	private double absorption = .99;
 
 	public double getAbsorption() {
 		return absorption;
@@ -26,69 +26,78 @@ public class Mirror extends AbstractOpticalElement {
 
 	@Override
 	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
-		double sy = seg.end.x - seg.begin.x;
-		double sx = seg.end.y - seg.begin.y;
-		sy *= -1;
-		double sl = sx * sx + sy * sy;
+		double ny = seg.end.x - seg.begin.x;
+		double nx = seg.end.y - seg.begin.y;
+		ny *= -1;
+		double nl = nx * nx + ny * ny;
+
+		double div = Math.sqrt(nl);
+		ny /= div;
+		nx /= div;
+		// sl = sx * sx + sy * sy;
+		// sl = 1;
 		
-		double div = Math.sqrt(sl);
-		sy /= div;
-		sx /= div;
-		sl = sx * sx + sy * sy;
-		
+		// sy , sx prawidłowe
 
 		double dx = b.segment.end.x - b.segment.begin.x;
 		double dy = b.segment.end.y - b.segment.begin.y;
 
-		double dot = dx * sx + dy * sy;
-		double w = 2 * dot / sl;
+		double dot = dx * nx + dy * ny;
+		// double w = 2 * dot / sl;
+		double w = 2 * dot;
 
-		double nx = dx - w * sx;
-		double ny = dy - w * sy;
+		double rx = dx - w * nx;
+		double ry = dy - w * ny;
+		
+		if(dx*dy*rx*ry == 0) return;
 
-		Point end = new Point(b.segment.end.x + nx, b.segment.end.y + ny);
+		Point end = new Point(b.segment.end.x + rx, b.segment.end.y + ry);
 
-		if (b.brightness*absorption > 0.01) {
+		if (b.brightness * absorption > 0.01) {
 			double bright = b.brightness * absorption;
 			Segment tmp = new Segment(b.segment.end, end);
-			s.add(new Beam(tmp, b.wavelenght, bright));
+			s.add(new Beam(tmp, b.wavelenght, bright, seg));
 		}
 	}
-	
+
 	/**
 	 * Checks if point distance to line is less than 5 units;
-	 * @param p1 - begin of segment
-	 * @param p2 - end of segment
-	 * @param s - point to check
+	 * 
+	 * @param p1
+	 *            - begin of segment
+	 * @param p2
+	 *            - end of segment
+	 * @param s
+	 *            - point to check
 	 * @return
 	 */
 	private boolean pointNearLine(Point p1, Point p2, Point s) {
 		double px = p2.x - p1.x;
 		double py = p2.y - p1.y;
-		double tmp = px*px + py*py;
+		double tmp = px * px + py * py;
 		double u = (s.x - p1.x) * px + (s.y - p1.y) * py;
 		u /= tmp;
-		if(u > 1)
+		if (u > 1)
 			u = 1;
-		else if(u < 0)
+		else if (u < 0)
 			u = 0;
-		
+
 		double tx = p1.x + u * px;
 		double ty = p1.y + u * py;
-		
+
 		double dx = tx - s.x;
 		double dy = ty - s.y;
-		return dx*dx+dy*dy < 25;
-		
+		return dx * dx + dy * dy < 25;
+
 	}
 
 	@Override
 	public boolean isPointInside(Point p) {
 		p = p.min(position);
-		for(int i = 0, j = 1; j < vertices.size(); i++, j++)
-			if(pointNearLine(vertices.get(i), vertices.get(j), p))
+		for (int i = 0, j = 1; j < vertices.size(); i++, j++)
+			if (pointNearLine(vertices.get(i), vertices.get(j), p))
 				return true;
-		
+
 		return false;
 	}
 
@@ -102,7 +111,7 @@ public class Mirror extends AbstractOpticalElement {
 		// save magicx
 		saveAbstract(os);
 		// save abs
-		
+
 	}
 
 }

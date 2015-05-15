@@ -13,11 +13,14 @@ public class Beam {
 	private boolean collisionChecked = false;
 	double wavelenght;
 	double brightness = 1;
-	
-	private static int maxLength = 4500;
-	private static double stepSize = 200.0/maxLength; 
 
-	public Beam(Segment segment, double wavelenght, double lightness) {
+	private Segment lastColision;
+
+	private static int maxLength = 4500;
+	private static double stepSize = 200.0 / maxLength;
+
+	public Beam(Segment segment, double wavelenght, double lightness, Segment seg) {
+		lastColision = seg;
 		double dx = segment.end.x - segment.begin.x;
 		double dy = segment.end.y - segment.begin.y;
 		double max = Math.abs(dx) < Math.abs(dy) ? Math.abs(dy) : Math.abs(dx);
@@ -54,9 +57,8 @@ public class Beam {
 
 			Segment tmp = new Segment(new Point(nbx, nby), new Point(nex, ney));
 			for (AbstractOpticalElement e : s.getElements()) {
-
 				try {
-					Collision p = e.collision(tmp);
+					Collision p = e.collision(tmp, lastColision);
 					if (p != null) {
 						collisionElement = e;
 						collision = p;
@@ -79,8 +81,10 @@ public class Beam {
 				end += step;
 			} else {
 				end = (end - start) / 1.5;
-				if(step == 1) step = stepSize;
-				else step /= 1.5;
+				if (step == 1)
+					step = stepSize;
+				else
+					step /= 1.5;
 			}
 			collisionNum = 0;
 		}
