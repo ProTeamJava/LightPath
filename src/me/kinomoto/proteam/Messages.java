@@ -10,6 +10,9 @@ public class Messages {
 
 	private static ResourceBundle resourceBundle = ResourceBundle.getBundle(bundleName);
 
+	private Messages() {
+	}
+
 	public static void setLocale(Locale loc) {
 		bundleName = PREFIX + "_" + loc.getLanguage() + "_" + loc.getCountry();
 		try {
@@ -17,9 +20,6 @@ public class Messages {
 		} catch (Exception e) {
 			resourceBundle = ResourceBundle.getBundle(PREFIX + "_en_US");
 		}
-	}
-
-	private Messages() {
 	}
 
 	public static String get(String key) {

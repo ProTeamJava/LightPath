@@ -48,7 +48,7 @@ public class Prism extends AbstractOpticalElement {
 		double rx;
 		double ry;
 
-		double nDotI, nDotI2, a, k, kk, D2;
+		double nDotI, nDotI2, a, k, kk, d2;
 
 		nDotI = nx * sx + ny * sy;
 		nDotI2 = nDotI * nDotI;
@@ -59,13 +59,13 @@ public class Prism extends AbstractOpticalElement {
 			k = nri;
 			kk = k * k;
 		}
-		D2 = 1.0 - kk * (1.0 - nDotI2);
+		d2 = 1.0 - kk * (1.0 - nDotI2);
 
-		if (D2 >= 0.0) {
+		if (d2 >= 0.0) {
 			if (nDotI >= 0.0) {
-				a = k * nDotI - Math.sqrt(D2);
+				a = k * nDotI - Math.sqrt(d2);
 			} else {
-				a = k * nDotI + Math.sqrt(D2);
+				a = k * nDotI + Math.sqrt(d2);
 			}
 			rx = (a * nx - k * sx);
 			ry = (a * ny - k * sy);
@@ -82,7 +82,7 @@ public class Prism extends AbstractOpticalElement {
 		if (b.brightness > 0.01) {
 			double bright = b.brightness * .99;
 			Segment tmp = new Segment(b.segment.end, end);
-			s.add(new Beam(tmp, b.wavelenght, bright));
+			s.add(new Beam(tmp, b.wavelenght, bright, null));
 		}
 
 	}

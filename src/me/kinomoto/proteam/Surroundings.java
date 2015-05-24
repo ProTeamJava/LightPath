@@ -1,5 +1,7 @@
 package me.kinomoto.proteam;
 
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
@@ -17,6 +19,8 @@ import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
 public class Surroundings {
+	private static final int MAGIC_NUMBER = 0x5F6C7068;
+
 	private List<AbstractOpticalElement> elements;
 	private List<BeamSource> sources;
 	private List<Beam> beams;
@@ -25,14 +29,19 @@ public class Surroundings {
 
 	private SurroundingsView view;
 
-	private static final int magicNumber = 0x5F6C7068;
-
-	private String path = "/home/oskar/test";
+	private String path = "";
 	private boolean modyfied = false;
+
+	private boolean isSimulating = false;
+	private boolean simQueue = false;
+
+	public enum PointPosition {
+		POINT_INSIDE, POINT_ROTATE, POINT_OUTSIDE
+	}
 
 	public enum SelectionType {
 		SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, SURROUNDINGS
-	};
+	}
 
 	private SelectionType selection = SelectionType.SURROUNDINGS;
 	private BeamSource selectedBeamSource = null;
@@ -40,7 +49,8 @@ public class Surroundings {
 
 	public Surroundings(SurroundingsView view, String path) {
 		this.path = path;
-		//
+		this.view = view;
+		// load
 	}
 
 	public Surroundings(SurroundingsView view) {
@@ -49,12 +59,9 @@ public class Surroundings {
 		beams = new ArrayList<Beam>();
 		this.view = view;
 	}
-	
-	private boolean isSimulating = false;
-	private boolean simQueue = false;
 
 	public void simulate() {
-		if(isSimulating) {
+		if (isSimulating) {
 			simQueue = true;
 			return;
 		}
@@ -74,7 +81,7 @@ public class Surroundings {
 		}
 
 		isSimulating = false;
-		if(simQueue) {
+		if (simQueue) {
 			simQueue = false;
 			simulate();
 			return;
@@ -120,17 +127,25 @@ public class Surroundings {
 		for (AbstractOpticalElement abstractOpticalElement : getElements()) {
 			abstractOpticalElement.paint(g);
 		}
+
+		switch (selection) {
+		case SELECTED_BEAM_SOURCE:
+			selectedBeamSource.paintSelection(g);
+			break;
+		case SELECTED_ELEMENT:
+			break;
+		default:
+			break;
+		}
 	}
 
 	public void mousePressed(Point p) {
-		setSelection(SelectionType.SURROUNDINGS);
-		selectedBeamSource = null;
-		selectedElement = null;
 
 		for (BeamSource beamSource : sources) {
-			if (beamSource.isPointInside(p)) {
+			if (beamSource.isPointInside(p, selectedBeamSource) != PointPosition.POINT_OUTSIDE) {
 				setSelection(SelectionType.SELECTED_BEAM_SOURCE);
 				selectedBeamSource = beamSource;
+				selectedElement = null;
 				return;
 			}
 		}
@@ -139,9 +154,14 @@ public class Surroundings {
 			if (element.isPointInside(p)) {
 				setSelection(SelectionType.SELECTED_ELEMENT);
 				selectedElement = element;
+				selectedBeamSource = null;
 				return;
 			}
 		}
+
+		selectedBeamSource = null;
+		selectedElement = null;
+		setSelection(SelectionType.SURROUNDINGS);
 	}
 
 	public JPanel getSelectedSettingsPanel() {
@@ -173,7 +193,7 @@ public class Surroundings {
 	public void save() {
 		try {
 			DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
-			os.writeInt(magicNumber);
+			os.writeInt(MAGIC_NUMBER);
 			os.writeDouble(getIor());
 			os.writeInt(sources.size());
 
@@ -225,13 +245,13 @@ public class Surroundings {
 		case SELECTED_BEAM_SOURCE:
 			sources.remove(selectedBeamSource);
 			selectedBeamSource = null;
-			
+
 			break;
 		case SELECTED_ELEMENT:
 			elements.remove(selectedElement);
 			selectedElement = null;
 			break;
-		case SURROUNDINGS:
+		default:
 			break;
 		}
 		setSelection(SelectionType.SURROUNDINGS);
@@ -246,9 +266,9 @@ public class Surroundings {
 	public void setSelection(SelectionType selection) {
 		this.selection = selection;
 	}
-	
-	public void moveBy(int x, int y ) {
-		switch(selection) {
+
+	public void moveBy(int x, int y) {
+		switch (selection) {
 		case SELECTED_BEAM_SOURCE:
 			selectedBeamSource.moveBy(x, y);
 			break;
@@ -256,6 +276,38 @@ public class Surroundings {
 			selectedElement.moveBy(x, y);
 			break;
 		case SURROUNDINGS:
+			// TODO scroll?
+			break;
+		default:
+			break;
+		}
+	}
+
+	public void mouseOver(Component c, Point p) {
+		switch (selection) {
+		case SELECTED_BEAM_SOURCE:
+			switch (selectedBeamSource.isPointInside(p, selectedBeamSource)) {
+			case POINT_INSIDE:
+				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+				break;
+			case POINT_ROTATE:
+				c.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+				break;
+			default:
+				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				break;
+
+			}
+			break;
+		case SELECTED_ELEMENT:
+			if (selectedElement.isPointInside(p))
+				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			else
+				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			break;
+
+		default:
+			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			break;
 		}
 	}

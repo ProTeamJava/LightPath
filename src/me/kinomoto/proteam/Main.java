@@ -1,7 +1,6 @@
 package me.kinomoto.proteam;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
@@ -10,8 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.nio.file.Path;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -24,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import me.kinomoto.proteam.action.OpenAction;
 import me.kinomoto.proteam.action.SaveAsAction;
@@ -33,7 +29,6 @@ import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.settings.SettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
-@SuppressWarnings("unused")
 public class Main extends JFrame {
 	private static final long serialVersionUID = 9128707449024404584L;
 
@@ -59,21 +54,20 @@ public class Main extends JFrame {
 	private ImageIcon deleteI;
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
-	private ImageIcon aboutI;
-	
+
 	OpenAction open;
 	SaveAsPngAction savePng;
-	SaveAsAction saveas; 
-	
-	//boolean modyfied = false;
-	//Path path;
+	SaveAsAction saveas;
 
-	public SurroundingsView surroundingsView;
+	private SurroundingsView surroundingsView;
 
 	private JPanel toolBar;
 	private SettingsPanel settingsPanel;
 
 	private JScrollPane scroll;
+
+	private double vSliderPos;
+	private double hSliderPos;
 
 	public Main() throws HeadlessException {
 		super("LightPath");
@@ -81,6 +75,7 @@ public class Main extends JFrame {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
 		} catch (Exception e) {
+			// catch
 		}
 
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -98,7 +93,7 @@ public class Main extends JFrame {
 
 		setLocationRelativeTo(null);
 		this.setVisible(true);
-		
+
 		Rectangle bounds = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
 		int x = (size.width - bounds.width) / 2;
@@ -113,19 +108,18 @@ public class Main extends JFrame {
 		surroundingsView = new SurroundingsView(settingsPanel, this);
 		scroll = new JScrollPane(surroundingsView);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		
+
 		this.add(scroll, BorderLayout.CENTER);
 		this.add(toolBar, BorderLayout.WEST);
 		this.add(settingsPanel, BorderLayout.EAST);
-		
+
 		scroll.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				// TODO scrollPane, resizing and sliders
-				
 			}
 		});
-		
+
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
 	}
 
@@ -157,25 +151,25 @@ public class Main extends JFrame {
 		saveA = new JMenuItem(Messages.get("save"), saveI);
 		saveA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("exportM")));
 		saveA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-		
+
 		exportA = new JMenuItem(Messages.get("export"), exportI);
 		exportA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("exportM")));
-		
+
 		saveAsA = new JMenuItem(Messages.get("saveAs"), saveAsI);
 		saveAsA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("saveAsM")));
 		saveAsA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK));
-		
+
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
 		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
 
-		open = new OpenAction(this, openA);
-		savePng = new SaveAsPngAction(this, exportA);
-		saveas = new SaveAsAction(this, saveAsA);
-		
+		open = new OpenAction(this);
+		savePng = new SaveAsPngAction(this);
+		saveas = new SaveAsAction(this);
+
 		openA.addActionListener(open);
 		exportA.addActionListener(savePng);
 		saveAsA.addActionListener(saveas);
-				
+
 		fileM.add(openA);
 		fileM.add(saveA);
 		fileM.add(saveAsA);
@@ -185,38 +179,37 @@ public class Main extends JFrame {
 		menubar.add(fileM);
 
 		JMenu editM = new JMenu(Messages.get("edit"));
-		
-		undoA = new JMenuItem(Messages.get("undo"), undoI);	
+
+		undoA = new JMenuItem(Messages.get("undo"), undoI);
 		undoA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
 		undoA.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				History.back();				
+				History.back();
 			}
 		});
-		
+
 		redoA = new JMenuItem(Messages.get("redo"), redoI);
 		redoA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK));
 		redoA.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				History.foward();				
+				History.foward();
 			}
 		});
-		
-		deleteA = new JMenuItem(Messages.get("delete"), deleteI);	
-		deleteA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0));
+
+		deleteA = new JMenuItem(Messages.get("delete"), deleteI);
+		deleteA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		deleteA.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				surroundingsView.surroundings.deleteSelected();				
+				surroundingsView.surroundings.deleteSelected();
 			}
 		});
-		
-		
+
 		editM.add(deleteA);
 		editM.addSeparator();
 		editM.add(undoA);
@@ -224,11 +217,11 @@ public class Main extends JFrame {
 		menubar.add(editM);
 
 		JMenu viewM = new JMenu(Messages.get("view"));
-		
+
 		zoomInA = new JMenuItem(Messages.get("zoomIn"), zoomInI);
 		zoomInA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, KeyEvent.CTRL_DOWN_MASK));
 		zoomInA.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveSliderPositions();
@@ -236,11 +229,11 @@ public class Main extends JFrame {
 				restoreSliderPositions();
 			}
 		});
-		
+
 		zoomOutA = new JMenuItem(Messages.get("zoomOut"), zoomOutI);
 		zoomOutA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK));
 		zoomOutA.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveSliderPositions();
@@ -266,17 +259,12 @@ public class Main extends JFrame {
 		exitA.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(surroundingsView.surroundings.isModyfied())
-				{
-					if (JOptionPane.showConfirmDialog(Main.this, 
-							"Do you want to save file?", "Not saved modyfications!", 
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
-					{
-						savePng.actionPerformed(null);
-					}
+				if (surroundingsView.surroundings.isModyfied() && 
+					JOptionPane.showConfirmDialog(Main.this, "Do you want to save file?", "Not saved modyfications!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+						// TODO :)
+					
 				}
-				System.exit(0);
+				Main.this.dispose();
 			}
 		});
 
@@ -292,25 +280,27 @@ public class Main extends JFrame {
 
 	public static void main(String[] args) {
 		Messages.setLocale(Locale.getDefault());
+		@SuppressWarnings("unused")
 		Main window = new Main();
 	}
-	
-	private double vSliderPos;
-	private double hSliderPos;
-	
+
 	private void saveSliderPositions() {
 		Rectangle rect = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
-		vSliderPos = (rect.width / 2 + rect.x)/size.getWidth();
-		hSliderPos = (rect.height / 2 + rect.y)/size.getHeight();
+		vSliderPos = (rect.width / 2 + rect.x) / size.getWidth();
+		hSliderPos = (rect.height / 2 + rect.y) / size.getHeight();
 	}
-	
+
 	private void restoreSliderPositions() {
 		Rectangle rect = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
-		int nx = (int) (vSliderPos * size.getWidth() - rect.width/2);
-		int ny = (int) (hSliderPos * size.getHeight() - rect.height/2);
+		int nx = (int) (vSliderPos * size.getWidth() - rect.width / 2);
+		int ny = (int) (hSliderPos * size.getHeight() - rect.height / 2);
 		scroll.getViewport().setViewPosition(new java.awt.Point(nx, ny));
+	}
+
+	public void saveAsPng() {
+		surroundingsView.saveAsPng();
 	}
 
 }

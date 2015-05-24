@@ -16,7 +16,8 @@ import me.kinomoto.proteam.Surroundings;
 
 /**
  * 
- * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds an implementation of beam collision with the object detection
+ * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds
+ * an implementation of beam collision with the object detection
  * 
  * @param posistion
  *            is the point of reference to the optical element
@@ -27,10 +28,11 @@ import me.kinomoto.proteam.Surroundings;
  * @method findCollisionPoint is to give exact point of collision
  *
  */
-abstract public class AbstractOpticalElement {
+public abstract class AbstractOpticalElement {
+	private static final int STROKE_WIDTH = 2;
+
 	protected Point position;
 	protected List<Point> vertices;
-
 
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
@@ -51,7 +53,7 @@ abstract public class AbstractOpticalElement {
 		return tmp;
 	}
 
-	abstract public boolean isPointInside(Point p);
+	public abstract boolean isPointInside(Point p);
 
 	public static List<Point> getMirror() {
 		List<Point> tmp = new ArrayList<Point>();
@@ -80,20 +82,27 @@ abstract public class AbstractOpticalElement {
 	 * @throws MultipleCollisionsException
 	 *             if there is more than one collision
 	 */
-	public Collision collision(Segment s) throws MultipleCollisionsException {
+	public Collision collision(Segment s, Segment lastSegmentColision) throws MultipleCollisionsException {
 		Collision tmp = null;
 
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
-			short d1 = direction(get(i), get(j), s.begin);
-			short d2 = direction(get(i), get(j), s.end);
-			short d3 = direction(s.begin, s.end, get(i));
-			short d4 = direction(s.begin, s.end, get(j));
+			Segment checkingSegment = new Segment(get(i), get(j));
+
+			if (lastSegmentColision != null && lastSegmentColision.equals(checkingSegment)) {
+				// protection against multiple collisions with the same segment
+				continue;
+			}
+
+			short d1 = direction(checkingSegment.begin, checkingSegment.end, s.begin);
+			short d2 = direction(checkingSegment.begin, checkingSegment.end, s.end);
+			short d3 = direction(s.begin, s.end, checkingSegment.begin);
+			short d4 = direction(s.begin, s.end, checkingSegment.end);
 
 			if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
 				// collision
 				if (tmp == null) {
 					// 1st collision
-					tmp = new Collision(findCollisionPoint(get(i), get(j), s.begin, s.end), new Segment(get(i), get(j)));
+					tmp = new Collision(findCollisionPoint(checkingSegment.begin, checkingSegment.end, s.begin, s.end), checkingSegment);
 				} else {
 					// next collision
 					throw new MultipleCollisionsException();
@@ -105,7 +114,7 @@ abstract public class AbstractOpticalElement {
 	}
 
 	private short direction(Point pi, Point pj, Point pk) {
-		double tmp = ((pk.x - pi.x) * (pj.y - pi.y) - (pj.x - pi.x) * (pk.y - pi.y));
+		double tmp = (pk.x - pi.x) * (pj.y - pi.y) - (pj.x - pi.x) * (pk.y - pi.y);
 		if (tmp > 0)
 			return 1;
 		if (tmp < 0)
@@ -147,21 +156,21 @@ abstract public class AbstractOpticalElement {
 	public void paint(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setColor(Color.BLACK);
-		g2.setStroke(new BasicStroke(2));
+		g2.setStroke(new BasicStroke(STROKE_WIDTH));
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
 			g2.drawLine((int) get(i).x, (int) get(i).y, (int) get(j).x, (int) get(j).y);
 		}
 	}
 
 	public abstract JPanel getSettingsPanel(Surroundings s);
-	
+
 	public abstract void save(DataOutputStream os) throws IOException;
-	
+
 	protected void saveAbstract(DataOutputStream os) throws IOException {
-		
+
 	}
-	
-	public void moveBy(int x, int y){
+
+	public void moveBy(int x, int y) {
 		position.x += x;
 		position.y += y;
 	}

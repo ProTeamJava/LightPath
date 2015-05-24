@@ -1,8 +1,9 @@
 package me.kinomoto.proteam;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 public class ToolBar extends JPanel {
 
@@ -10,11 +11,20 @@ public class ToolBar extends JPanel {
 
 	public ToolBar(Main main) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		ButtonGroup btnGroup = new ButtonGroup();
 
-		JButton pointerSelectButton = new JButton(main.getIcon("transform-move.png"));
-		JButton mirrorSelectButton = new JButton(main.getIcon("draw-line.png"));
-		JButton triangularPrismButton = new JButton(main.getIcon("draw-triangle1.png"));
-		JButton squarePrismButton = new JButton(main.getIcon("draw-rectangle.png"));
+		JToggleButton pointerSelectButton = new JToggleButton(main.getIcon("transform-move.png"));
+		JToggleButton mirrorSelectButton = new JToggleButton(main.getIcon("draw-line.png"));
+		JToggleButton triangularPrismButton = new JToggleButton(main.getIcon("draw-triangle1.png"));
+		JToggleButton squarePrismButton = new JToggleButton(main.getIcon("draw-rectangle.png"));
+
+		btnGroup.add(pointerSelectButton);
+		btnGroup.add(mirrorSelectButton);
+		btnGroup.add(triangularPrismButton);
+		btnGroup.add(squarePrismButton);
+		
+		pointerSelectButton.setSelected(true);
 
 		this.add(pointerSelectButton);
 		this.add(mirrorSelectButton);
