@@ -19,11 +19,11 @@ public class Prism extends AbstractOpticalElement {
 
 	@Override
 	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
+		// TODO fix all...
 
 		// incident beam unit vector coordinates
 		double sx = b.segment.end.x - b.segment.begin.x;
 		double sy = b.segment.end.y - b.segment.begin.y;
-		
 		double sl = sx * sx + sy * sy;
 		double div2 = Math.sqrt(sl);
 		sy /= div2;
@@ -32,7 +32,7 @@ public class Prism extends AbstractOpticalElement {
 		double ny = seg.begin.x - seg.end.x;
 		double nx = seg.begin.y - seg.end.y;
 		nx *= -1;
-		
+
 		double nl = nx * nx + ny * ny;
 		double div = Math.sqrt(nl);
 		ny /= div;
@@ -69,12 +69,9 @@ public class Prism extends AbstractOpticalElement {
 			}
 			rx = (a * nx - k * sx);
 			ry = (a * ny - k * sy);
-
 		} else {
-
 			rx = 2 * nDotI * nx - sx;
 			ry = 2 * nDotI * ny - sy;
-
 		}
 
 		Point end = new Point(b.segment.end.x - rx, b.segment.end.y - ry);
@@ -82,7 +79,7 @@ public class Prism extends AbstractOpticalElement {
 		if (b.brightness > 0.01) {
 			double bright = b.brightness * .99;
 			Segment tmp = new Segment(b.segment.end, end);
-			s.add(new Beam(tmp, b.wavelenght, bright, null));
+			s.add(new Beam(tmp, b.wavelenght, bright, seg));
 		}
 
 	}
@@ -91,7 +88,6 @@ public class Prism extends AbstractOpticalElement {
 		return refractiveIndex;
 	}
 
-	// TODO check if it is good
 	@Override
 	public boolean isPointInside(Point p) {
 		boolean out = false;
@@ -105,11 +101,11 @@ public class Prism extends AbstractOpticalElement {
 	public JPanel getSettingsPanel(Surroundings s) {
 		return new PrismSettingsPanel(this, s);
 	}
-	
-	public double getIOR(){
+
+	public double getIOR() {
 		return refractiveIndex;
 	}
-	
+
 	public void setIOR(double ior) {
 		refractiveIndex = ior;
 	}
@@ -119,7 +115,7 @@ public class Prism extends AbstractOpticalElement {
 		// save magic
 		saveAbstract(os);
 		// save ior
-		
+
 	}
 
 }

@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -14,8 +16,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
+import me.kinomoto.proteam.Surroundings.PointPosition;
+import me.kinomoto.proteam.Surroundings.SelectionType;
 import me.kinomoto.proteam.elements.BeamSource;
 import me.kinomoto.proteam.elements.Mirror;
 import me.kinomoto.proteam.elements.Point;
@@ -24,10 +30,16 @@ import me.kinomoto.proteam.elements.Segment;
 import me.kinomoto.proteam.settings.SettingsPanel;
 
 public class SurroundingsView extends JPanel {
-
 	private static final long serialVersionUID = 5447523639086911950L;
 
-	Main main;
+	public enum TOOL {
+		POINTER, ROTATE
+	}
+
+	private JPopupMenu menuPopup = new JPopupMenu();
+	private JMenuItem removeSelected = new JMenuItem(Messages.get("delete"), Main.getDeleteI());
+
+	private TOOL selectedTool = TOOL.POINTER;
 
 	Surroundings surroundings = new Surroundings(this);
 	SettingsPanel settingsPanel;
@@ -43,10 +55,10 @@ public class SurroundingsView extends JPanel {
 
 	int x = 0;
 	int y = 0;
+	double a = 0;
 
 	public SurroundingsView(final SettingsPanel settingsPanel, Main ref) {
 		this.settingsPanel = settingsPanel;
-		main = ref;
 
 		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
 
@@ -63,18 +75,43 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				surroundings.mousePressed(t);
+				PointPosition pos = surroundings.mousePressed(t);
 				surroundings.mouseOver(SurroundingsView.this, t);
+
+				switch (pos) {
+				case POINT_ROTATE:
+					selectedTool = TOOL.ROTATE;
+					break;
+				default:
+					selectedTool = TOOL.POINTER;
+					break;
+				}
+
 				settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
-				x = e.getX();
-				y = e.getY();
+				if (selectedTool == TOOL.POINTER) {
+					x = e.getX();
+					y = e.getY();
+				} else if (selectedTool == TOOL.ROTATE) {
+					a = surroundings.getSelectedAngle(t);
+				}
 				repaint();
+
+				if (e.getButton() == MouseEvent.BUTTON3 && surroundings.getSelection() != SelectionType.SURROUNDINGS) {
+					menuPopup.show(SurroundingsView.this, e.getX(), e.getY());
+				}
 			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				surroundings.mouseRelased();
+				surroundings.simulate();
+			}
+
 		});
 
 		this.addMouseMotionListener(new MouseMotionListener() {
-
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
@@ -84,13 +121,30 @@ public class SurroundingsView extends JPanel {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				if (surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS) {
-					int nx = e.getX();
-					int ny = e.getY();
-					surroundings.moveBy(nx - x, ny - y);
-					x = nx;
-					y = ny;
+					Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+					if (selectedTool == TOOL.POINTER) {
+						int nx = e.getX();
+						int ny = e.getY();
+						surroundings.moveBy(nx - x, ny - y);
+						x = nx;
+						y = ny;
+					} else if (selectedTool == TOOL.ROTATE) {
+						double na = surroundings.getSelectedAngle(t);
+						double da = na - a;
+						surroundings.rotateSelected(da);
+						a = surroundings.getSelectedAngle(t);
+					}
 					surroundings.simulate();
 				}
+			}
+		});
+
+		menuPopup.add(removeSelected);
+		removeSelected.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				surroundings.deleteSelected();
 			}
 		});
 	}

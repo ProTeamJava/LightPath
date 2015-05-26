@@ -50,7 +50,7 @@ public class Surroundings {
 	public Surroundings(SurroundingsView view, String path) {
 		this.path = path;
 		this.view = view;
-		// load
+		// TODO load
 	}
 
 	public Surroundings(SurroundingsView view) {
@@ -133,35 +133,44 @@ public class Surroundings {
 			selectedBeamSource.paintSelection(g);
 			break;
 		case SELECTED_ELEMENT:
+			selectedElement.paintSelection(g);
 			break;
 		default:
 			break;
 		}
 	}
 
-	public void mousePressed(Point p) {
+	public PointPosition mousePressed(Point p) {
 
 		for (BeamSource beamSource : sources) {
-			if (beamSource.isPointInside(p, selectedBeamSource) != PointPosition.POINT_OUTSIDE) {
+			PointPosition pos = beamSource.isPointInside(p, selectedBeamSource);
+			if (pos != PointPosition.POINT_OUTSIDE) {
 				setSelection(SelectionType.SELECTED_BEAM_SOURCE);
 				selectedBeamSource = beamSource;
 				selectedElement = null;
-				return;
+				return pos;
 			}
 		}
 
 		for (AbstractOpticalElement element : getElements()) {
-			if (element.isPointInside(p)) {
+			PointPosition pos;
+			if(element == selectedElement) {
+				pos = element.isPointInsideSelected(p);
+			} else {
+				pos = element.isPointInside(p) ? PointPosition.POINT_INSIDE : PointPosition.POINT_OUTSIDE;
+			}
+			if (pos != PointPosition.POINT_OUTSIDE) {
 				setSelection(SelectionType.SELECTED_ELEMENT);
 				selectedElement = element;
 				selectedBeamSource = null;
-				return;
+				return pos;
 			}
 		}
 
 		selectedBeamSource = null;
 		selectedElement = null;
 		setSelection(SelectionType.SURROUNDINGS);
+		return PointPosition.POINT_OUTSIDE;
 	}
 
 	public JPanel getSelectedSettingsPanel() {
@@ -296,19 +305,49 @@ public class Surroundings {
 			default:
 				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				break;
-
 			}
 			break;
 		case SELECTED_ELEMENT:
-			if (selectedElement.isPointInside(p))
+			switch (selectedElement.isPointInsideSelected(p)) {
+			case POINT_INSIDE:
 				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
-			else
+				break;
+			case POINT_ROTATE:
+				c.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+				break;
+			default:
 				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				break;
+			}
 			break;
-
 		default:
 			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			break;
 		}
 	}
+
+	public double getSelectedAngle(Point p) {
+		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
+			return selectedBeamSource.getAngle(p);
+		} else if (selection == SelectionType.SELECTED_ELEMENT) {
+			return selectedElement.getAngle(p);
+		}
+		return 0;
+	}
+
+	public void rotateSelected(double da) {
+		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
+			selectedBeamSource.rotate(da);
+		} else if (selection == SelectionType.SELECTED_ELEMENT) {
+			selectedElement.rotate(da);
+		}
+	}
+
+	public void mouseRelased() {
+		if(selection == SelectionType.SELECTED_ELEMENT) {
+			selectedElement.addAngle();
+		}	
+	}
+	
+	
 }

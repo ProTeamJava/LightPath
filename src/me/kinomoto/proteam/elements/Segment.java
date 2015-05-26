@@ -40,5 +40,10 @@ public class Segment {
 	public int hashCode() {
 		return begin.hashCode() * 103456 + end.hashCode();
 	}
+	
+	@Override
+	public String toString() {
+		return begin.toString() + " " + end.toString();
+	}
 
 }

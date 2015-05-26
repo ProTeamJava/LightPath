@@ -51,7 +51,7 @@ public class Main extends JFrame {
 	private ImageIcon exitI;
 	private ImageIcon undoI;
 	private ImageIcon redoI;
-	private ImageIcon deleteI;
+	private static ImageIcon deleteI;
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 
@@ -303,4 +303,8 @@ public class Main extends JFrame {
 		surroundingsView.saveAsPng();
 	}
 
+
+	public static ImageIcon getDeleteI() {
+		return deleteI;
+	}
 }
