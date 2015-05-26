@@ -1,5 +1,6 @@
 package me.kinomoto.proteam;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -34,6 +35,11 @@ public class Surroundings {
 
 	private boolean isSimulating = false;
 	private boolean simQueue = false;
+	
+	private SelectionType halfTranparentDrawType = SelectionType.SURROUNDINGS;
+	private AbstractOpticalElement elementTransp = null;
+	private BeamSource beamSourTransp = null;
+	
 
 	public enum PointPosition {
 		POINT_INSIDE, POINT_ROTATE, POINT_OUTSIDE
@@ -126,6 +132,10 @@ public class Surroundings {
 
 		for (AbstractOpticalElement abstractOpticalElement : getElements()) {
 			abstractOpticalElement.paint(g);
+		}
+		
+		if(elementTransp != null) {
+			elementTransp.paint(g, Color.GRAY);;
 		}
 
 		switch (selection) {
@@ -347,8 +357,35 @@ public class Surroundings {
 	public void mouseRelased() {
 		if(selection == SelectionType.SELECTED_ELEMENT) {
 			selectedElement.addAngle();
-		}	
+		}
+		if(halfTranparentDrawType == SelectionType.SELECTED_ELEMENT) {
+			elements.add(elementTransp);
+			elementTransp = null;
+			halfTranparentDrawType = SelectionType.SURROUNDINGS;
+		}
 	}
 	
+	public void newTranp(AbstractOpticalElement element) {
+		halfTranparentDrawType = SelectionType.SELECTED_ELEMENT;
+		elementTransp = element;
+	}
 	
+	public void moveTranspTo(Point p) {
+		switch(halfTranparentDrawType) {
+		case SELECTED_BEAM_SOURCE:
+			break;
+		case SELECTED_ELEMENT:
+			elementTransp.setPosition(p);
+			break;
+		default:
+			break;
+		
+		}
+	}
+	
+	public void cleanTransp() {
+		halfTranparentDrawType = SelectionType.SURROUNDINGS;
+		elementTransp = null;
+		beamSourTransp = null;
+	}
 }

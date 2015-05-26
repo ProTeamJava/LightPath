@@ -79,8 +79,8 @@ public abstract class AbstractOpticalElement {
 
 	public static List<Point> getMirror() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(-10, -10));
-		tmp.add(new Point(10, 10));
+		tmp.add(new Point(10, -10));
+		tmp.add(new Point(-10, 10));
 		return tmp;
 	}
 
@@ -174,10 +174,14 @@ public abstract class AbstractOpticalElement {
 	}
 
 	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
-
+	
 	public void paint(Graphics2D g) {
+		paint(g, Color.BLACK);
+	}
+
+	public void paint(Graphics2D g, Color c) {
 		Graphics2D p = (Graphics2D) g.create();
-		p.setColor(Color.BLACK);
+		p.setColor(c);
 		p.setStroke(new BasicStroke(STROKE_WIDTH));
 
 		p.translate(position.x, position.y);
@@ -277,5 +281,9 @@ public abstract class AbstractOpticalElement {
 	public void addAngle() {
 		selectionAngle = 0;
 		calcBounds();
+	}
+
+	public void setPosition(Point p) {
+		position = p;		
 	}
 }

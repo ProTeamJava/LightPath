@@ -110,6 +110,28 @@ public class SurroundingsView extends JPanel {
 			public void mouseReleased(MouseEvent e) {
 				surroundings.mouseRelased();
 				surroundings.simulate();
+				mouseEntered(e);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+				if (selectedTool == TOOL.MIRROR) {
+					surroundings.newTranp(new Mirror(t));
+					repaint();
+				} else if(selectedTool == TOOL.SQUARE_PRISM) {
+					surroundings.newTranp(Prism.getSquarePrism(t));
+					repaint();
+				} else if(selectedTool == TOOL.TRIANGLE_PRISM) {
+					surroundings.newTranp(Prism.getTrianglePrism(t));
+					repaint();
+				}
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				surroundings.cleanTransp();
+				repaint();
 			}
 
 		});
@@ -120,14 +142,17 @@ public class SurroundingsView extends JPanel {
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
 				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
 					surroundings.mouseOver(SurroundingsView.this, t);
+				} else {
+					surroundings.moveTranspTo(t);
+					repaint();
 				}
 			}
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
+				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
 				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
 					if (surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS) {
-						Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
 						if (selectedTool == TOOL.POINTER) {
 							int nx = e.getX();
 							int ny = e.getY();
@@ -142,6 +167,9 @@ public class SurroundingsView extends JPanel {
 						}
 						surroundings.simulate();
 					}
+				} else {
+					surroundings.moveTranspTo(t);
+					repaint();
 				}
 			}
 		});

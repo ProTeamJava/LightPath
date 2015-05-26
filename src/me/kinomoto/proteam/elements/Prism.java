@@ -2,6 +2,7 @@ package me.kinomoto.proteam.elements;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -10,11 +11,24 @@ import me.kinomoto.proteam.settings.PrismSettingsPanel;
 
 public class Prism extends AbstractOpticalElement {
 
-	private double refractiveIndex;
+	private double ior;
 
 	public Prism(Point position, double ior) {
 		super(position, AbstractOpticalElement.getSquare());
-		refractiveIndex = ior;
+		this.ior = ior;
+	}
+	
+	public Prism(Point position, double ior, List<Point> vert) {
+		super(position, vert);
+		this.ior = ior;
+	}
+	
+	public static Prism getSquarePrism(Point position) {
+		return new Prism(position, 1.33, AbstractOpticalElement.getSquare());
+	}
+	
+	public static Prism getTrianglePrism(Point position) {
+		return new Prism(position, 1.33, AbstractOpticalElement.getTriangle());
 	}
 
 	@Override
@@ -40,9 +54,9 @@ public class Prism extends AbstractOpticalElement {
 
 		// cooeficient ratio
 		// incident to reflected
-		double nir = s.getIor() / refractiveIndex;
+		double nir = s.getIor() / ior;
 		// reflected to incident
-		double nri = refractiveIndex / s.getIor();
+		double nri = ior / s.getIor();
 
 		// refracted or reflected beam vector coordinates
 		double rx;
@@ -85,7 +99,7 @@ public class Prism extends AbstractOpticalElement {
 	}
 
 	public double getRefractiveIndex() {
-		return refractiveIndex;
+		return ior;
 	}
 
 	@Override
@@ -103,11 +117,11 @@ public class Prism extends AbstractOpticalElement {
 	}
 
 	public double getIOR() {
-		return refractiveIndex;
+		return ior;
 	}
 
 	public void setIOR(double ior) {
-		refractiveIndex = ior;
+		this.ior = ior;
 	}
 
 	@Override
