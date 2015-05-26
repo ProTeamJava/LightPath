@@ -145,7 +145,7 @@ public class Surroundings {
 		for (BeamSource beamSource : sources) {
 			PointPosition pos = beamSource.isPointInside(p, selectedBeamSource);
 			if (pos != PointPosition.POINT_OUTSIDE) {
-				setSelection(SelectionType.SELECTED_BEAM_SOURCE);
+				selection = SelectionType.SELECTED_BEAM_SOURCE;
 				selectedBeamSource = beamSource;
 				selectedElement = null;
 				return pos;
@@ -160,7 +160,7 @@ public class Surroundings {
 				pos = element.isPointInside(p) ? PointPosition.POINT_INSIDE : PointPosition.POINT_OUTSIDE;
 			}
 			if (pos != PointPosition.POINT_OUTSIDE) {
-				setSelection(SelectionType.SELECTED_ELEMENT);
+				selection = SelectionType.SELECTED_ELEMENT;
 				selectedElement = element;
 				selectedBeamSource = null;
 				return pos;
@@ -274,6 +274,7 @@ public class Surroundings {
 
 	public void setSelection(SelectionType selection) {
 		this.selection = selection;
+		updateSettingsPanel();
 	}
 
 	public void moveBy(int x, int y) {
@@ -300,7 +301,7 @@ public class Surroundings {
 				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 				break;
 			case POINT_ROTATE:
-				c.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+				c.setCursor(Main.getRotateCursor());
 				break;
 			default:
 				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -313,7 +314,7 @@ public class Surroundings {
 				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 				break;
 			case POINT_ROTATE:
-				c.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+				c.setCursor(Main.getRotateCursor());
 				break;
 			default:
 				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

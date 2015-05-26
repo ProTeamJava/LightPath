@@ -1,9 +1,13 @@
 package me.kinomoto.proteam;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -44,6 +48,8 @@ public class Main extends JFrame {
 	private JMenuItem zoomOutA;
 	private JMenuItem aboutA;
 
+	private static Cursor rotateCursor = null;
+
 	private ImageIcon openI;
 	private ImageIcon saveI;
 	private ImageIcon saveAsI;
@@ -55,11 +61,11 @@ public class Main extends JFrame {
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 
-	OpenAction open;
-	SaveAsPngAction savePng;
-	SaveAsAction saveas;
+	private OpenAction open;
+	private SaveAsPngAction savePng;
+	private SaveAsAction saveas;
 
-	private SurroundingsView surroundingsView;
+	public SurroundingsView surroundingsView;
 
 	private JPanel toolBar;
 	private SettingsPanel settingsPanel;
@@ -90,6 +96,12 @@ public class Main extends JFrame {
 		initMenu();
 		initUI();
 		initListeners();
+		
+
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image image = toolkit.getImage(getClass().getResource("/rotate.png"));
+		Point hotspot = new Point(8, 8);
+		rotateCursor = toolkit.createCustomCursor(image, hotspot, "Rotate");
 
 		setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -99,6 +111,8 @@ public class Main extends JFrame {
 		int x = (size.width - bounds.width) / 2;
 		int y = (size.height - bounds.height) / 2;
 		scroll.getViewport().setViewPosition(new java.awt.Point(x, y));
+		
+
 	}
 
 	private void initUI() {
@@ -121,6 +135,8 @@ public class Main extends JFrame {
 		});
 
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
+		
+		
 	}
 
 	private void initIcons() {
@@ -306,5 +322,9 @@ public class Main extends JFrame {
 
 	public static ImageIcon getDeleteI() {
 		return deleteI;
+	}
+	
+	public static Cursor getRotateCursor() {
+		return rotateCursor;
 	}
 }

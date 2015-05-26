@@ -33,7 +33,7 @@ public class SurroundingsView extends JPanel {
 	private static final long serialVersionUID = 5447523639086911950L;
 
 	public enum TOOL {
-		POINTER, ROTATE
+		POINTER, ROTATE, MIRROR, TRIANGLE_PRISM, SQUARE_PRISM
 	}
 
 	private JPopupMenu menuPopup = new JPopupMenu();
@@ -77,29 +77,32 @@ public class SurroundingsView extends JPanel {
 			public void mousePressed(MouseEvent e) {
 
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				PointPosition pos = surroundings.mousePressed(t);
-				surroundings.mouseOver(SurroundingsView.this, t);
 
-				switch (pos) {
-				case POINT_ROTATE:
-					selectedTool = TOOL.ROTATE;
-					break;
-				default:
-					selectedTool = TOOL.POINTER;
-					break;
-				}
+				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+					PointPosition pos = surroundings.mousePressed(t);
+					surroundings.mouseOver(SurroundingsView.this, t);
 
-				settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
-				if (selectedTool == TOOL.POINTER) {
-					x = e.getX();
-					y = e.getY();
-				} else if (selectedTool == TOOL.ROTATE) {
-					a = surroundings.getSelectedAngle(t);
-				}
-				repaint();
+					switch (pos) {
+					case POINT_ROTATE:
+						selectedTool = TOOL.ROTATE;
+						break;
+					default:
+						selectedTool = TOOL.POINTER;
+						break;
+					}
 
-				if (e.getButton() == MouseEvent.BUTTON3 && surroundings.getSelection() != SelectionType.SURROUNDINGS) {
-					menuPopup.show(SurroundingsView.this, e.getX(), e.getY());
+					settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
+					if (selectedTool == TOOL.POINTER) {
+						x = e.getX();
+						y = e.getY();
+					} else if (selectedTool == TOOL.ROTATE) {
+						a = surroundings.getSelectedAngle(t);
+					}
+					repaint();
+
+					if (e.getButton() == MouseEvent.BUTTON3 && surroundings.getSelection() != SelectionType.SURROUNDINGS) {
+						menuPopup.show(SurroundingsView.this, e.getX(), e.getY());
+					}
 				}
 			}
 
@@ -115,26 +118,30 @@ public class SurroundingsView extends JPanel {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				surroundings.mouseOver(SurroundingsView.this, t);
+				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+					surroundings.mouseOver(SurroundingsView.this, t);
+				}
 			}
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				if (surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS) {
-					Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-					if (selectedTool == TOOL.POINTER) {
-						int nx = e.getX();
-						int ny = e.getY();
-						surroundings.moveBy(nx - x, ny - y);
-						x = nx;
-						y = ny;
-					} else if (selectedTool == TOOL.ROTATE) {
-						double na = surroundings.getSelectedAngle(t);
-						double da = na - a;
-						surroundings.rotateSelected(da);
-						a = surroundings.getSelectedAngle(t);
+				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+					if (surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS) {
+						Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+						if (selectedTool == TOOL.POINTER) {
+							int nx = e.getX();
+							int ny = e.getY();
+							surroundings.moveBy(nx - x, ny - y);
+							x = nx;
+							y = ny;
+						} else if (selectedTool == TOOL.ROTATE) {
+							double na = surroundings.getSelectedAngle(t);
+							double da = na - a;
+							surroundings.rotateSelected(da);
+							a = surroundings.getSelectedAngle(t);
+						}
+						surroundings.simulate();
 					}
-					surroundings.simulate();
 				}
 			}
 		});
@@ -199,6 +206,18 @@ public class SurroundingsView extends JPanel {
 			} catch (IOException e) {
 				// TODO save error
 			}
+		}
+	}
+
+	public TOOL getSelectedTool() {
+		return selectedTool;
+	}
+
+	public void setSelectedTool(TOOL selectedTool) {
+		this.selectedTool = selectedTool;
+		if (selectedTool != TOOL.ROTATE && selectedTool != TOOL.POINTER) {
+			surroundings.setSelection(SelectionType.SURROUNDINGS);
+			repaint();
 		}
 	}
 
