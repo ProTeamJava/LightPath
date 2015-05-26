@@ -43,6 +43,9 @@ public abstract class AbstractOpticalElement {
 	int t = 0;
 	int b = 0;
 
+	// TODO lewo/prawo skrętny wielobok -> normalne w inną stronę
+	protected boolean rotationRight = true; 
+	
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
 		this.vertices = vertices;
@@ -285,5 +288,15 @@ public abstract class AbstractOpticalElement {
 
 	public void setPosition(Point p) {
 		position = p;		
+	}
+	
+	protected void checkRightOrLeft() {
+		double sum = 0;
+		
+		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
+			sum += (vertices.get(j).x - vertices.get(i).x) * (vertices.get(j).y + vertices.get(i).y);
+		}
+
+		rotationRight = sum > 0;
 	}
 }

@@ -12,7 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -96,7 +99,6 @@ public class Main extends JFrame {
 		initMenu();
 		initUI();
 		initListeners();
-		
 
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image image = toolkit.getImage(getClass().getResource("/rotate.png"));
@@ -111,7 +113,27 @@ public class Main extends JFrame {
 		int x = (size.width - bounds.width) / 2;
 		int y = (size.height - bounds.height) / 2;
 		scroll.getViewport().setViewPosition(new java.awt.Point(x, y));
-		
+
+		scroll.removeMouseWheelListener((scroll.getMouseWheelListeners()[0]));
+		scroll.addMouseWheelListener(new MouseWheelListener() {
+
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (e.getModifiers() == InputEvent.CTRL_MASK) {
+					saveSliderPositions();
+					if (e.getUnitsToScroll() < 0)
+						surroundingsView.scaleUp();
+					else
+						surroundingsView.scaleDown();
+					restoreSliderPositions();
+				} else if (e.getModifiers() == InputEvent.ALT_MASK) {
+					scroll(e.getUnitsToScroll() * 5, 0);
+				} else {
+					scroll(0, e.getUnitsToScroll() * 5);
+				}
+
+			}
+		});
 
 	}
 
@@ -135,8 +157,7 @@ public class Main extends JFrame {
 		});
 
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
-		
-		
+
 	}
 
 	private void initIcons() {
@@ -275,10 +296,9 @@ public class Main extends JFrame {
 		exitA.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (surroundingsView.surroundings.isModyfied() && 
-					JOptionPane.showConfirmDialog(Main.this, "Do you want to save file?", "Not saved modyfications!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-						// TODO :)
-					
+				if (surroundingsView.surroundings.isModyfied() && JOptionPane.showConfirmDialog(Main.this, "Do you want to save file?", "Not saved modyfications!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+					// TODO :)
+
 				}
 				Main.this.dispose();
 			}
@@ -315,15 +335,21 @@ public class Main extends JFrame {
 		scroll.getViewport().setViewPosition(new java.awt.Point(nx, ny));
 	}
 
+	public void scroll(int dx, int dy) {
+		java.awt.Point pos = scroll.getViewport().getViewPosition();
+		pos.x += dx;
+		pos.y += dy;
+		scroll.getViewport().setViewPosition(pos);
+	}
+
 	public void saveAsPng() {
 		surroundingsView.saveAsPng();
 	}
 
-
 	public static ImageIcon getDeleteI() {
 		return deleteI;
 	}
-	
+
 	public static Cursor getRotateCursor() {
 		return rotateCursor;
 	}

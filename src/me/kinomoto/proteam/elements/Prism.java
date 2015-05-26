@@ -16,24 +16,25 @@ public class Prism extends AbstractOpticalElement {
 	public Prism(Point position, double ior) {
 		super(position, AbstractOpticalElement.getSquare());
 		this.ior = ior;
+		checkRightOrLeft();
 	}
-	
+
 	public Prism(Point position, double ior, List<Point> vert) {
 		super(position, vert);
 		this.ior = ior;
+		checkRightOrLeft();
 	}
-	
+
 	public static Prism getSquarePrism(Point position) {
 		return new Prism(position, 1.33, AbstractOpticalElement.getSquare());
 	}
-	
+
 	public static Prism getTrianglePrism(Point position) {
 		return new Prism(position, 1.33, AbstractOpticalElement.getTriangle());
 	}
 
 	@Override
 	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
-		// TODO fix all...
 
 		// incident beam unit vector coordinates
 		double sx = b.segment.end.x - b.segment.begin.x;
@@ -45,7 +46,11 @@ public class Prism extends AbstractOpticalElement {
 		// sufrace normal unit vertor coordinates
 		double ny = seg.begin.x - seg.end.x;
 		double nx = seg.begin.y - seg.end.y;
-		nx *= -1;
+
+		if(rotationRight)
+			nx *= -1;
+		else
+			ny *= -1;
 
 		double nl = nx * nx + ny * ny;
 		double div = Math.sqrt(nl);
@@ -62,30 +67,30 @@ public class Prism extends AbstractOpticalElement {
 		double rx;
 		double ry;
 
-		double nDotI, nDotI2, a, k, kk, d2;
+		double dot, dot2, a, k, kk, d2;
 
-		nDotI = nx * sx + ny * sy;
-		nDotI2 = nDotI * nDotI;
-		if (nDotI >= 0.0) {
+		dot = nx * sx + ny * sy;
+		dot2 = dot * dot;
+		if (dot >= 0.0) {
 			k = nir;
 			kk = k * k;
 		} else {
 			k = nri;
 			kk = k * k;
 		}
-		d2 = 1.0 - kk * (1.0 - nDotI2);
+		d2 = 1.0 - kk * (1.0 - dot2);
 
 		if (d2 >= 0.0) {
-			if (nDotI >= 0.0) {
-				a = k * nDotI - Math.sqrt(d2);
+			if (dot >= 0.0) {
+				a = k * dot - Math.sqrt(d2);
 			} else {
-				a = k * nDotI + Math.sqrt(d2);
+				a = k * dot + Math.sqrt(d2);
 			}
 			rx = (a * nx - k * sx);
 			ry = (a * ny - k * sy);
 		} else {
-			rx = 2 * nDotI * nx - sx;
-			ry = 2 * nDotI * ny - sy;
+			rx = 2 * dot * nx - sx;
+			ry = 2 * dot * ny - sy;
 		}
 
 		Point end = new Point(b.segment.end.x - rx, b.segment.end.y - ry);

@@ -40,6 +40,7 @@ public class Surroundings {
 	private AbstractOpticalElement elementTransp = null;
 	private BeamSource beamSourTransp = null;
 	
+	private Main ref = null;
 
 	public enum PointPosition {
 		POINT_INSIDE, POINT_ROTATE, POINT_OUTSIDE
@@ -53,17 +54,19 @@ public class Surroundings {
 	private BeamSource selectedBeamSource = null;
 	private AbstractOpticalElement selectedElement = null;
 
-	public Surroundings(SurroundingsView view, String path) {
+	public Surroundings(SurroundingsView view, String path, Main ref) {
 		this.path = path;
 		this.view = view;
+		this.ref = ref;
 		// TODO load
 	}
 
-	public Surroundings(SurroundingsView view) {
+	public Surroundings(SurroundingsView view, Main ref) {
 		setElements(new ArrayList<AbstractOpticalElement>());
 		sources = new ArrayList<BeamSource>();
 		beams = new ArrayList<Beam>();
 		this.view = view;
+		this.ref = ref;
 	}
 
 	public void simulate() {
@@ -296,7 +299,7 @@ public class Surroundings {
 			selectedElement.moveBy(x, y);
 			break;
 		case SURROUNDINGS:
-			// TODO scroll?
+			ref.scroll(-x, -y);
 			break;
 		default:
 			break;

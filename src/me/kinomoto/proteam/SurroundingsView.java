@@ -41,7 +41,7 @@ public class SurroundingsView extends JPanel {
 
 	private TOOL selectedTool = TOOL.POINTER;
 
-	Surroundings surroundings = new Surroundings(this);
+	Surroundings surroundings;
 	SettingsPanel settingsPanel;
 	JFileChooser fc = new JFileChooser();
 
@@ -52,12 +52,14 @@ public class SurroundingsView extends JPanel {
 	private int viewHeight = BASE_HEIGHT;
 
 	private double scale = 1;
+	
 
 	int x = 0;
 	int y = 0;
 	double a = 0;
 
 	public SurroundingsView(final SettingsPanel settingsPanel, Main ref) {
+		surroundings = new Surroundings(this, ref);
 		this.settingsPanel = settingsPanel;
 
 		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
@@ -150,15 +152,18 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
+
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
 				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
-					if (surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS) {
+					
 						if (selectedTool == TOOL.POINTER) {
 							int nx = e.getX();
 							int ny = e.getY();
 							surroundings.moveBy(nx - x, ny - y);
+							if(surroundings.getSelection() != SelectionType.SURROUNDINGS){
 							x = nx;
 							y = ny;
+							}
 						} else if (selectedTool == TOOL.ROTATE) {
 							double na = surroundings.getSelectedAngle(t);
 							double da = na - a;
@@ -166,7 +171,7 @@ public class SurroundingsView extends JPanel {
 							a = surroundings.getSelectedAngle(t);
 						}
 						surroundings.simulate();
-					}
+					
 				} else {
 					surroundings.moveTranspTo(t);
 					repaint();
