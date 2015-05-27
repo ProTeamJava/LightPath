@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -14,8 +16,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
+import me.kinomoto.proteam.Surroundings.PointPosition;
+import me.kinomoto.proteam.Surroundings.SelectionType;
 import me.kinomoto.proteam.elements.BeamSource;
 import me.kinomoto.proteam.elements.Mirror;
 import me.kinomoto.proteam.elements.Point;
@@ -24,12 +30,18 @@ import me.kinomoto.proteam.elements.Segment;
 import me.kinomoto.proteam.settings.SettingsPanel;
 
 public class SurroundingsView extends JPanel {
-
 	private static final long serialVersionUID = 5447523639086911950L;
 
-	Main main;
+	public enum TOOL {
+		POINTER, ROTATE, MIRROR, TRIANGLE_PRISM, SQUARE_PRISM
+	}
 
-	Surroundings surroundings = new Surroundings(this);
+	private JPopupMenu menuPopup = new JPopupMenu();
+	private JMenuItem removeSelected = new JMenuItem(Messages.get("delete"), Main.getDeleteI());
+
+	private TOOL selectedTool = TOOL.POINTER;
+
+	Surroundings surroundings;
 	SettingsPanel settingsPanel;
 	JFileChooser fc = new JFileChooser();
 
@@ -40,13 +52,15 @@ public class SurroundingsView extends JPanel {
 	private int viewHeight = BASE_HEIGHT;
 
 	private double scale = 1;
+	
 
 	int x = 0;
 	int y = 0;
+	double a = 0;
 
 	public SurroundingsView(final SettingsPanel settingsPanel, Main ref) {
+		surroundings = new Surroundings(this, ref);
 		this.settingsPanel = settingsPanel;
-		main = ref;
 
 		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
 
@@ -63,34 +77,114 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				surroundings.mousePressed(t);
-				surroundings.mouseOver(SurroundingsView.this, t);
-				settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
-				x = e.getX();
-				y = e.getY();
+
+				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+					PointPosition pos = surroundings.mousePressed(t);
+					surroundings.mouseOver(SurroundingsView.this, t);
+
+					switch (pos) {
+					case POINT_ROTATE:
+						selectedTool = TOOL.ROTATE;
+						break;
+					default:
+						selectedTool = TOOL.POINTER;
+						break;
+					}
+
+					settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
+					if (selectedTool == TOOL.POINTER) {
+						x = e.getX();
+						y = e.getY();
+					} else if (selectedTool == TOOL.ROTATE) {
+						a = surroundings.getSelectedAngle(t);
+					}
+					repaint();
+
+					if (e.getButton() == MouseEvent.BUTTON3 && surroundings.getSelection() != SelectionType.SURROUNDINGS) {
+						menuPopup.show(SurroundingsView.this, e.getX(), e.getY());
+					}
+				}
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				surroundings.mouseRelased();
+				surroundings.simulate();
+				mouseEntered(e);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+				if (selectedTool == TOOL.MIRROR) {
+					surroundings.newTranp(new Mirror(t));
+					repaint();
+				} else if(selectedTool == TOOL.SQUARE_PRISM) {
+					surroundings.newTranp(Prism.getSquarePrism(t));
+					repaint();
+				} else if(selectedTool == TOOL.TRIANGLE_PRISM) {
+					surroundings.newTranp(Prism.getTrianglePrism(t));
+					repaint();
+				}
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				surroundings.cleanTransp();
 				repaint();
 			}
+
 		});
 
 		this.addMouseMotionListener(new MouseMotionListener() {
-
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				surroundings.mouseOver(SurroundingsView.this, t);
+				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+					surroundings.mouseOver(SurroundingsView.this, t);
+				} else {
+					surroundings.moveTranspTo(t);
+					repaint();
+				}
 			}
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				if (surroundings.getSelection() != Surroundings.SelectionType.SURROUNDINGS) {
-					int nx = e.getX();
-					int ny = e.getY();
-					surroundings.moveBy(nx - x, ny - y);
-					x = nx;
-					y = ny;
-					surroundings.simulate();
+
+				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+					
+						if (selectedTool == TOOL.POINTER) {
+							int nx = e.getX();
+							int ny = e.getY();
+							surroundings.moveBy(nx - x, ny - y);
+							if(surroundings.getSelection() != SelectionType.SURROUNDINGS){
+							x = nx;
+							y = ny;
+							}
+						} else if (selectedTool == TOOL.ROTATE) {
+							double na = surroundings.getSelectedAngle(t);
+							double da = na - a;
+							surroundings.rotateSelected(da);
+							a = surroundings.getSelectedAngle(t);
+						}
+						surroundings.simulate();
+					
+				} else {
+					surroundings.moveTranspTo(t);
+					repaint();
 				}
+			}
+		});
+
+		menuPopup.add(removeSelected);
+		removeSelected.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				surroundings.deleteSelected();
 			}
 		});
 	}
@@ -145,6 +239,18 @@ public class SurroundingsView extends JPanel {
 			} catch (IOException e) {
 				// TODO save error
 			}
+		}
+	}
+
+	public TOOL getSelectedTool() {
+		return selectedTool;
+	}
+
+	public void setSelectedTool(TOOL selectedTool) {
+		this.selectedTool = selectedTool;
+		if (selectedTool != TOOL.ROTATE && selectedTool != TOOL.POINTER) {
+			surroundings.setSelection(SelectionType.SURROUNDINGS);
+			repaint();
 		}
 	}
 

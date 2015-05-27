@@ -1,14 +1,21 @@
 package me.kinomoto.proteam;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -44,6 +51,8 @@ public class Main extends JFrame {
 	private JMenuItem zoomOutA;
 	private JMenuItem aboutA;
 
+	private static Cursor rotateCursor = null;
+
 	private ImageIcon openI;
 	private ImageIcon saveI;
 	private ImageIcon saveAsI;
@@ -51,15 +60,15 @@ public class Main extends JFrame {
 	private ImageIcon exitI;
 	private ImageIcon undoI;
 	private ImageIcon redoI;
-	private ImageIcon deleteI;
+	private static ImageIcon deleteI;
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 
-	OpenAction open;
-	SaveAsPngAction savePng;
-	SaveAsAction saveas;
+	private OpenAction open;
+	private SaveAsPngAction savePng;
+	private SaveAsAction saveas;
 
-	private SurroundingsView surroundingsView;
+	public SurroundingsView surroundingsView;
 
 	private JPanel toolBar;
 	private SettingsPanel settingsPanel;
@@ -91,6 +100,11 @@ public class Main extends JFrame {
 		initUI();
 		initListeners();
 
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image image = toolkit.getImage(getClass().getResource("/rotate.png"));
+		Point hotspot = new Point(8, 8);
+		rotateCursor = toolkit.createCustomCursor(image, hotspot, "Rotate");
+
 		setLocationRelativeTo(null);
 		this.setVisible(true);
 
@@ -99,6 +113,28 @@ public class Main extends JFrame {
 		int x = (size.width - bounds.width) / 2;
 		int y = (size.height - bounds.height) / 2;
 		scroll.getViewport().setViewPosition(new java.awt.Point(x, y));
+
+		scroll.removeMouseWheelListener((scroll.getMouseWheelListeners()[0]));
+		scroll.addMouseWheelListener(new MouseWheelListener() {
+
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (e.getModifiers() == InputEvent.CTRL_MASK) {
+					saveSliderPositions();
+					if (e.getUnitsToScroll() < 0)
+						surroundingsView.scaleUp();
+					else
+						surroundingsView.scaleDown();
+					restoreSliderPositions();
+				} else if (e.getModifiers() == InputEvent.ALT_MASK) {
+					scroll(e.getUnitsToScroll() * 5, 0);
+				} else {
+					scroll(0, e.getUnitsToScroll() * 5);
+				}
+
+			}
+		});
+
 	}
 
 	private void initUI() {
@@ -121,6 +157,7 @@ public class Main extends JFrame {
 		});
 
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
+
 	}
 
 	private void initIcons() {
@@ -259,10 +296,9 @@ public class Main extends JFrame {
 		exitA.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (surroundingsView.surroundings.isModyfied() && 
-					JOptionPane.showConfirmDialog(Main.this, "Do you want to save file?", "Not saved modyfications!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-						// TODO :)
-					
+				if (surroundingsView.surroundings.isModyfied() && JOptionPane.showConfirmDialog(Main.this, "Do you want to save file?", "Not saved modyfications!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+					// TODO :)
+
 				}
 				Main.this.dispose();
 			}
@@ -299,8 +335,22 @@ public class Main extends JFrame {
 		scroll.getViewport().setViewPosition(new java.awt.Point(nx, ny));
 	}
 
+	public void scroll(int dx, int dy) {
+		java.awt.Point pos = scroll.getViewport().getViewPosition();
+		pos.x += dx;
+		pos.y += dy;
+		scroll.getViewport().setViewPosition(pos);
+	}
+
 	public void saveAsPng() {
 		surroundingsView.saveAsPng();
 	}
 
+	public static ImageIcon getDeleteI() {
+		return deleteI;
+	}
+
+	public static Cursor getRotateCursor() {
+		return rotateCursor;
+	}
 }

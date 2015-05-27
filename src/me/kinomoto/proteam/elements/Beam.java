@@ -11,7 +11,7 @@ import com.mindprod.wavelength.Wavelength;
 public class Beam {
 	private static final int MAX_LENGTH = 4500;
 	private static final double STEP_SIZE = 200.0 / MAX_LENGTH;
-	
+
 	Segment segment;
 	private boolean collisionChecked = false;
 	double wavelenght;
@@ -37,7 +37,7 @@ public class Beam {
 		return collisionChecked;
 	}
 
-	public void simulate(Surroundings s){
+	public void simulate(Surroundings s) {
 		int collisionNum = 0;
 		Collision collision = null;
 		AbstractOpticalElement collisionElement = null;
@@ -87,11 +87,6 @@ public class Beam {
 					step /= 1.5;
 			}
 			collisionNum = 0;
-
-			// magic fix
-			if(end - start < 1e-200) {
-				break;
-			}
 		}
 
 		collisionChecked = true;

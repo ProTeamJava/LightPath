@@ -1,5 +1,6 @@
 package me.kinomoto.proteam;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -34,6 +35,12 @@ public class Surroundings {
 
 	private boolean isSimulating = false;
 	private boolean simQueue = false;
+	
+	private SelectionType halfTranparentDrawType = SelectionType.SURROUNDINGS;
+	private AbstractOpticalElement elementTransp = null;
+	private BeamSource beamSourTransp = null;
+	
+	private Main ref = null;
 
 	public enum PointPosition {
 		POINT_INSIDE, POINT_ROTATE, POINT_OUTSIDE
@@ -47,17 +54,19 @@ public class Surroundings {
 	private BeamSource selectedBeamSource = null;
 	private AbstractOpticalElement selectedElement = null;
 
-	public Surroundings(SurroundingsView view, String path) {
+	public Surroundings(SurroundingsView view, String path, Main ref) {
 		this.path = path;
 		this.view = view;
-		// load
+		this.ref = ref;
+		// TODO load
 	}
 
-	public Surroundings(SurroundingsView view) {
+	public Surroundings(SurroundingsView view, Main ref) {
 		setElements(new ArrayList<AbstractOpticalElement>());
 		sources = new ArrayList<BeamSource>();
 		beams = new ArrayList<Beam>();
 		this.view = view;
+		this.ref = ref;
 	}
 
 	public void simulate() {
@@ -127,41 +136,54 @@ public class Surroundings {
 		for (AbstractOpticalElement abstractOpticalElement : getElements()) {
 			abstractOpticalElement.paint(g);
 		}
+		
+		if(elementTransp != null) {
+			elementTransp.paint(g, Color.GRAY);;
+		}
 
 		switch (selection) {
 		case SELECTED_BEAM_SOURCE:
 			selectedBeamSource.paintSelection(g);
 			break;
 		case SELECTED_ELEMENT:
+			selectedElement.paintSelection(g);
 			break;
 		default:
 			break;
 		}
 	}
 
-	public void mousePressed(Point p) {
+	public PointPosition mousePressed(Point p) {
 
 		for (BeamSource beamSource : sources) {
-			if (beamSource.isPointInside(p, selectedBeamSource) != PointPosition.POINT_OUTSIDE) {
-				setSelection(SelectionType.SELECTED_BEAM_SOURCE);
+			PointPosition pos = beamSource.isPointInside(p, selectedBeamSource);
+			if (pos != PointPosition.POINT_OUTSIDE) {
+				selection = SelectionType.SELECTED_BEAM_SOURCE;
 				selectedBeamSource = beamSource;
 				selectedElement = null;
-				return;
+				return pos;
 			}
 		}
 
 		for (AbstractOpticalElement element : getElements()) {
-			if (element.isPointInside(p)) {
-				setSelection(SelectionType.SELECTED_ELEMENT);
+			PointPosition pos;
+			if(element == selectedElement) {
+				pos = element.isPointInsideSelected(p);
+			} else {
+				pos = element.isPointInside(p) ? PointPosition.POINT_INSIDE : PointPosition.POINT_OUTSIDE;
+			}
+			if (pos != PointPosition.POINT_OUTSIDE) {
+				selection = SelectionType.SELECTED_ELEMENT;
 				selectedElement = element;
 				selectedBeamSource = null;
-				return;
+				return pos;
 			}
 		}
 
 		selectedBeamSource = null;
 		selectedElement = null;
 		setSelection(SelectionType.SURROUNDINGS);
+		return PointPosition.POINT_OUTSIDE;
 	}
 
 	public JPanel getSelectedSettingsPanel() {
@@ -265,6 +287,7 @@ public class Surroundings {
 
 	public void setSelection(SelectionType selection) {
 		this.selection = selection;
+		updateSettingsPanel();
 	}
 
 	public void moveBy(int x, int y) {
@@ -276,7 +299,7 @@ public class Surroundings {
 			selectedElement.moveBy(x, y);
 			break;
 		case SURROUNDINGS:
-			// TODO scroll?
+			ref.scroll(-x, -y);
 			break;
 		default:
 			break;
@@ -291,24 +314,81 @@ public class Surroundings {
 				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 				break;
 			case POINT_ROTATE:
-				c.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+				c.setCursor(Main.getRotateCursor());
 				break;
 			default:
 				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				break;
-
 			}
 			break;
 		case SELECTED_ELEMENT:
-			if (selectedElement.isPointInside(p))
+			switch (selectedElement.isPointInsideSelected(p)) {
+			case POINT_INSIDE:
 				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
-			else
+				break;
+			case POINT_ROTATE:
+				c.setCursor(Main.getRotateCursor());
+				break;
+			default:
 				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				break;
+			}
 			break;
-
 		default:
 			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			break;
 		}
+	}
+
+	public double getSelectedAngle(Point p) {
+		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
+			return selectedBeamSource.getAngle(p);
+		} else if (selection == SelectionType.SELECTED_ELEMENT) {
+			return selectedElement.getAngle(p);
+		}
+		return 0;
+	}
+
+	public void rotateSelected(double da) {
+		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
+			selectedBeamSource.rotate(da);
+		} else if (selection == SelectionType.SELECTED_ELEMENT) {
+			selectedElement.rotate(da);
+		}
+	}
+
+	public void mouseRelased() {
+		if(selection == SelectionType.SELECTED_ELEMENT) {
+			selectedElement.addAngle();
+		}
+		if(halfTranparentDrawType == SelectionType.SELECTED_ELEMENT) {
+			elements.add(elementTransp);
+			elementTransp = null;
+			halfTranparentDrawType = SelectionType.SURROUNDINGS;
+		}
+	}
+	
+	public void newTranp(AbstractOpticalElement element) {
+		halfTranparentDrawType = SelectionType.SELECTED_ELEMENT;
+		elementTransp = element;
+	}
+	
+	public void moveTranspTo(Point p) {
+		switch(halfTranparentDrawType) {
+		case SELECTED_BEAM_SOURCE:
+			break;
+		case SELECTED_ELEMENT:
+			elementTransp.setPosition(p);
+			break;
+		default:
+			break;
+		
+		}
+	}
+	
+	public void cleanTransp() {
+		halfTranparentDrawType = SelectionType.SURROUNDINGS;
+		elementTransp = null;
+		beamSourTransp = null;
 	}
 }

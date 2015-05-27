@@ -72,7 +72,7 @@ public class BeamSource {
 	}
 
 	public void setAngle(double angle) {
-		this.angle = angle;
+		this.angle = angle % 360.0;
 		segment.end = new Point(segment.begin.x + cosA, segment.begin.y + sinA);
 		updateTrig();
 	}
@@ -84,7 +84,9 @@ public class BeamSource {
 		p.translate(segment.begin.x, segment.begin.y);
 		p.rotate(angle);
 		p.fillRect(-WIDTH / 2, -HIEGHT / 2, WIDTH, HIEGHT);
-
+		p.setColor(Color.BLACK);
+		p.setStroke(new BasicStroke(1.5f));
+		p.drawRect(-WIDTH / 2, -HIEGHT / 2, WIDTH, HIEGHT);
 	}
 
 	public void paintSelection(Graphics2D g) {
@@ -111,8 +113,7 @@ public class BeamSource {
 	}
 
 	public Surroundings.PointPosition isPointInside(Point p, BeamSource selected) {
-		// TODO fix :(
-		Point t = p.min(segment.begin); // czemu abs to nie wiem :(
+		Point t = p.min(segment.begin);
 		double x = Math.abs(t.x * cosA + t.y * sinA);
 		double y = Math.abs(t.x * sinA - t.y * cosA);
 		
@@ -138,5 +139,17 @@ public class BeamSource {
 		segment = segment.moveBy(new Point(dx, dy));
 		updateAngle();
 		updateTrig();
+	}
+	
+	/**
+	 * Used by {@link Surroundings#getSelectedAngle(Point)}
+	 * @return
+	 */
+	public double getAngle(Point p) {
+		return Math.atan2(p.y - segment.begin.y, p.x - segment.begin.x);
+	}
+	
+	public void rotate(double da) {
+		setAngle(angle + da); 
 	}
 }

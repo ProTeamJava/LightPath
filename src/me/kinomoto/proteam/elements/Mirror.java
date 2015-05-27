@@ -11,6 +11,7 @@ import me.kinomoto.proteam.settings.MirrorSettingsPanel;
 public class Mirror extends AbstractOpticalElement {
 
 	private double absorption = .99;
+	private static final int magicNumberMirror = 0x6D69;
 
 	public Mirror(Point position) {
 		super(position, AbstractOpticalElement.getMirror());
@@ -101,9 +102,9 @@ public class Mirror extends AbstractOpticalElement {
 
 	@Override
 	public void save(DataOutputStream os) throws IOException {
-		// save magicx
+		os.writeDouble(magicNumberMirror);
 		saveAbstract(os);
-		// save abs
+		os.writeDouble(absorption);
 
 	}
 

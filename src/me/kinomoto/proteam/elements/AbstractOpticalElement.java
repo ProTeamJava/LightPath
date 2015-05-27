@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -13,6 +15,7 @@ import javax.swing.JPanel;
 import me.kinomoto.proteam.Collision;
 import me.kinomoto.proteam.MultipleCollisionsException;
 import me.kinomoto.proteam.Surroundings;
+import me.kinomoto.proteam.Surroundings.PointPosition;
 
 /**
  * 
@@ -33,10 +36,20 @@ public abstract class AbstractOpticalElement {
 
 	protected Point position;
 	protected List<Point> vertices;
+	private double selectionAngle = 0;
 
+	int l = 0;
+	int r = 0;
+	int t = 0;
+	int b = 0;
+
+	// TODO lewo/prawo skrętny wielobok -> normalne w inną stronę
+	protected boolean rotationRight = true; 
+	
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
 		this.vertices = vertices;
+		calcBounds();
 	}
 
 	public AbstractOpticalElement(Point position) {
@@ -46,19 +59,31 @@ public abstract class AbstractOpticalElement {
 
 	public static List<Point> getTriangle() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(0, 1));
-		tmp.add(new Point(-.6, -.3));
-		tmp.add(new Point(.6, -.3));
-		tmp.add(new Point(0, 1));
+		tmp.add(new Point(0, 40));
+		tmp.add(new Point(-50, -12));
+		tmp.add(new Point(50, -12));
+		tmp.add(new Point(0, 40));
 		return tmp;
 	}
 
 	public abstract boolean isPointInside(Point p);
 
+	public Surroundings.PointPosition isPointInsideSelected(Point p) {
+		int nx = (int) (p.x - position.x);
+		int ny = (int) (p.y - position.y);
+
+		if ((nx > l - 4 && nx < l + 7 && ny > t - 4 && ny < t + 7) || (nx > r - 7 && nx < r + 4 && ny > t - 4 && ny < t + 7) || (nx > r - 4 && nx < r + 7 && ny > b - 7 && ny < b + 4) || (nx > l - 7 && nx < l + 4 && ny > b - 7 && ny < b + 4))
+			return PointPosition.POINT_ROTATE;
+
+		if (nx >= l && nx <= r && ny >= t && ny <= b)
+			return PointPosition.POINT_INSIDE;
+		return PointPosition.POINT_OUTSIDE;
+	}
+
 	public static List<Point> getMirror() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(-10, -10));
-		tmp.add(new Point(10, 10));
+		tmp.add(new Point(10, -10));
+		tmp.add(new Point(-10, 10));
 		return tmp;
 	}
 
@@ -78,7 +103,7 @@ public abstract class AbstractOpticalElement {
 
 	/**
 	 * 
-	 * @return null - no collision
+	 * @return <code>null</code> - no collision
 	 * @throws MultipleCollisionsException
 	 *             if there is more than one collision
 	 */
@@ -152,14 +177,39 @@ public abstract class AbstractOpticalElement {
 	}
 
 	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
-
+	
 	public void paint(Graphics2D g) {
-		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setColor(Color.BLACK);
-		g2.setStroke(new BasicStroke(STROKE_WIDTH));
+		paint(g, Color.BLACK);
+	}
+
+	public void paint(Graphics2D g, Color c) {
+		Graphics2D p = (Graphics2D) g.create();
+		p.setColor(c);
+		p.setStroke(new BasicStroke(STROKE_WIDTH));
+
+		p.translate(position.x, position.y);
+
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
-			g2.drawLine((int) get(i).x, (int) get(i).y, (int) get(j).x, (int) get(j).y);
+			p.drawLine((int) vertices.get(i).x, (int) vertices.get(i).y, (int) vertices.get(j).x, (int) vertices.get(j).y);
 		}
+	}
+
+	public void paintSelection(Graphics2D g) {
+		Graphics2D p = (Graphics2D) g.create();
+		p.translate(position.x, position.y);
+		p.rotate(selectionAngle);
+		p.setStroke(new BasicStroke(1.0f, // Width
+				BasicStroke.CAP_SQUARE, // End cap
+				BasicStroke.JOIN_BEVEL, // Join style
+				10.0f, // Miter limit
+				new float[] { 2.0f, 2.0f }, // Dash pattern
+				0.0f)); // Dash phase
+		p.setColor(Color.BLACK);
+		p.drawRect((int) l, (int) t, (int) (r - l), (int) (b - t));
+		p.fillRect(l - 2, t - 2, 4, 4);
+		p.fillRect(l - 2, b - 2, 4, 4);
+		p.fillRect(r - 2, t - 2, 4, 4);
+		p.fillRect(r - 2, b - 2, 4, 4);
 	}
 
 	public abstract JPanel getSettingsPanel(Surroundings s);
@@ -167,7 +217,7 @@ public abstract class AbstractOpticalElement {
 	public abstract void save(DataOutputStream os) throws IOException;
 
 	protected void saveAbstract(DataOutputStream os) throws IOException {
-
+		// TODO
 	}
 
 	public void moveBy(int x, int y) {
@@ -175,4 +225,78 @@ public abstract class AbstractOpticalElement {
 		position.y += y;
 	}
 
+	private void calcBounds() {
+		r = (int) (Collections.min(vertices, new Comparator<Point>() {
+
+			@Override
+			public int compare(Point p1, Point p2) {
+				return (int) ((p2.x - p1.x) * 1000);
+			}
+
+		}).x + 10);
+		l = (int) (Collections.max(vertices, new Comparator<Point>() {
+
+			@Override
+			public int compare(Point p1, Point p2) {
+				return (int) ((p2.x - p1.x) * 1000);
+			}
+
+		}).x - 10);
+		b = (int) (Collections.min(vertices, new Comparator<Point>() {
+
+			@Override
+			public int compare(Point p1, Point p2) {
+				return (int) ((p2.y - p1.y) * 1000);
+			}
+
+		}).y + 10);
+		t = (int) (Collections.max(vertices, new Comparator<Point>() {
+
+			@Override
+			public int compare(Point p1, Point p2) {
+				return (int) ((p2.y - p1.y) * 1000);
+			}
+
+		}).y - 10);
+	}
+
+	/**
+	 * Used by {@link Surroundings#getSelectedAngle(Point)}
+	 * 
+	 * @return
+	 */
+	public double getAngle(Point p) {
+		return Math.atan2(p.y - position.y, p.x - position.x);
+	}
+
+	public void rotate(double da) {
+		selectionAngle += da;
+		double sin = Math.sin(da);
+		double cos = Math.cos(da);
+		for(Point p : vertices) {
+			double y = p.x * sin + p.y * cos;
+			double x = p.x * cos - p.y * sin;
+			p.x = x;
+			p.y = y;
+		}
+	}
+	
+	public void addAngle() {
+		selectionAngle = 0;
+		calcBounds();
+	}
+
+	public void setPosition(Point p) {
+		position = p;		
+	}
+	
+	protected void checkRightOrLeft() {
+		double sum = 0;
+		
+		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
+			sum += (vertices.get(j).x - vertices.get(i).x) * (vertices.get(j).y + vertices.get(i).y);
+		}
+
+		rotationRight = sum > 0;
+	}
 }
