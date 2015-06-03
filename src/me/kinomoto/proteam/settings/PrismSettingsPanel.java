@@ -9,6 +9,9 @@ import javax.swing.event.ChangeListener;
 
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.Prism;
+import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeMirror;
+import me.kinomoto.proteam.history.HistoryNodePrism;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -52,6 +55,7 @@ public class PrismSettingsPanel extends JPanel {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				History.addNode(new HistoryNodePrism(p, s));
 				p.setIOR((double) spinner.getValue());
 				s.simulate();				
 			}

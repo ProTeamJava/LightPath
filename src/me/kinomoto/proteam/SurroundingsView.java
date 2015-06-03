@@ -27,6 +27,10 @@ import me.kinomoto.proteam.elements.Mirror;
 import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.elements.Prism;
 import me.kinomoto.proteam.elements.Segment;
+import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeAbstract;
+import me.kinomoto.proteam.history.HistoryNodePrism;
+import me.kinomoto.proteam.history.HistoryNodeSurroundings;
 import me.kinomoto.proteam.settings.SettingsPanel;
 
 public class SurroundingsView extends JPanel {
@@ -110,6 +114,7 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				//History.addNode(new HistoryNodeSurroundings(surroundings);//how to? 
 				surroundings.mouseRelased();
 				surroundings.simulate();
 				mouseEntered(e);

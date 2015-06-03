@@ -9,6 +9,9 @@ import javax.swing.event.ChangeListener;
 
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.Mirror;
+import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeMirror;
+import me.kinomoto.proteam.history.HistoryNodeSurroundings;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -50,6 +53,7 @@ public class MirrorSettingsPanel extends JPanel {
 			
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
+				History.addNode(new HistoryNodeMirror(m, s));
 				m.setAbsorption((double) spinner.getValue());
 				s.simulate();
 			}
