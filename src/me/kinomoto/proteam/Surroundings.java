@@ -138,7 +138,12 @@ public class Surroundings {
 		}
 		
 		if(elementTransp != null) {
-			elementTransp.paint(g, Color.GRAY);;
+			elementTransp.paint(g, Color.GRAY);
+		}
+		
+		if(beamSourTransp != null) {
+			//TODO color
+			beamSourTransp.paint(g);			
 		}
 
 		switch (selection) {
@@ -365,7 +370,13 @@ public class Surroundings {
 			elements.add(elementTransp);
 			elementTransp = null;
 			halfTranparentDrawType = SelectionType.SURROUNDINGS;
+		} else if(halfTranparentDrawType == SelectionType.SELECTED_BEAM_SOURCE) {
+			sources.add(beamSourTransp);
+			beamSourTransp = null;
+			halfTranparentDrawType = SelectionType.SURROUNDINGS;
+			simulate();
 		}
+		
 	}
 	
 	public void newTranp(AbstractOpticalElement element) {
@@ -373,9 +384,15 @@ public class Surroundings {
 		elementTransp = element;
 	}
 	
+	public void newTranp(BeamSource source) {
+		halfTranparentDrawType = SelectionType.SELECTED_BEAM_SOURCE;
+		beamSourTransp = source;
+	}
+	
 	public void moveTranspTo(Point p) {
 		switch(halfTranparentDrawType) {
 		case SELECTED_BEAM_SOURCE:
+			beamSourTransp.setPosition(p);
 			break;
 		case SELECTED_ELEMENT:
 			elementTransp.setPosition(p);

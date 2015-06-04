@@ -33,7 +33,7 @@ public class SurroundingsView extends JPanel {
 	private static final long serialVersionUID = 5447523639086911950L;
 
 	public enum TOOL {
-		POINTER, ROTATE, MIRROR, TRIANGLE_PRISM, SQUARE_PRISM
+		POINTER, ROTATE, MIRROR, TRIANGLE_PRISM, SQUARE_PRISM, SOURCE
 	}
 
 	private JPopupMenu menuPopup = new JPopupMenu();
@@ -127,6 +127,9 @@ public class SurroundingsView extends JPanel {
 					repaint();
 				} else if(selectedTool == TOOL.TRIANGLE_PRISM) {
 					surroundings.newTranp(Prism.getTrianglePrism(t));
+					repaint();
+				} else if(selectedTool == TOOL.SOURCE) {
+					surroundings.newTranp(new BeamSource(t, 0, 650));
 					repaint();
 				}
 			}

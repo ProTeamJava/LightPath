@@ -43,7 +43,6 @@ public class BeamSource {
 		this.segment = new Segment(pos, new Point(pos.x + cosA, pos.y + sinA));
 	}
 
-
 	public double getWavelength() {
 		return wavelength;
 	}
@@ -151,5 +150,10 @@ public class BeamSource {
 	
 	public void rotate(double da) {
 		setAngle(angle + da); 
+	}
+
+	public void setPosition(Point p) {
+		segment.begin = p;
+		setAngle(angle);
 	}
 }

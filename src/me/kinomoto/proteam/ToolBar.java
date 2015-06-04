@@ -23,11 +23,13 @@ public class ToolBar extends JPanel {
 		JToggleButton mirrorSelectButton = new JToggleButton(main.getIcon("draw-line.png"));
 		JToggleButton triangularPrismButton = new JToggleButton(main.getIcon("draw-triangle1.png"));
 		JToggleButton squarePrismButton = new JToggleButton(main.getIcon("draw-rectangle.png"));
+		JToggleButton sourceButton = new JToggleButton(main.getIcon("source.png"));
 
 		btnGroup.add(pointerSelectButton);
 		btnGroup.add(mirrorSelectButton);
 		btnGroup.add(triangularPrismButton);
 		btnGroup.add(squarePrismButton);
+		btnGroup.add(sourceButton);
 		
 		pointerSelectButton.setSelected(true);
 
@@ -35,6 +37,7 @@ public class ToolBar extends JPanel {
 		this.add(mirrorSelectButton);
 		this.add(triangularPrismButton);
 		this.add(squarePrismButton);
+		this.add(sourceButton);
 
 		pointerSelectButton.addActionListener(new ActionListener() {
 			
@@ -68,6 +71,15 @@ public class ToolBar extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				main.surroundingsView.setSelectedTool(TOOL.SQUARE_PRISM);
+				
+			}
+		});
+		
+		sourceButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				main.surroundingsView.setSelectedTool(TOOL.SOURCE);
 				
 			}
 		});
