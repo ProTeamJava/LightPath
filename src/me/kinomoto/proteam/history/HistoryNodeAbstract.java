@@ -11,4 +11,7 @@ public abstract class HistoryNodeAbstract {
 	
 	public abstract void undo();
 	public abstract void redo();
+	public boolean isEmpty() {
+		return false;
+	}
 }

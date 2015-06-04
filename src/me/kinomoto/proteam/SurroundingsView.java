@@ -28,6 +28,7 @@ import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.elements.Prism;
 import me.kinomoto.proteam.elements.Segment;
 import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeMoveAbstract;
 import me.kinomoto.proteam.history.HistoryNodeRotationAbstract;
 import me.kinomoto.proteam.settings.SettingsPanel;
 
@@ -54,7 +55,6 @@ public class SurroundingsView extends JPanel {
 	private int viewHeight = BASE_HEIGHT;
 
 	private double scale = 1;
-	
 
 	int x = 0;
 	int y = 0;
@@ -97,6 +97,7 @@ public class SurroundingsView extends JPanel {
 
 					settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
 					if (selectedTool == TOOL.POINTER) {
+						surroundings.makeMoveNode();
 						x = e.getX();
 						y = e.getY();
 					} else if (selectedTool == TOOL.ROTATE) {
@@ -113,7 +114,7 @@ public class SurroundingsView extends JPanel {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				//History.addNode(new HistoryNodeSurroundings(surroundings);//how to? 
+				// History.addNode(new HistoryNodeSurroundings(surroundings);//how to?
 				surroundings.mouseRelased();
 				surroundings.simulate();
 				mouseEntered(e);
@@ -123,23 +124,23 @@ public class SurroundingsView extends JPanel {
 			public void mouseEntered(MouseEvent e) {
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
 				if (selectedTool == TOOL.MIRROR) {
-					surroundings.newTranp(new Mirror(t));
+					surroundings.newElement(new Mirror(t));
 					repaint();
-				} else if(selectedTool == TOOL.SQUARE_PRISM) {
-					surroundings.newTranp(Prism.getSquarePrism(t));
+				} else if (selectedTool == TOOL.SQUARE_PRISM) {
+					surroundings.newElement(Prism.getSquarePrism(t));
 					repaint();
-				} else if(selectedTool == TOOL.TRIANGLE_PRISM) {
-					surroundings.newTranp(Prism.getTrianglePrism(t));
+				} else if (selectedTool == TOOL.TRIANGLE_PRISM) {
+					surroundings.newElement(Prism.getTrianglePrism(t));
 					repaint();
-				} else if(selectedTool == TOOL.SOURCE) {
-					surroundings.newTranp(new BeamSource(t, 0, 650));
+				} else if (selectedTool == TOOL.SOURCE) {
+					surroundings.newSource(new BeamSource(t, 0, 650));
 					repaint();
 				}
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				surroundings.cleanTransp();
+				surroundings.cleanNew();
 				repaint();
 			}
 
@@ -152,7 +153,7 @@ public class SurroundingsView extends JPanel {
 				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
 					surroundings.mouseOver(SurroundingsView.this, t);
 				} else {
-					surroundings.moveTranspTo(t);
+					surroundings.moveNewTo(t);
 					repaint();
 				}
 			}
@@ -162,32 +163,37 @@ public class SurroundingsView extends JPanel {
 
 				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
 				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
-					
-						if (selectedTool == TOOL.POINTER) {
-							int nx = e.getX();
-							int ny = e.getY();
-							surroundings.moveBy(nx - x, ny - y);
-							if(surroundings.getSelection() != SelectionType.SURROUNDINGS){
-							x = nx;
-							y = ny;
-							}
-						} else if (selectedTool == TOOL.ROTATE) {
-							double na = surroundings.getSelectedAngle(t);
-							double da = na - a;
-							try{
-							HistoryNodeRotationAbstract node = (HistoryNodeRotationAbstract) History.getLastNode();
-							node.rotateBy(da);
+
+					if (selectedTool == TOOL.POINTER) {
+						int nx = e.getX();
+						int ny = e.getY();
+						surroundings.moveBy(nx - x, ny - y);
+						if (surroundings.getSelection() != SelectionType.SURROUNDINGS) {
+							try {
+								HistoryNodeMoveAbstract node = (HistoryNodeMoveAbstract) History.getLastNode();
+								node.moveBy(new Point(nx - x, ny - y));
 							} catch (ClassCastException ex) {
-								// aaaa
 								System.out.println(ex.getMessage());
 							}
-							surroundings.rotateSelected(da);
-							a = surroundings.getSelectedAngle(t);
+							x = nx;
+							y = ny;
 						}
-						surroundings.simulate();
-					
+					} else if (selectedTool == TOOL.ROTATE) {
+						double na = surroundings.getSelectedAngle(t);
+						double da = na - a;
+						try {
+							HistoryNodeRotationAbstract node = (HistoryNodeRotationAbstract) History.getLastNode();
+							node.rotateBy(da);
+						} catch (ClassCastException ex) {
+							System.out.println(ex.getMessage());
+						}
+						surroundings.rotateSelected(da);
+						a = surroundings.getSelectedAngle(t);
+					}
+					surroundings.simulate();
+
 				} else {
-					surroundings.moveTranspTo(t);
+					surroundings.moveNewTo(t);
 					repaint();
 				}
 			}

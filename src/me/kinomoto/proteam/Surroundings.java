@@ -17,6 +17,8 @@ import me.kinomoto.proteam.elements.Beam;
 import me.kinomoto.proteam.elements.BeamSource;
 import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeMoveElement;
+import me.kinomoto.proteam.history.HistoryNodeMoveSource;
 import me.kinomoto.proteam.history.HistoryNodeRotationElement;
 import me.kinomoto.proteam.history.HistoryNodeRotationSource;
 import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
@@ -382,17 +384,17 @@ public class Surroundings {
 		
 	}
 	
-	public void newTranp(AbstractOpticalElement element) {
+	public void newElement(AbstractOpticalElement element) {
 		newDrawType = SelectionType.SELECTED_ELEMENT;
 		newElement = element;
 	}
 	
-	public void newTranp(BeamSource source) {
+	public void newSource(BeamSource source) {
 		newDrawType = SelectionType.SELECTED_BEAM_SOURCE;
 		newSource = source;
 	}
 	
-	public void moveTranspTo(Point p) {
+	public void moveNewTo(Point p) {
 		switch(newDrawType) {
 		case SELECTED_BEAM_SOURCE:
 			newSource.setPosition(p);
@@ -406,7 +408,7 @@ public class Surroundings {
 		}
 	}
 	
-	public void cleanTransp() {
+	public void cleanNew() {
 		newDrawType = SelectionType.SURROUNDINGS;
 		newElement = null;
 		newSource = null;
@@ -419,5 +421,13 @@ public class Surroundings {
 			History.addNode(new HistoryNodeRotationElement(this, selectedElement));
 		}
 		
+	}
+
+	public void makeMoveNode() {
+		if(selection == SelectionType.SELECTED_ELEMENT) {
+			History.addNode(new HistoryNodeMoveElement(this, selectedElement));
+		} else if(selection == SelectionType.SELECTED_BEAM_SOURCE) {
+			History.addNode(new HistoryNodeMoveSource(this, selectedBeamSource));
+		}
 	}
 }

@@ -19,12 +19,19 @@ public class History {
 	}
 
 	public static void back() {
-		if (!isBackable())
-			return;
-		HistoryNodeAbstract node = ((LinkedList<HistoryNodeAbstract>) past).getLast();
-		node.undo();
-		past.remove(node);
-		future.add(node);
+		for (;;) {
+			if (!isBackable())
+				return;
+			HistoryNodeAbstract node = ((LinkedList<HistoryNodeAbstract>) past).getLast();
+			if (node.isEmpty()) {
+				past.remove(node);
+			} else {
+				node.undo();
+				past.remove(node);
+				future.add(node);
+				return;
+			}
+		}
 	}
 
 	public static void foward() {
@@ -40,7 +47,7 @@ public class History {
 		past.add(node);
 		future.clear();
 	}
-	
+
 	public static HistoryNodeAbstract getLastNode() {
 		return ((LinkedList<HistoryNodeAbstract>) past).getLast();
 	}

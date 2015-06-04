@@ -12,5 +12,10 @@ public abstract class HistoryNodeRotationAbstract extends HistoryNodeAbstract {
 	public void rotateBy(double da) {
 		rotateBy += da;
 	}
+	
+	@Override
+	public boolean isEmpty() {
+		return rotateBy == 0;
+	}
 
 }

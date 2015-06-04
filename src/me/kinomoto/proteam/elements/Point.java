@@ -5,7 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class Point {
-	double x, y;
+	public double x;
+	public double y;
 
 	public Point(DataInputStream is) throws IOException {
 		x = is.readDouble();
