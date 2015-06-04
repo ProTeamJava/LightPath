@@ -5,9 +5,11 @@ import me.kinomoto.proteam.elements.Mirror;
 
 public class HistoryNodeMirror extends HistoryNodeAbstract {
 	private double absorption = .99;
+	private Mirror m;
 	
 	public HistoryNodeMirror(Mirror m, Surroundings s) {
-		super(m, s);
+		super(s);
+		this.m = m;
 		absorption = m.getAbsorption();
 	}
 

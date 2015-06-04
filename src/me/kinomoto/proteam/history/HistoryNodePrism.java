@@ -5,9 +5,11 @@ import me.kinomoto.proteam.elements.Prism;
 
 public class HistoryNodePrism  extends HistoryNodeAbstract{
 	private double ior;
+	private Prism p;
 	
 	public HistoryNodePrism(Prism p, Surroundings s) {
-		super(p, s);
+		super(s);
+		this.p = p;
 		ior = p.getIOR();
 	}
 

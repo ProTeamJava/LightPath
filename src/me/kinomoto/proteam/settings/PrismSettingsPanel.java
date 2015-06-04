@@ -10,7 +10,6 @@ import javax.swing.event.ChangeListener;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.Prism;
 import me.kinomoto.proteam.history.History;
-import me.kinomoto.proteam.history.HistoryNodeMirror;
 import me.kinomoto.proteam.history.HistoryNodePrism;
 
 import com.jgoodies.forms.factories.FormFactory;
