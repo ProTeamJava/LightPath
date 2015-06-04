@@ -72,8 +72,8 @@ public class BeamSource {
 
 	public void setAngle(double angle) {
 		this.angle = angle % 360.0;
-		segment.end = new Point(segment.begin.x + cosA, segment.begin.y + sinA);
 		updateTrig();
+		segment.end = new Point(segment.begin.x + cosA, segment.begin.y + sinA);
 	}
 
 	public void paint(Graphics2D g) {

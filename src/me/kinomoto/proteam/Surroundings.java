@@ -16,6 +16,9 @@ import me.kinomoto.proteam.elements.AbstractOpticalElement;
 import me.kinomoto.proteam.elements.Beam;
 import me.kinomoto.proteam.elements.BeamSource;
 import me.kinomoto.proteam.elements.Point;
+import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeRotationElement;
+import me.kinomoto.proteam.history.HistoryNodeRotationSource;
 import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
@@ -36,9 +39,9 @@ public class Surroundings {
 	private boolean isSimulating = false;
 	private boolean simQueue = false;
 	
-	private SelectionType halfTranparentDrawType = SelectionType.SURROUNDINGS;
-	private AbstractOpticalElement elementTransp = null;
-	private BeamSource beamSourTransp = null;
+	private SelectionType newDrawType = SelectionType.SURROUNDINGS;
+	private AbstractOpticalElement newElement = null;
+	private BeamSource newSource = null;
 	
 	private Main ref = null;
 
@@ -137,13 +140,13 @@ public class Surroundings {
 			abstractOpticalElement.paint(g);
 		}
 		
-		if(elementTransp != null) {
-			elementTransp.paint(g, Color.GRAY);
+		if(newElement != null) {
+			newElement.paint(g, Color.GRAY);
 		}
 		
-		if(beamSourTransp != null) {
+		if(newSource != null) {
 			//TODO color
-			beamSourTransp.paint(g);			
+			newSource.paint(g);			
 		}
 
 		switch (selection) {
@@ -366,36 +369,36 @@ public class Surroundings {
 		if(selection == SelectionType.SELECTED_ELEMENT) {
 			selectedElement.addAngle();
 		}
-		if(halfTranparentDrawType == SelectionType.SELECTED_ELEMENT) {
-			elements.add(elementTransp);
-			elementTransp = null;
-			halfTranparentDrawType = SelectionType.SURROUNDINGS;
-		} else if(halfTranparentDrawType == SelectionType.SELECTED_BEAM_SOURCE) {
-			sources.add(beamSourTransp);
-			beamSourTransp = null;
-			halfTranparentDrawType = SelectionType.SURROUNDINGS;
+		if(newDrawType == SelectionType.SELECTED_ELEMENT) {
+			elements.add(newElement);
+			newElement = null;
+			newDrawType = SelectionType.SURROUNDINGS;
+		} else if(newDrawType == SelectionType.SELECTED_BEAM_SOURCE) {
+			sources.add(newSource);
+			newSource = null;
+			newDrawType = SelectionType.SURROUNDINGS;
 			simulate();
 		}
 		
 	}
 	
 	public void newTranp(AbstractOpticalElement element) {
-		halfTranparentDrawType = SelectionType.SELECTED_ELEMENT;
-		elementTransp = element;
+		newDrawType = SelectionType.SELECTED_ELEMENT;
+		newElement = element;
 	}
 	
 	public void newTranp(BeamSource source) {
-		halfTranparentDrawType = SelectionType.SELECTED_BEAM_SOURCE;
-		beamSourTransp = source;
+		newDrawType = SelectionType.SELECTED_BEAM_SOURCE;
+		newSource = source;
 	}
 	
 	public void moveTranspTo(Point p) {
-		switch(halfTranparentDrawType) {
+		switch(newDrawType) {
 		case SELECTED_BEAM_SOURCE:
-			beamSourTransp.setPosition(p);
+			newSource.setPosition(p);
 			break;
 		case SELECTED_ELEMENT:
-			elementTransp.setPosition(p);
+			newElement.setPosition(p);
 			break;
 		default:
 			break;
@@ -404,8 +407,17 @@ public class Surroundings {
 	}
 	
 	public void cleanTransp() {
-		halfTranparentDrawType = SelectionType.SURROUNDINGS;
-		elementTransp = null;
-		beamSourTransp = null;
+		newDrawType = SelectionType.SURROUNDINGS;
+		newElement = null;
+		newSource = null;
+	}
+
+	public void makeRotationNode() {
+		if(selection == SelectionType.SELECTED_BEAM_SOURCE) {
+			History.addNode(new HistoryNodeRotationSource(this, selectedBeamSource));
+		} else if(selection == SelectionType.SELECTED_ELEMENT) {
+			History.addNode(new HistoryNodeRotationElement(this, selectedElement));
+		}
+		
 	}
 }

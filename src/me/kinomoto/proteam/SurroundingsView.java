@@ -27,6 +27,8 @@ import me.kinomoto.proteam.elements.Mirror;
 import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.elements.Prism;
 import me.kinomoto.proteam.elements.Segment;
+import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeRotationAbstract;
 import me.kinomoto.proteam.settings.SettingsPanel;
 
 public class SurroundingsView extends JPanel {
@@ -98,6 +100,7 @@ public class SurroundingsView extends JPanel {
 						x = e.getX();
 						y = e.getY();
 					} else if (selectedTool == TOOL.ROTATE) {
+						surroundings.makeRotationNode();
 						a = surroundings.getSelectedAngle(t);
 					}
 					repaint();
@@ -171,6 +174,13 @@ public class SurroundingsView extends JPanel {
 						} else if (selectedTool == TOOL.ROTATE) {
 							double na = surroundings.getSelectedAngle(t);
 							double da = na - a;
+							try{
+							HistoryNodeRotationAbstract node = (HistoryNodeRotationAbstract) History.getLastNode();
+							node.rotateBy(da);
+							} catch (ClassCastException ex) {
+								// aaaa
+								System.out.println(ex.getMessage());
+							}
 							surroundings.rotateSelected(da);
 							a = surroundings.getSelectedAngle(t);
 						}

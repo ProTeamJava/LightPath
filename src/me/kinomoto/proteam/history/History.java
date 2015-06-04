@@ -40,4 +40,8 @@ public class History {
 		past.add(node);
 		future.clear();
 	}
+	
+	public static HistoryNodeAbstract getLastNode() {
+		return ((LinkedList<HistoryNodeAbstract>) past).getLast();
+	}
 }
