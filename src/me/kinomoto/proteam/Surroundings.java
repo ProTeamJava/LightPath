@@ -17,8 +17,12 @@ import me.kinomoto.proteam.elements.Beam;
 import me.kinomoto.proteam.elements.BeamSource;
 import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.history.History;
+import me.kinomoto.proteam.history.HistoryNodeDeleteElement;
+import me.kinomoto.proteam.history.HistoryNodeDeleteSource;
 import me.kinomoto.proteam.history.HistoryNodeMoveElement;
 import me.kinomoto.proteam.history.HistoryNodeMoveSource;
+import me.kinomoto.proteam.history.HistoryNodeNewElement;
+import me.kinomoto.proteam.history.HistoryNodeNewSource;
 import me.kinomoto.proteam.history.HistoryNodeRotationElement;
 import me.kinomoto.proteam.history.HistoryNodeRotationSource;
 import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
@@ -40,11 +44,11 @@ public class Surroundings {
 
 	private boolean isSimulating = false;
 	private boolean simQueue = false;
-	
+
 	private SelectionType newDrawType = SelectionType.SURROUNDINGS;
 	private AbstractOpticalElement newElement = null;
 	private BeamSource newSource = null;
-	
+
 	private Main ref = null;
 
 	public enum PointPosition {
@@ -141,14 +145,14 @@ public class Surroundings {
 		for (AbstractOpticalElement abstractOpticalElement : getElements()) {
 			abstractOpticalElement.paint(g);
 		}
-		
-		if(newElement != null) {
+
+		if (newElement != null) {
 			newElement.paint(g, Color.GRAY);
 		}
-		
-		if(newSource != null) {
-			//TODO color
-			newSource.paint(g);			
+
+		if (newSource != null) {
+			// TODO color
+			newSource.paint(g);
 		}
 
 		switch (selection) {
@@ -177,7 +181,7 @@ public class Surroundings {
 
 		for (AbstractOpticalElement element : getElements()) {
 			PointPosition pos;
-			if(element == selectedElement) {
+			if (element == selectedElement) {
 				pos = element.isPointInsideSelected(p);
 			} else {
 				pos = element.isPointInside(p) ? PointPosition.POINT_INSIDE : PointPosition.POINT_OUTSIDE;
@@ -275,11 +279,13 @@ public class Surroundings {
 	public void deleteSelected() {
 		switch (getSelection()) {
 		case SELECTED_BEAM_SOURCE:
+			History.addNode(new HistoryNodeDeleteSource(this, selectedBeamSource));
 			sources.remove(selectedBeamSource);
 			selectedBeamSource = null;
 
 			break;
 		case SELECTED_ELEMENT:
+			History.addNode(new HistoryNodeDeleteElement(this, selectedElement));
 			elements.remove(selectedElement);
 			selectedElement = null;
 			break;
@@ -368,34 +374,36 @@ public class Surroundings {
 	}
 
 	public void mouseRelased() {
-		if(selection == SelectionType.SELECTED_ELEMENT) {
+		if (selection == SelectionType.SELECTED_ELEMENT) {
 			selectedElement.addAngle();
 		}
-		if(newDrawType == SelectionType.SELECTED_ELEMENT) {
+		if (newDrawType == SelectionType.SELECTED_ELEMENT) {
 			elements.add(newElement);
+			History.addNode(new HistoryNodeNewElement(this, newElement));
 			newElement = null;
 			newDrawType = SelectionType.SURROUNDINGS;
-		} else if(newDrawType == SelectionType.SELECTED_BEAM_SOURCE) {
+		} else if (newDrawType == SelectionType.SELECTED_BEAM_SOURCE) {
 			sources.add(newSource);
+			History.addNode(new HistoryNodeNewSource(this, newSource));
 			newSource = null;
 			newDrawType = SelectionType.SURROUNDINGS;
 			simulate();
 		}
-		
+
 	}
-	
+
 	public void newElement(AbstractOpticalElement element) {
 		newDrawType = SelectionType.SELECTED_ELEMENT;
 		newElement = element;
 	}
-	
+
 	public void newSource(BeamSource source) {
 		newDrawType = SelectionType.SELECTED_BEAM_SOURCE;
 		newSource = source;
 	}
-	
+
 	public void moveNewTo(Point p) {
-		switch(newDrawType) {
+		switch (newDrawType) {
 		case SELECTED_BEAM_SOURCE:
 			newSource.setPosition(p);
 			break;
@@ -404,10 +412,10 @@ public class Surroundings {
 			break;
 		default:
 			break;
-		
+
 		}
 	}
-	
+
 	public void cleanNew() {
 		newDrawType = SelectionType.SURROUNDINGS;
 		newElement = null;
@@ -415,19 +423,39 @@ public class Surroundings {
 	}
 
 	public void makeRotationNode() {
-		if(selection == SelectionType.SELECTED_BEAM_SOURCE) {
+		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
 			History.addNode(new HistoryNodeRotationSource(this, selectedBeamSource));
-		} else if(selection == SelectionType.SELECTED_ELEMENT) {
+		} else if (selection == SelectionType.SELECTED_ELEMENT) {
 			History.addNode(new HistoryNodeRotationElement(this, selectedElement));
 		}
-		
+
 	}
 
 	public void makeMoveNode() {
-		if(selection == SelectionType.SELECTED_ELEMENT) {
+		if (selection == SelectionType.SELECTED_ELEMENT) {
 			History.addNode(new HistoryNodeMoveElement(this, selectedElement));
-		} else if(selection == SelectionType.SELECTED_BEAM_SOURCE) {
+		} else if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
 			History.addNode(new HistoryNodeMoveSource(this, selectedBeamSource));
 		}
+	}
+
+	public void deleteElement(AbstractOpticalElement element) {
+		elements.remove(element);
+		if (element == selectedElement) {
+			setSelection(SelectionType.SURROUNDINGS);
+			selectedElement = null;
+			view.settingsPanel.setPanel(getSelectedSettingsPanel());
+		}
+		simulate();
+	}
+
+	public void deleteSource(BeamSource bs) {
+		sources.remove(bs);
+		if (bs == selectedBeamSource) {
+			setSelection(SelectionType.SURROUNDINGS);
+			selectedBeamSource = null;
+			view.settingsPanel.setPanel(getSelectedSettingsPanel());
+		}
+		simulate();
 	}
 }

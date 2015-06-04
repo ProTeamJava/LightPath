@@ -3,24 +3,22 @@ package me.kinomoto.proteam.history;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.AbstractOpticalElement;
 
-public class HistoryNodeMoveElement extends HistoryNodeMoveAbstract {
+public class HistoryNodeDeleteElement  extends HistoryNodeAbstract {
 	AbstractOpticalElement element;
 
-	public HistoryNodeMoveElement(Surroundings s, AbstractOpticalElement element) {
+	public HistoryNodeDeleteElement(Surroundings s, AbstractOpticalElement element) {
 		super(s);
 		this.element = element;
 	}
 
 	@Override
 	public void undo() {
-		element.moveBy((int)-moveBy.x, (int)-moveBy.y);
-		s.simulate();
+		s.add(element);
 	}
 
 	@Override
 	public void redo() {
-		element.moveBy((int)moveBy.x, (int)moveBy.y);
-		s.simulate();
+		s.deleteElement(element);
 	}
 
 }
