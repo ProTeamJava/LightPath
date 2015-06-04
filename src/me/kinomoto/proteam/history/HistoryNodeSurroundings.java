@@ -7,12 +7,12 @@ public class HistoryNodeSurroundings extends HistoryNodeAbstract {
 	
 	public HistoryNodeSurroundings(Surroundings s) {
 		super(s);
-		ior = s.getIOR();
+		ior = s.getIor();
 	}
 
 	@Override
 	public void undo() {
-		double tmp = s.getIOR();
+		double tmp = s.getIor();
 		s.setIOR(ior);
 		ior = tmp;
 		s.simulate();
@@ -21,7 +21,7 @@ public class HistoryNodeSurroundings extends HistoryNodeAbstract {
 
 	@Override
 	public void redo() {
-		double tmp = s.getIOR();
+		double tmp = s.getIor();
 		s.setIOR(ior);
 		ior = tmp;
 		s.simulate();

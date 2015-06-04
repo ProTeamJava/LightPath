@@ -51,4 +51,9 @@ public class History {
 	public static HistoryNodeAbstract getLastNode() {
 		return ((LinkedList<HistoryNodeAbstract>) past).getLast();
 	}
+	
+	public static void clean() {
+		past.clear();
+		future.clear();
+	}
 }

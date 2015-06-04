@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import javax.swing.JPanel;
 import me.kinomoto.proteam.elements.AbstractOpticalElement;
 import me.kinomoto.proteam.elements.Beam;
 import me.kinomoto.proteam.elements.BeamSource;
+import me.kinomoto.proteam.elements.LoadException;
 import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.history.HistoryNodeDeleteElement;
@@ -63,15 +66,19 @@ public class Surroundings {
 	private BeamSource selectedBeamSource = null;
 	private AbstractOpticalElement selectedElement = null;
 
-	public Surroundings(SurroundingsView view, String path, Main ref) {
+	public Surroundings(SurroundingsView view, String path, Main ref) throws LoadException {
 		this.path = path;
 		this.view = view;
 		this.ref = ref;
-		// TODO load
+		elements = new ArrayList<AbstractOpticalElement>();
+		sources = new ArrayList<BeamSource>();
+		beams = new ArrayList<Beam>();
+		load();
+		simulate();
 	}
 
 	public Surroundings(SurroundingsView view, Main ref) {
-		setElements(new ArrayList<AbstractOpticalElement>());
+		elements = new ArrayList<AbstractOpticalElement>();
 		sources = new ArrayList<BeamSource>();
 		beams = new ArrayList<Beam>();
 		this.view = view;
@@ -218,12 +225,36 @@ public class Surroundings {
 		this.simulate();
 	}
 
-	public double getIOR() {
-		return getIor();
-	}
-
 	public void updateSettingsPanel() {
 		view.settingsPanel.setPanel(getSelectedSettingsPanel());
+	}
+
+	public void load() throws LoadException {
+		try {
+			DataInputStream is = new DataInputStream(new FileInputStream(path));
+			int magic = is.readInt();
+			if (magic != MAGIC_NUMBER) {
+				is.close();
+				throw new LoadException("Unknow file type.");
+			}
+			
+			setIor(is.readDouble());
+			
+			int sourcesSize = is.readInt();
+			for(int i = 0; i < sourcesSize; i++) {
+				sources.add(new BeamSource(is));
+			}
+			
+			int  elementsSize = is.readInt();
+			for(int i = 0; i < elementsSize; i++){
+				elements.add(AbstractOpticalElement.load(is));
+			}
+			
+
+			is.close();
+		} catch (IOException e) {
+			throw new LoadException("Can't open file");
+		}
 	}
 
 	public void save() {
@@ -231,13 +262,14 @@ public class Surroundings {
 			DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
 			os.writeInt(MAGIC_NUMBER);
 			os.writeDouble(getIor());
+			
 			os.writeInt(sources.size());
-
 			for (BeamSource s : sources) {
 				s.save(os);
 			}
 
-			for (AbstractOpticalElement element : getElements()) {
+			os.writeInt(elements.size());
+			for (AbstractOpticalElement element : elements) {
 				element.save(os);
 			}
 
@@ -457,4 +489,10 @@ public class Surroundings {
 		}
 		simulate();
 	}
+	
+	public boolean hasPath() {
+		return path != "";
+	}
+
+
 }

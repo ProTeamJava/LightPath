@@ -41,7 +41,7 @@ public class SurroundingsSettingsPanel extends JPanel {
 		add(lblIor, "2, 4");
 		
 		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(s.getIOR(), 1.0, 10.0, 0.1));
+		spinner.setModel(new SpinnerNumberModel(s.getIor(), 1.0, 10.0, 0.1));
 		add(spinner, "4, 4");
 		
 		spinner.addChangeListener(new ChangeListener() {

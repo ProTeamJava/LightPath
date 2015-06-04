@@ -226,7 +226,7 @@ public abstract class AbstractOpticalElement {
 		}
 	}
 
-	public static AbstractOpticalElement load(DataInputStream is) throws IOException {
+	public static AbstractOpticalElement load(DataInputStream is) throws IOException, LoadException {
 		int magicNum = is.readInt();
 		Point position = new Point(is);
 		int vertSize = is.readInt();
@@ -240,7 +240,7 @@ public abstract class AbstractOpticalElement {
 		} else if (magicNum == Prism.MAGIC_NUMBER) {
 			return new Prism(position, verts, is);
 		} else {
-			return null;
+			throw new LoadException(me.kinomoto.proteam.Messages.get("fileCorupt"));
 		}
 	}
 

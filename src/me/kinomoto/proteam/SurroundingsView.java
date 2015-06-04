@@ -8,8 +8,8 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
@@ -23,6 +23,7 @@ import javax.swing.JPopupMenu;
 import me.kinomoto.proteam.Surroundings.PointPosition;
 import me.kinomoto.proteam.Surroundings.SelectionType;
 import me.kinomoto.proteam.elements.BeamSource;
+import me.kinomoto.proteam.elements.LoadException;
 import me.kinomoto.proteam.elements.Mirror;
 import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.elements.Prism;
@@ -32,7 +33,7 @@ import me.kinomoto.proteam.history.HistoryNodeMoveAbstract;
 import me.kinomoto.proteam.history.HistoryNodeRotationAbstract;
 import me.kinomoto.proteam.settings.SettingsPanel;
 
-public class SurroundingsView extends JPanel {
+public class SurroundingsView extends JPanel implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 5447523639086911950L;
 
 	public enum TOOL {
@@ -60,11 +61,11 @@ public class SurroundingsView extends JPanel {
 	int y = 0;
 	double a = 0;
 
-	public SurroundingsView(final SettingsPanel settingsPanel, Main ref) {
+	public SurroundingsView(SettingsPanel settingsPanel, Main ref) {
 		surroundings = new Surroundings(this, ref);
 		this.settingsPanel = settingsPanel;
 
-		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
+		initUI();
 
 		surroundings.add(new Mirror(new Point(100, 100)));
 		surroundings.add(new Prism(new Point(150, 180), 1.5));
@@ -74,130 +75,20 @@ public class SurroundingsView extends JPanel {
 		surroundings.add(new BeamSource(new Segment(new Point(210, 250), new Point(100, 150)), 450));
 		surroundings.add(new BeamSource(new Point(280, 200), 190 * Math.PI / 180.0, 400));
 		surroundings.add(new BeamSource(new Point(0, 0), .5 * Math.PI, 730));
+	}
+	
+	public SurroundingsView(SettingsPanel settingsPanel, Main ref, String path) throws LoadException {
+		surroundings = new Surroundings(this, path, ref);
+		this.settingsPanel = settingsPanel;
+		initUI();
+	}
 
-		this.addMouseListener(new MouseAdapter() {
+	private void initUI() {
 
-			@Override
-			public void mousePressed(MouseEvent e) {
+		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
 
-				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-
-				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
-					PointPosition pos = surroundings.mousePressed(t);
-					surroundings.mouseOver(SurroundingsView.this, t);
-
-					switch (pos) {
-					case POINT_ROTATE:
-						selectedTool = TOOL.ROTATE;
-						break;
-					default:
-						selectedTool = TOOL.POINTER;
-						break;
-					}
-
-					settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
-					if (selectedTool == TOOL.POINTER) {
-						surroundings.makeMoveNode();
-						x = e.getX();
-						y = e.getY();
-					} else if (selectedTool == TOOL.ROTATE) {
-						surroundings.makeRotationNode();
-						a = surroundings.getSelectedAngle(t);
-					}
-					repaint();
-
-					if (e.getButton() == MouseEvent.BUTTON3 && surroundings.getSelection() != SelectionType.SURROUNDINGS) {
-						menuPopup.show(SurroundingsView.this, e.getX(), e.getY());
-					}
-				}
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// History.addNode(new HistoryNodeSurroundings(surroundings);//how to?
-				surroundings.mouseRelased();
-				surroundings.simulate();
-				mouseEntered(e);
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				if (selectedTool == TOOL.MIRROR) {
-					surroundings.newElement(new Mirror(t));
-					repaint();
-				} else if (selectedTool == TOOL.SQUARE_PRISM) {
-					surroundings.newElement(Prism.getSquarePrism(t));
-					repaint();
-				} else if (selectedTool == TOOL.TRIANGLE_PRISM) {
-					surroundings.newElement(Prism.getTrianglePrism(t));
-					repaint();
-				} else if (selectedTool == TOOL.SOURCE) {
-					surroundings.newSource(new BeamSource(t, 0, 650));
-					repaint();
-				}
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				surroundings.cleanNew();
-				repaint();
-			}
-
-		});
-
-		this.addMouseMotionListener(new MouseMotionListener() {
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
-					surroundings.mouseOver(SurroundingsView.this, t);
-				} else {
-					surroundings.moveNewTo(t);
-					repaint();
-				}
-			}
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-
-				Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
-				if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
-
-					if (selectedTool == TOOL.POINTER) {
-						int nx = e.getX();
-						int ny = e.getY();
-						surroundings.moveBy(nx - x, ny - y);
-						if (surroundings.getSelection() != SelectionType.SURROUNDINGS) {
-							try {
-								HistoryNodeMoveAbstract node = (HistoryNodeMoveAbstract) History.getLastNode();
-								node.moveBy(new Point(nx - x, ny - y));
-							} catch (ClassCastException ex) {
-								System.out.println(ex.getMessage());
-							}
-							x = nx;
-							y = ny;
-						}
-					} else if (selectedTool == TOOL.ROTATE) {
-						double na = surroundings.getSelectedAngle(t);
-						double da = na - a;
-						try {
-							HistoryNodeRotationAbstract node = (HistoryNodeRotationAbstract) History.getLastNode();
-							node.rotateBy(da);
-						} catch (ClassCastException ex) {
-							System.out.println(ex.getMessage());
-						}
-						surroundings.rotateSelected(da);
-						a = surroundings.getSelectedAngle(t);
-					}
-					surroundings.simulate();
-
-				} else {
-					surroundings.moveNewTo(t);
-					repaint();
-				}
-			}
-		});
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 
 		menuPopup.add(removeSelected);
 		removeSelected.addActionListener(new ActionListener() {
@@ -207,6 +98,7 @@ public class SurroundingsView extends JPanel {
 				surroundings.deleteSelected();
 			}
 		});
+
 	}
 
 	@Override
@@ -262,6 +154,17 @@ public class SurroundingsView extends JPanel {
 		}
 	}
 
+	public void saveAs(String path) {
+		surroundings.saveAs(path);
+	}
+	public void save() {
+		surroundings.save();
+	}
+	
+	public boolean hasPath() {
+		return surroundings.hasPath();
+	}
+
 	public TOOL getSelectedTool() {
 		return selectedTool;
 	}
@@ -270,6 +173,130 @@ public class SurroundingsView extends JPanel {
 		this.selectedTool = selectedTool;
 		if (selectedTool != TOOL.ROTATE && selectedTool != TOOL.POINTER) {
 			surroundings.setSelection(SelectionType.SURROUNDINGS);
+			repaint();
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+		Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+
+		if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+			PointPosition pos = surroundings.mousePressed(t);
+			surroundings.mouseOver(SurroundingsView.this, t);
+
+			switch (pos) {
+			case POINT_ROTATE:
+				selectedTool = TOOL.ROTATE;
+				break;
+			default:
+				selectedTool = TOOL.POINTER;
+				break;
+			}
+
+			settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
+			if (selectedTool == TOOL.POINTER) {
+				surroundings.makeMoveNode();
+				x = e.getX();
+				y = e.getY();
+			} else if (selectedTool == TOOL.ROTATE) {
+				surroundings.makeRotationNode();
+				a = surroundings.getSelectedAngle(t);
+			}
+			repaint();
+
+			if (e.getButton() == MouseEvent.BUTTON3 && surroundings.getSelection() != SelectionType.SURROUNDINGS) {
+				menuPopup.show(SurroundingsView.this, e.getX(), e.getY());
+			}
+		}
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// History.addNode(new HistoryNodeSurroundings(surroundings);//how to?
+		surroundings.mouseRelased();
+		surroundings.simulate();
+		mouseEntered(e);
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+		if (selectedTool == TOOL.MIRROR) {
+			surroundings.newElement(new Mirror(t));
+			repaint();
+		} else if (selectedTool == TOOL.SQUARE_PRISM) {
+			surroundings.newElement(Prism.getSquarePrism(t));
+			repaint();
+		} else if (selectedTool == TOOL.TRIANGLE_PRISM) {
+			surroundings.newElement(Prism.getTrianglePrism(t));
+			repaint();
+		} else if (selectedTool == TOOL.SOURCE) {
+			surroundings.newSource(new BeamSource(t, 0, 650));
+			repaint();
+		}
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		surroundings.cleanNew();
+		repaint();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+		if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+			surroundings.mouseOver(SurroundingsView.this, t);
+		} else {
+			surroundings.moveNewTo(t);
+			repaint();
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+
+		Point t = (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+		if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
+
+			if (selectedTool == TOOL.POINTER) {
+				int nx = e.getX();
+				int ny = e.getY();
+				surroundings.moveBy(nx - x, ny - y);
+				if (surroundings.getSelection() != SelectionType.SURROUNDINGS) {
+					try {
+						HistoryNodeMoveAbstract node = (HistoryNodeMoveAbstract) History.getLastNode();
+						node.moveBy(new Point(nx - x, ny - y));
+					} catch (ClassCastException ex) {
+						System.out.println(ex.getMessage());
+					}
+					x = nx;
+					y = ny;
+				}
+			} else if (selectedTool == TOOL.ROTATE) {
+				double na = surroundings.getSelectedAngle(t);
+				double da = na - a;
+				try {
+					HistoryNodeRotationAbstract node = (HistoryNodeRotationAbstract) History.getLastNode();
+					node.rotateBy(da);
+				} catch (ClassCastException ex) {
+					System.out.println(ex.getMessage());
+				}
+				surroundings.rotateSelected(da);
+				a = surroundings.getSelectedAngle(t);
+			}
+			surroundings.simulate();
+
+		} else {
+			surroundings.moveNewTo(t);
 			repaint();
 		}
 	}

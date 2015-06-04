@@ -10,8 +10,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
@@ -19,6 +17,7 @@ import java.awt.event.MouseWheelListener;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -32,6 +31,7 @@ import javax.swing.UIManager;
 import me.kinomoto.proteam.action.OpenAction;
 import me.kinomoto.proteam.action.SaveAsAction;
 import me.kinomoto.proteam.action.SaveAsPngAction;
+import me.kinomoto.proteam.elements.LoadException;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.settings.SettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
@@ -111,7 +111,7 @@ public class Main extends JFrame {
 		initScrollListeners();
 
 	}
-	
+
 	private void initScrollListeners() {
 		Rectangle bounds = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
@@ -142,19 +142,41 @@ public class Main extends JFrame {
 	}
 
 	private void initUI() {
-
 		toolBar = new ToolBar(this);
 		settingsPanel = new SettingsPanel();
-		surroundingsView = new SurroundingsView(settingsPanel, this);
-		scroll = new JScrollPane(surroundingsView);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		initSurroundings();
 
-		this.add(scroll, BorderLayout.CENTER);
 		this.add(toolBar, BorderLayout.WEST);
 		this.add(settingsPanel, BorderLayout.EAST);
+	}
+
+	private void initSurroundings() {
+		surroundingsView = new SurroundingsView(settingsPanel, this);
+		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
+		scroll = new JScrollPane(surroundingsView);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		this.add(scroll, BorderLayout.CENTER);
+	}
+
+	public void loadFromPath(String path) {
+		History.clean();
+		this.remove(scroll);
+
+		try {
+			surroundingsView = new SurroundingsView(settingsPanel, this, path);
+		} catch (LoadException e) {
+			initSurroundings();
+			JOptionPane.showMessageDialog(Main.this, e.getMessage());
+			return;
+		}
 
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
-
+		scroll = new JScrollPane(surroundingsView);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		this.add(scroll, BorderLayout.CENTER);
+		revalidate();
+		repaint();
+		initScrollListeners();
 	}
 
 	private void initIcons() {
@@ -181,10 +203,36 @@ public class Main extends JFrame {
 		openA = new JMenuItem(Messages.get("open"), openI);
 		openA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("openM")));
 		openA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+		openA.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				if (fc.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
+					// surroundingsView.save(fc.getSelectedFile().getAbsolutePath());
+					Main.this.loadFromPath(fc.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
 
 		saveA = new JMenuItem(Messages.get("save"), saveI);
 		saveA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("exportM")));
 		saveA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		saveA.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (surroundingsView.hasPath()) {
+					surroundingsView.save();
+				} else {
+					JFileChooser fc = new JFileChooser();
+					if (fc.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
+						// save
+						surroundingsView.saveAs(fc.getSelectedFile().getAbsolutePath());
+					}
+				}
+			}
+		});
 
 		exportA = new JMenuItem(Messages.get("export"), exportI);
 		exportA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("exportM")));
@@ -192,6 +240,17 @@ public class Main extends JFrame {
 		saveAsA = new JMenuItem(Messages.get("saveAs"), saveAsI);
 		saveAsA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("saveAsM")));
 		saveAsA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK));
+		saveAsA.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				if (fc.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
+					// save
+					surroundingsView.saveAs(fc.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
 
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
 		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
