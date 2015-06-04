@@ -1,7 +1,9 @@
 package me.kinomoto.proteam.elements;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -11,10 +13,15 @@ import me.kinomoto.proteam.settings.MirrorSettingsPanel;
 public class Mirror extends AbstractOpticalElement {
 
 	private double absorption = .99;
-	private static final int magicNumberMirror = 0x6D69;
+	public static final int MAGIC_NUMBER = 0x6D69;
 
 	public Mirror(Point position) {
 		super(position, AbstractOpticalElement.getMirror());
+	}
+	
+	public Mirror(Point position, List<Point> verts, DataInputStream is) throws IOException {
+		super(position, verts);
+		absorption = is.readDouble();
 	}
 
 	public double getAbsorption() {
@@ -102,10 +109,9 @@ public class Mirror extends AbstractOpticalElement {
 
 	@Override
 	public void save(DataOutputStream os) throws IOException {
-		os.writeDouble(magicNumberMirror);
+		os.writeInt(MAGIC_NUMBER);
 		saveAbstract(os);
 		os.writeDouble(absorption);
-
 	}
 
 }

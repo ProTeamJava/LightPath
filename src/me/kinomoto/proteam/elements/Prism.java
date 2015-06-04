@@ -1,5 +1,6 @@
 package me.kinomoto.proteam.elements;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -12,7 +13,7 @@ import me.kinomoto.proteam.settings.PrismSettingsPanel;
 public class Prism extends AbstractOpticalElement {
 
 	private double ior;
-	private static final int magicNumberPrism = 0x7072;
+	public static final int MAGIC_NUMBER = 0x7072;
 
 	public Prism(Point position, double ior) {
 		super(position, AbstractOpticalElement.getSquare());
@@ -24,6 +25,11 @@ public class Prism extends AbstractOpticalElement {
 		super(position, vert);
 		this.ior = ior;
 		checkRightOrLeft();
+	}
+	
+	public Prism(Point position, List<Point> vert, DataInputStream is) throws IOException {
+		super(position, vert);
+		ior = is.readDouble();
 	}
 
 	public static Prism getSquarePrism(Point position) {
@@ -132,10 +138,9 @@ public class Prism extends AbstractOpticalElement {
 
 	@Override
 	public void save(DataOutputStream os) throws IOException {
-		os.writeDouble(magicNumberPrism);
+		os.writeInt(MAGIC_NUMBER);
 		saveAbstract(os);
 		os.writeDouble(ior);
-
 	}
 
 }

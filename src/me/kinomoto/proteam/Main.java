@@ -108,6 +108,11 @@ public class Main extends JFrame {
 		setLocationRelativeTo(null);
 		this.setVisible(true);
 
+		initScrollListeners();
+
+	}
+	
+	private void initScrollListeners() {
 		Rectangle bounds = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
 		int x = (size.width - bounds.width) / 2;
@@ -134,7 +139,6 @@ public class Main extends JFrame {
 
 			}
 		});
-
 	}
 
 	private void initUI() {
@@ -148,13 +152,6 @@ public class Main extends JFrame {
 		this.add(scroll, BorderLayout.CENTER);
 		this.add(toolBar, BorderLayout.WEST);
 		this.add(settingsPanel, BorderLayout.EAST);
-
-		scroll.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				// TODO scrollPane, resizing and sliders
-			}
-		});
 
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
 

@@ -282,7 +282,6 @@ public class Surroundings {
 			History.addNode(new HistoryNodeDeleteSource(this, selectedBeamSource));
 			sources.remove(selectedBeamSource);
 			selectedBeamSource = null;
-
 			break;
 		case SELECTED_ELEMENT:
 			History.addNode(new HistoryNodeDeleteElement(this, selectedElement));

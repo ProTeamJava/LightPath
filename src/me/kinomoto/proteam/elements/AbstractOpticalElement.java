@@ -3,6 +3,7 @@ package me.kinomoto.proteam.elements;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,8 +45,8 @@ public abstract class AbstractOpticalElement {
 	int b = 0;
 
 	// TODO lewo/prawo skrętny wielobok -> normalne w inną stronę
-	protected boolean rotationRight = true; 
-	
+	protected boolean rotationRight = true;
+
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
 		this.vertices = vertices;
@@ -177,7 +178,7 @@ public abstract class AbstractOpticalElement {
 	}
 
 	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
-	
+
 	public void paint(Graphics2D g) {
 		paint(g, Color.BLACK);
 	}
@@ -217,7 +218,30 @@ public abstract class AbstractOpticalElement {
 	public abstract void save(DataOutputStream os) throws IOException;
 
 	protected void saveAbstract(DataOutputStream os) throws IOException {
-		// TODO
+		position.save(os);
+
+		os.writeInt(vertices.size());
+		for (Point p : vertices) {
+			p.save(os);
+		}
+	}
+
+	public static AbstractOpticalElement load(DataInputStream is) throws IOException {
+		int magicNum = is.readInt();
+		Point position = new Point(is);
+		int vertSize = is.readInt();
+		List<Point> verts = new ArrayList<Point>();
+		for (int i = 0; i < vertSize; i++) {
+			verts.add(new Point(is));
+		}
+
+		if (magicNum == Mirror.MAGIC_NUMBER) {
+			return new Mirror(position, verts, is);
+		} else if (magicNum == Prism.MAGIC_NUMBER) {
+			return new Prism(position, verts, is);
+		} else {
+			return null;
+		}
 	}
 
 	public void moveBy(int x, int y) {
@@ -273,26 +297,26 @@ public abstract class AbstractOpticalElement {
 		selectionAngle += da;
 		double sin = Math.sin(da);
 		double cos = Math.cos(da);
-		for(Point p : vertices) {
+		for (Point p : vertices) {
 			double y = p.x * sin + p.y * cos;
 			double x = p.x * cos - p.y * sin;
 			p.x = x;
 			p.y = y;
 		}
 	}
-	
+
 	public void addAngle() {
 		selectionAngle = 0;
 		calcBounds();
 	}
 
 	public void setPosition(Point p) {
-		position = p;		
+		position = p;
 	}
-	
+
 	protected void checkRightOrLeft() {
 		double sum = 0;
-		
+
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
 			sum += (vertices.get(j).x - vertices.get(i).x) * (vertices.get(j).y + vertices.get(i).y);
 		}

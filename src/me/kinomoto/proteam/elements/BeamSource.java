@@ -27,6 +27,8 @@ public class BeamSource {
 	public BeamSource(DataInputStream is) throws IOException {
 		segment = new Segment(is);
 		wavelength = is.readDouble();
+		updateAngle();
+		updateTrig();
 	}
 
 	public BeamSource(Segment segment, double wavelength) {
