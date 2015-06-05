@@ -22,6 +22,7 @@ import javax.swing.JPopupMenu;
 
 import me.kinomoto.proteam.Surroundings.PointPosition;
 import me.kinomoto.proteam.Surroundings.SelectionType;
+import me.kinomoto.proteam.elements.Beam;
 import me.kinomoto.proteam.elements.BeamSource;
 import me.kinomoto.proteam.elements.Mirror;
 import me.kinomoto.proteam.elements.Point;
@@ -235,7 +236,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 			surroundings.newElement(Prism.getTrianglePrism(t));
 			repaint();
 		} else if (selectedTool == TOOL.SOURCE) {
-			surroundings.newSource(new BeamSource(t, 0, BeamSource.RED));
+			surroundings.newSource(new BeamSource(t, 0, Beam.RED));
 			repaint();
 		}
 	}

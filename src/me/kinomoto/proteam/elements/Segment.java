@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class Segment {
+	private static final int HASHCODE_CONST = 103456;
 	public Point begin, end;
 
 	public Segment(DataInputStream is) throws IOException {
@@ -38,7 +39,7 @@ public class Segment {
 
 	@Override
 	public int hashCode() {
-		return begin.hashCode() * 103456 + end.hashCode();
+		return begin.hashCode() * HASHCODE_CONST + end.hashCode();
 	}
 	
 	@Override

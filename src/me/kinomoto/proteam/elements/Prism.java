@@ -11,9 +11,13 @@ import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.settings.PrismSettingsPanel;
 
 public class Prism extends AbstractOpticalElement {
+	public static final int MAGIC_NUMBER = 0x7072;
+	/**
+	 * Should be less than 1.
+	 */
+	private static final double PRISM_ABSORPTION = .99;
 
 	private double ior;
-	public static final int MAGIC_NUMBER = 0x7072;
 
 	public Prism(Point position, double ior) {
 		super(position, AbstractOpticalElement.getSquare());
@@ -103,8 +107,8 @@ public class Prism extends AbstractOpticalElement {
 
 		Point end = new Point(b.segment.end.x - rx, b.segment.end.y - ry);
 
-		if (b.brightness > 0.01) {
-			double bright = b.brightness * .99;
+		double bright = b.brightness * PRISM_ABSORPTION;
+		if (bright > Beam.MIN_BRIGHTNESS) {
 			Segment tmp = new Segment(b.segment.end, end);
 			s.add(new Beam(tmp, b.wavelenght, bright, seg));
 		}

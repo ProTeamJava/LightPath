@@ -37,7 +37,6 @@ public class BeamSource {
 	private double cosA;
 	private double sinA;
 	
-	public static final double RED = 650;
 
 	public BeamSource(DataInputStream is) throws IOException {
 		segment = new Segment(is);
@@ -69,7 +68,7 @@ public class BeamSource {
 	}
 
 	public Beam getBeam() {
-		return new Beam(segment.moveBy(new Point(cosA, sinA)), wavelength, 1, null);
+		return new Beam(segment.moveBy(new Point(HEIGHT*cosA, HEIGHT*sinA)), wavelength, 1, null);
 	}
 
 	private void updateTrig() {

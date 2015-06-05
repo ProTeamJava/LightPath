@@ -11,9 +11,11 @@ import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.settings.MirrorSettingsPanel;
 
 public class Mirror extends AbstractOpticalElement {
+	public static final int MAGIC_NUMBER = 0x6D69;
+	private static final int NEAR_DISTANCE = 5;
+	private static final int NEAR_DISTANCE_SQUAED = NEAR_DISTANCE * NEAR_DISTANCE;
 
 	private double absorption = .99;
-	public static final int MAGIC_NUMBER = 0x6D69;
 
 	public Mirror(Point position) {
 		super(position, AbstractOpticalElement.getMirror());
@@ -54,8 +56,8 @@ public class Mirror extends AbstractOpticalElement {
 
 		Point end = new Point(b.segment.end.x + rx, b.segment.end.y + ry);
 
-		if (b.brightness * absorption > 0.01) {
-			double bright = b.brightness * absorption;
+		double bright = b.brightness * absorption;
+		if (bright > Beam.MIN_BRIGHTNESS) {
 			Segment tmp = new Segment(b.segment.end, end);
 			s.add(new Beam(tmp, b.wavelenght, bright, seg));
 		}
@@ -88,7 +90,7 @@ public class Mirror extends AbstractOpticalElement {
 
 		double dx = tx - s.x;
 		double dy = ty - s.y;
-		return dx * dx + dy * dy < 25;
+		return dx * dx + dy * dy < NEAR_DISTANCE_SQUAED;
 
 	}
 

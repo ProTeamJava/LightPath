@@ -9,8 +9,11 @@ import me.kinomoto.proteam.Surroundings;
 import com.mindprod.wavelength.Wavelength;
 
 public class Beam {
+	public static final double RED = 700;
+	public static final double BLUE = 380;
 	private static final int MAX_LENGTH = 4500;
 	private static final double STEP_SIZE = 200.0 / MAX_LENGTH;
+	public static final double MIN_BRIGHTNESS = .2;
 
 	Segment segment;
 	private boolean collisionChecked = false;
