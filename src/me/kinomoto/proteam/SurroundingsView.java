@@ -77,10 +77,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		surroundings.add(new Prism(new Point(150, 180), 1.5));
 		surroundings.add(new Mirror(new Point(75, 200)));
 		surroundings.add(new BeamSource(new Point(200, 0), 105 / 180.0 * Math.PI, 650));
-		surroundings.add(new BeamSource(new Segment(new Point(50, 100), new Point(100, 90)), 550));
+		surroundings.add(new BeamSource(new Segment(new Point(50, 100), new Point(100, 90)), Beam.BLUE));
 		surroundings.add(new BeamSource(new Segment(new Point(210, 250), new Point(100, 150)), 450));
 		surroundings.add(new BeamSource(new Point(280, 200), 190 * Math.PI / 180.0, 400));
-		surroundings.add(new BeamSource(new Point(0, 0), .5 * Math.PI, 730));
+		surroundings.add(new BeamSource(new Point(0, 0), .5 * Math.PI, Beam.RED));
 	}
 
 	public SurroundingsView(SettingsPanel settingsPanel, Main ref, String path) throws LoadException {

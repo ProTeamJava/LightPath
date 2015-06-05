@@ -10,7 +10,7 @@ import com.mindprod.wavelength.Wavelength;
 
 public class Beam {
 	public static final double RED = 700;
-	public static final double BLUE = 380;
+	public static final double BLUE = 400;
 	private static final int MAX_LENGTH = 4500;
 	private static final double STEP_SIZE = 200.0 / MAX_LENGTH;
 	public static final double MIN_BRIGHTNESS = .2;
@@ -20,10 +20,10 @@ public class Beam {
 	double wavelenght;
 	double brightness = 1;
 
-	private Segment lastColision;
+	private Line lastColision;
 
-	public Beam(Segment segment, double wavelenght, double lightness, Segment seg) {
-		lastColision = seg;
+	public Beam(Segment segment, double wavelenght, double lightness, Line line) {
+		lastColision = line;
 		double dx = segment.end.x - segment.begin.x;
 		double dy = segment.end.y - segment.begin.y;
 		double max = Math.abs(dx) < Math.abs(dy) ? Math.abs(dy) : Math.abs(dx);
@@ -63,9 +63,11 @@ public class Beam {
 				try {
 					Collision p = e.collision(tmp, lastColision);
 					if (p != null) {
-						collisionElement = e;
-						collision = p;
-						collisionNum++;
+						if (collision == null || !collision.getLine().isEqual(p.getLine())) {
+							collisionElement = e;
+							collision = p;
+							collisionNum++;
+						}
 					}
 				} catch (MultipleCollisionsException ex) {
 					collisionNum += 2;
@@ -75,7 +77,7 @@ public class Beam {
 
 			if (collisionNum == 1) {
 				segment.end = collision.getPoint();
-				collisionElement.findCollisionSolution(s, this, collision.getSegment());
+				collisionElement.findCollisionSolution(s, this, collision.getSegment(), collision.getLine());
 				break;
 			} else if (collisionNum == 0 && end == 1) {
 				break;
