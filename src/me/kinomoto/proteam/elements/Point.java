@@ -3,10 +3,27 @@ package me.kinomoto.proteam.elements;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Comparator;
 
 public class Point {
 	public double x;
 	public double y;
+
+	public static final Comparator<Point> xComparator = new Comparator<Point>() {
+
+		@Override
+		public int compare(Point p1, Point p2) {
+			return p2.x > p1.x ? 1 : -1;
+		}
+	};
+
+	public static final Comparator<Point> yComparator = new Comparator<Point>() {
+
+		@Override
+		public int compare(Point p1, Point p2) {
+			return p2.y > p1.y ? 1 : -1;
+		}
+	};
 
 	public Point(DataInputStream is) throws IOException {
 		x = is.readDouble();

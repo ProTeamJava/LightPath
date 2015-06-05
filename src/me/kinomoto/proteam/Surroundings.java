@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import me.kinomoto.proteam.elements.AbstractOpticalElement;
 import me.kinomoto.proteam.elements.Beam;
 import me.kinomoto.proteam.elements.BeamSource;
-import me.kinomoto.proteam.elements.LoadException;
 import me.kinomoto.proteam.elements.Point;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.history.HistoryNodeDeleteElement;

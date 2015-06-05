@@ -31,7 +31,6 @@ import javax.swing.UIManager;
 import me.kinomoto.proteam.action.OpenAction;
 import me.kinomoto.proteam.action.SaveAsAction;
 import me.kinomoto.proteam.action.SaveAsPngAction;
-import me.kinomoto.proteam.elements.LoadException;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.settings.SettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
@@ -119,7 +118,7 @@ public class Main extends JFrame {
 		int y = (size.height - bounds.height) / 2;
 		scroll.getViewport().setViewPosition(new java.awt.Point(x, y));
 
-		scroll.removeMouseWheelListener((scroll.getMouseWheelListeners()[0]));
+		scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
 		scroll.addMouseWheelListener(new MouseWheelListener() {
 
 			@Override
@@ -209,7 +208,6 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				if (fc.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-					// surroundingsView.save(fc.getSelectedFile().getAbsolutePath());
 					Main.this.loadFromPath(fc.getSelectedFile().getAbsolutePath());
 				}
 			}

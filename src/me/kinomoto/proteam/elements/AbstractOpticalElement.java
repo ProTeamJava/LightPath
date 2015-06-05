@@ -8,12 +8,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JPanel;
 
 import me.kinomoto.proteam.Collision;
+import me.kinomoto.proteam.LoadException;
 import me.kinomoto.proteam.MultipleCollisionsException;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.Surroundings.PointPosition;
@@ -34,6 +34,10 @@ import me.kinomoto.proteam.Surroundings.PointPosition;
  */
 public abstract class AbstractOpticalElement {
 	private static final int STROKE_WIDTH = 2;
+	private static final int DOT_SIZE = 4;
+	private static final int HALF_DOT_SIZE = DOT_SIZE / 2;
+	private static final int BOUND_SIZE = 10;
+	private static final int SQUARE_LENGTH = 20;
 
 	protected Point position;
 	protected List<Point> vertices;
@@ -90,11 +94,11 @@ public abstract class AbstractOpticalElement {
 
 	public static List<Point> getSquare() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(-20, -20));
-		tmp.add(new Point(-20, 20));
-		tmp.add(new Point(20, 20));
-		tmp.add(new Point(20, -20));
-		tmp.add(new Point(-20, -20));
+		tmp.add(new Point(-SQUARE_LENGTH, -SQUARE_LENGTH));
+		tmp.add(new Point(-SQUARE_LENGTH, SQUARE_LENGTH));
+		tmp.add(new Point(SQUARE_LENGTH, SQUARE_LENGTH));
+		tmp.add(new Point(SQUARE_LENGTH, -SQUARE_LENGTH));
+		tmp.add(new Point(-SQUARE_LENGTH, -SQUARE_LENGTH));
 		return tmp;
 	}
 
@@ -199,18 +203,13 @@ public abstract class AbstractOpticalElement {
 		Graphics2D p = (Graphics2D) g.create();
 		p.translate(position.x, position.y);
 		p.rotate(selectionAngle);
-		p.setStroke(new BasicStroke(1.0f, // Width
-				BasicStroke.CAP_SQUARE, // End cap
-				BasicStroke.JOIN_BEVEL, // Join style
-				10.0f, // Miter limit
-				new float[] { 2.0f, 2.0f }, // Dash pattern
-				0.0f)); // Dash phase
+		p.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 10.0f, new float[] { 2.0f, 2.0f }, 0.0f));
 		p.setColor(Color.BLACK);
 		p.drawRect((int) l, (int) t, (int) (r - l), (int) (b - t));
-		p.fillRect(l - 2, t - 2, 4, 4);
-		p.fillRect(l - 2, b - 2, 4, 4);
-		p.fillRect(r - 2, t - 2, 4, 4);
-		p.fillRect(r - 2, b - 2, 4, 4);
+		p.fillRect(l - HALF_DOT_SIZE, t - HALF_DOT_SIZE, DOT_SIZE, DOT_SIZE);
+		p.fillRect(l - HALF_DOT_SIZE, b - HALF_DOT_SIZE, DOT_SIZE, DOT_SIZE);
+		p.fillRect(r - HALF_DOT_SIZE, t - HALF_DOT_SIZE, DOT_SIZE, DOT_SIZE);
+		p.fillRect(r - HALF_DOT_SIZE, b - HALF_DOT_SIZE, DOT_SIZE, DOT_SIZE);
 	}
 
 	public abstract JPanel getSettingsPanel(Surroundings s);
@@ -250,38 +249,10 @@ public abstract class AbstractOpticalElement {
 	}
 
 	private void calcBounds() {
-		r = (int) (Collections.min(vertices, new Comparator<Point>() {
-
-			@Override
-			public int compare(Point p1, Point p2) {
-				return (int) ((p2.x - p1.x) * 1000);
-			}
-
-		}).x + 10);
-		l = (int) (Collections.max(vertices, new Comparator<Point>() {
-
-			@Override
-			public int compare(Point p1, Point p2) {
-				return (int) ((p2.x - p1.x) * 1000);
-			}
-
-		}).x - 10);
-		b = (int) (Collections.min(vertices, new Comparator<Point>() {
-
-			@Override
-			public int compare(Point p1, Point p2) {
-				return (int) ((p2.y - p1.y) * 1000);
-			}
-
-		}).y + 10);
-		t = (int) (Collections.max(vertices, new Comparator<Point>() {
-
-			@Override
-			public int compare(Point p1, Point p2) {
-				return (int) ((p2.y - p1.y) * 1000);
-			}
-
-		}).y - 10);
+		r = (int) (Collections.min(vertices, Point.xComparator).x + BOUND_SIZE);
+		l = (int) (Collections.max(vertices, Point.xComparator).x - BOUND_SIZE);
+		b = (int) (Collections.min(vertices, Point.yComparator).y + BOUND_SIZE);
+		t = (int) (Collections.max(vertices, Point.yComparator).y - BOUND_SIZE);
 	}
 
 	/**
