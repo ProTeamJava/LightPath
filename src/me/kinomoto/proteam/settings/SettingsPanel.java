@@ -11,6 +11,7 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class SettingsPanel extends JPanel {
 	private static final long serialVersionUID = 7756992612679667166L;
+	private static final int PREFFERED_WIDTH = 200;
 	private JPanel panel;
 	
 
@@ -21,7 +22,7 @@ public class SettingsPanel extends JPanel {
 			new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),}));
-		this.setPreferredSize(new Dimension(200, 0));
+		this.setPreferredSize(new Dimension(PREFFERED_WIDTH, 0));
 		panel = new JPanel();
 		add(panel, "2, 2, fill, fill");
 	}

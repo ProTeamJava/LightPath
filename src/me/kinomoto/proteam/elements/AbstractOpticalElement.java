@@ -38,22 +38,30 @@ public abstract class AbstractOpticalElement {
 	private static final int HALF_DOT_SIZE = DOT_SIZE / 2;
 	private static final int BOUND_SIZE = 10;
 	private static final int SQUARE_LENGTH = 20;
+	private static final int MIRROR_SIZE = 10;
+
+	private static final int ROTATION_POINT_PLUS = 7;
+	private static final int ROTATION_POINT_MINUS = 4;
+
+	private static final double TRIANGLE_LENGHT = 40;
+	private static final double TRIANGLE_HALF_LENGHT = TRIANGLE_LENGHT / 2;
+	private static final double TRIANGLE_HEIGHT = TRIANGLE_LENGHT * Math.sqrt(3) / 2;
 
 	protected Point position;
 	protected List<Point> vertices;
 	private double selectionAngle = 0;
 
-	int l = 0;
-	int r = 0;
-	int t = 0;
-	int b = 0;
+	private int l = 0;
+	private int r = 0;
+	private int t = 0;
+	private int b = 0;
 
-	// TODO lewo/prawo skrętny wielobok -> normalne w inną stronę
 	protected boolean rotationRight = true;
 
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
 		this.vertices = vertices;
+		calcCentroid();
 		calcBounds();
 	}
 
@@ -64,10 +72,10 @@ public abstract class AbstractOpticalElement {
 
 	public static List<Point> getTriangle() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(0, 40));
-		tmp.add(new Point(-50, -12));
-		tmp.add(new Point(50, -12));
-		tmp.add(new Point(0, 40));
+		tmp.add(new Point(-TRIANGLE_HALF_LENGHT, 0));
+		tmp.add(new Point(TRIANGLE_HALF_LENGHT, 0));
+		tmp.add(new Point(0, -TRIANGLE_HEIGHT));
+		tmp.add(new Point(-TRIANGLE_HALF_LENGHT, 0));
 		return tmp;
 	}
 
@@ -77,7 +85,8 @@ public abstract class AbstractOpticalElement {
 		int nx = (int) (p.x - position.x);
 		int ny = (int) (p.y - position.y);
 
-		if ((nx > l - 4 && nx < l + 7 && ny > t - 4 && ny < t + 7) || (nx > r - 7 && nx < r + 4 && ny > t - 4 && ny < t + 7) || (nx > r - 4 && nx < r + 7 && ny > b - 7 && ny < b + 4) || (nx > l - 7 && nx < l + 4 && ny > b - 7 && ny < b + 4))
+		if ((nx > l - ROTATION_POINT_MINUS && nx < l + ROTATION_POINT_PLUS && ny > t - ROTATION_POINT_MINUS && ny < t + ROTATION_POINT_PLUS) || (nx > r - ROTATION_POINT_PLUS && nx < r + ROTATION_POINT_MINUS && ny > t - ROTATION_POINT_MINUS && ny < t + ROTATION_POINT_PLUS)
+				|| (nx > r - ROTATION_POINT_MINUS && nx < r + ROTATION_POINT_PLUS && ny > b - ROTATION_POINT_PLUS && ny < b + ROTATION_POINT_MINUS) || (nx > l - ROTATION_POINT_PLUS && nx < l + ROTATION_POINT_MINUS && ny > b - ROTATION_POINT_PLUS && ny < b + ROTATION_POINT_MINUS))
 			return PointPosition.POINT_ROTATE;
 
 		if (nx >= l && nx <= r && ny >= t && ny <= b)
@@ -87,8 +96,8 @@ public abstract class AbstractOpticalElement {
 
 	public static List<Point> getMirror() {
 		List<Point> tmp = new ArrayList<Point>();
-		tmp.add(new Point(10, -10));
-		tmp.add(new Point(-10, 10));
+		tmp.add(new Point(MIRROR_SIZE, -MIRROR_SIZE));
+		tmp.add(new Point(-MIRROR_SIZE, MIRROR_SIZE));
 		return tmp;
 	}
 
@@ -110,7 +119,7 @@ public abstract class AbstractOpticalElement {
 	 * 
 	 * @return <code>null</code> - no collision
 	 * @throws MultipleCollisionsException
-	 *             if there is more than one collision
+	 *             if there are multiple collisions
 	 */
 	public Collision collision(Segment s, Segment lastSegmentColision) throws MultipleCollisionsException {
 		Collision tmp = null;
@@ -203,7 +212,7 @@ public abstract class AbstractOpticalElement {
 		Graphics2D p = (Graphics2D) g.create();
 		p.translate(position.x, position.y);
 		p.rotate(selectionAngle);
-		p.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 10.0f, new float[] { 2.0f, 2.0f }, 0.0f));
+		p.setStroke(Surroundings.selectionStroke);
 		p.setColor(Color.BLACK);
 		p.drawRect((int) l, (int) t, (int) (r - l), (int) (b - t));
 		p.fillRect(l - HALF_DOT_SIZE, t - HALF_DOT_SIZE, DOT_SIZE, DOT_SIZE);
@@ -293,5 +302,23 @@ public abstract class AbstractOpticalElement {
 		}
 
 		rotationRight = sum > 0;
+	}
+
+	protected void calcCentroid() {
+		double x = 0;
+		double y = 0;
+		int n = 0;
+		for (; n < vertices.size() - 1; n++) {
+			x += vertices.get(n).x;
+			y += vertices.get(n).y;
+		}
+
+		x /= n;
+		y /= n;
+
+		for (Point p : vertices) {
+			p.x -= x;
+			p.y -= y;
+		}
 	}
 }

@@ -28,7 +28,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-import me.kinomoto.proteam.action.SaveAsAction;
 import me.kinomoto.proteam.action.SaveAsPngAction;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.settings.SettingsPanel;
@@ -36,6 +35,15 @@ import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
 public class Main extends JFrame {
 	private static final long serialVersionUID = 9128707449024404584L;
+	private static final int MIN_WIDTH = 600;
+	private static final int MIN_HEIGHT = 400;
+	private static final int WIDTH = 1200;
+	private static final int HEIGHT = 600;
+	
+	private static final Point ROTATE_CURSOR_HOTSPOT = new Point(8,8);
+	
+	private static final int SCROLL_MULTIPLIER = 5;
+	
 
 	private JMenuItem openA;
 	private JMenuItem exportA;
@@ -63,9 +71,8 @@ public class Main extends JFrame {
 	private ImageIcon zoomOutI;
 
 	private SaveAsPngAction savePng;
-	private SaveAsAction saveas;
 
-	public SurroundingsView surroundingsView;
+	private SurroundingsView surroundingsView;
 
 	private JPanel toolBar;
 	private SettingsPanel settingsPanel;
@@ -85,8 +92,8 @@ public class Main extends JFrame {
 		}
 
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		this.setMinimumSize(new Dimension(600, 400));
-		this.setSize(1200, 600);
+		this.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+		this.setSize(WIDTH, HEIGHT);
 		this.setLayout(new BorderLayout());
 
 		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png"));
@@ -99,8 +106,7 @@ public class Main extends JFrame {
 
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image image = toolkit.getImage(getClass().getResource("/rotate.png"));
-		Point hotspot = new Point(8, 8);
-		rotateCursor = toolkit.createCustomCursor(image, hotspot, "Rotate");
+		rotateCursor = toolkit.createCustomCursor(image, ROTATE_CURSOR_HOTSPOT, "Rotate");
 
 		setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -129,9 +135,9 @@ public class Main extends JFrame {
 						surroundingsView.scaleDown();
 					restoreSliderPositions();
 				} else if (e.getModifiers() == InputEvent.ALT_MASK) {
-					scroll(e.getUnitsToScroll() * 5, 0);
+					scroll(e.getUnitsToScroll() * SCROLL_MULTIPLIER, 0);
 				} else {
-					scroll(0, e.getUnitsToScroll() * 5);
+					scroll(0, e.getUnitsToScroll() * SCROLL_MULTIPLIER);
 				}
 
 			}
@@ -151,7 +157,6 @@ public class Main extends JFrame {
 		surroundingsView = new SurroundingsView(settingsPanel, this);
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
 		scroll = new JScrollPane(surroundingsView);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		this.add(scroll, BorderLayout.CENTER);
 	}
 
@@ -169,7 +174,6 @@ public class Main extends JFrame {
 
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
 		scroll = new JScrollPane(surroundingsView);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		this.add(scroll, BorderLayout.CENTER);
 		revalidate();
 		repaint();
@@ -253,10 +257,8 @@ public class Main extends JFrame {
 
 		
 		savePng = new SaveAsPngAction(this);
-		saveas = new SaveAsAction(this);
 
 		exportA.addActionListener(savePng);
-		saveAsA.addActionListener(saveas);
 
 		fileM.add(openA);
 		fileM.add(saveA);
@@ -403,5 +405,9 @@ public class Main extends JFrame {
 
 	public static Cursor getRotateCursor() {
 		return rotateCursor;
+	}
+
+	public SurroundingsView getSurroundingsView() {
+		return surroundingsView;
 	}
 }

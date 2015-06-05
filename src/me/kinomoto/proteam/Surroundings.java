@@ -1,5 +1,6 @@
 package me.kinomoto.proteam;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -52,6 +53,12 @@ public class Surroundings {
 	private BeamSource newSource = null;
 
 	private Main ref = null;
+	
+	private static final float SELECTION_STROKE_WIDTH = 1.0f;
+	private static final float SELECTION_STROKE_MITER_LIMIT = 10.0f;
+	private static final float[] SELECTION_STROKE_DASH_PATERN = new float[] {2.0f, 2.0f};
+	private static final float SELECTION_STROKE_DASH_FASE = 0.0f;
+	public static final BasicStroke selectionStroke = new BasicStroke(SELECTION_STROKE_WIDTH, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, SELECTION_STROKE_MITER_LIMIT, SELECTION_STROKE_DASH_PATERN, SELECTION_STROKE_DASH_FASE);
 
 	public enum PointPosition {
 		POINT_INSIDE, POINT_ROTATE, POINT_OUTSIDE

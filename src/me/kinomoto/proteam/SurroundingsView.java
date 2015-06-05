@@ -50,6 +50,12 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 
 	private static final int BASE_WIDTH = 3840;
 	private static final int BASE_HEIGHT = 2160;
+	private static final float MAX_SCALE = 10;
+	private static final float MIN_SCALE = .2f;
+	private static final double SCALE_STEP = Math.sqrt(2);
+	
+	private static final int HALF_BASE_WIDTH = BASE_WIDTH / 2;
+	private static final int HALF_BASE_HEIGHT = BASE_HEIGHT / 2;
 
 	private int viewWidth = BASE_WIDTH;
 	private int viewHeight = BASE_HEIGHT;
@@ -107,7 +113,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		Graphics2D g2 = (Graphics2D) g;
 		g2.scale(scale, scale);
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.translate(BASE_WIDTH / 2, BASE_HEIGHT / 2);
+		g2.translate(HALF_BASE_WIDTH, HALF_BASE_HEIGHT);
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		surroundings.paint(g2);
 	}
@@ -123,16 +129,16 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	}
 
 	public void scaleUp() {
-		if (scale > 10)
+		if (scale > MAX_SCALE)
 			return;
-		scale *= Math.sqrt(2);
+		scale *= SCALE_STEP;
 		updateSize();
 	}
 
 	public void scaleDown() {
-		if (scale < 0.2)
+		if (scale < MIN_SCALE)
 			return;
-		scale /= Math.sqrt(2);
+		scale /= SCALE_STEP;
 		updateSize();
 	}
 
@@ -184,14 +190,11 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
 			PointPosition pos = surroundings.mousePressed(t);
 			surroundings.mouseOver(SurroundingsView.this, t);
-
-			switch (pos) {
-			case POINT_ROTATE:
-				selectedTool = TOOL.ROTATE;
-				break;
-			default:
-				selectedTool = TOOL.POINTER;
-				break;
+			
+			if(pos == PointPosition.POINT_ROTATE) {
+				selectedTool = TOOL.ROTATE;				
+			} else {
+				selectedTool = TOOL.POINTER;				
 			}
 
 			settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
@@ -232,7 +235,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 			surroundings.newElement(Prism.getTrianglePrism(t));
 			repaint();
 		} else if (selectedTool == TOOL.SOURCE) {
-			surroundings.newSource(new BeamSource(t, 0, 650));
+			surroundings.newSource(new BeamSource(t, 0, BeamSource.RED));
 			repaint();
 		}
 	}
@@ -245,8 +248,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		// nth
 	}
 
 	@Override
@@ -274,7 +276,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 					HistoryNodeMoveAbstract node = (HistoryNodeMoveAbstract) History.getLastNode();
 					node.moveBy(new Point(nx - x, ny - y));
 				} catch (ClassCastException ex) {
-					// nth?
+					// nth
 				}
 				x = nx;
 				y = ny;
@@ -301,6 +303,6 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	}
 
 	private Point mouseEventToSurroundingsPosition(MouseEvent e) {
-		return (new Point(e.getPoint())).mul(1 / scale).min(new Point(BASE_WIDTH / 2.0, BASE_HEIGHT / 2.0));
+		return (new Point(e.getPoint())).mul(1 / scale).min(new Point(HALF_BASE_WIDTH, HALF_BASE_HEIGHT));
 	}
 }

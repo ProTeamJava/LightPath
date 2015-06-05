@@ -66,6 +66,7 @@ public class Prism extends AbstractOpticalElement {
 
 		// cooeficient ratio
 		// incident to reflected
+		// TODO getIorAtPoint – nie zawsze surroundings
 		double nir = s.getIor() / ior;
 		// reflected to incident
 		double nri = ior / s.getIor();

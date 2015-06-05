@@ -43,7 +43,7 @@ public class ToolBar extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				main.surroundingsView.setSelectedTool(TOOL.POINTER);
+				main.getSurroundingsView().setSelectedTool(TOOL.POINTER);
 				
 			}
 		});
@@ -52,7 +52,7 @@ public class ToolBar extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				main.surroundingsView.setSelectedTool(TOOL.MIRROR);
+				main.getSurroundingsView().setSelectedTool(TOOL.MIRROR);
 				
 			}
 		});
@@ -61,7 +61,7 @@ public class ToolBar extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				main.surroundingsView.setSelectedTool(TOOL.TRIANGLE_PRISM);
+				main.getSurroundingsView().setSelectedTool(TOOL.TRIANGLE_PRISM);
 				
 			}
 		});
@@ -70,7 +70,7 @@ public class ToolBar extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				main.surroundingsView.setSelectedTool(TOOL.SQUARE_PRISM);
+				main.getSurroundingsView().setSelectedTool(TOOL.SQUARE_PRISM);
 				
 			}
 		});
@@ -79,7 +79,7 @@ public class ToolBar extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				main.surroundingsView.setSelectedTool(TOOL.SOURCE);
+				main.getSurroundingsView().setSelectedTool(TOOL.SOURCE);
 				
 			}
 		});

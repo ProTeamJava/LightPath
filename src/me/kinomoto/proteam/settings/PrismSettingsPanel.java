@@ -19,6 +19,9 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class PrismSettingsPanel extends JPanel {
 	private static final long serialVersionUID = 7397840660030370677L;
+	private static final double MAX_IOR = 10;
+	private static final double MIN_IOR = 1;
+	private static final double IOR_STEP = .1;
 
 	private JSpinner spinner;
 	
@@ -47,7 +50,7 @@ public class PrismSettingsPanel extends JPanel {
 		add(lblIor, "3, 4, right, default");
 		
 		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(p.getIOR(), 1.0, 10.0, 0.1));
+		spinner.setModel(new SpinnerNumberModel(p.getIOR(), MIN_IOR, MAX_IOR, IOR_STEP));
 		add(spinner, "6, 4");
 		
 		spinner.addChangeListener(new ChangeListener() {

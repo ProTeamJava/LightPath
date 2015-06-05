@@ -19,6 +19,9 @@ import me.kinomoto.proteam.history.HistoryNodeSurroundings;
 
 public class SurroundingsSettingsPanel extends JPanel {
 	private static final long serialVersionUID = -8039564944519925324L;
+	private static final double MAX_IOR = 10;
+	private static final double MIN_IOR = 1;
+	private static final double IOR_STEP = .1;
 
 	private JSpinner spinner;
 
@@ -41,7 +44,7 @@ public class SurroundingsSettingsPanel extends JPanel {
 		add(lblIor, "2, 4");
 		
 		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(s.getIor(), 1.0, 10.0, 0.1));
+		spinner.setModel(new SpinnerNumberModel(s.getIor(), MIN_IOR, MAX_IOR, IOR_STEP));
 		add(spinner, "4, 4");
 		
 		spinner.addChangeListener(new ChangeListener() {
