@@ -28,7 +28,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-import me.kinomoto.proteam.action.OpenAction;
 import me.kinomoto.proteam.action.SaveAsAction;
 import me.kinomoto.proteam.action.SaveAsPngAction;
 import me.kinomoto.proteam.history.History;
@@ -63,7 +62,6 @@ public class Main extends JFrame {
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
 
-	private OpenAction open;
 	private SaveAsPngAction savePng;
 	private SaveAsAction saveas;
 
@@ -253,11 +251,10 @@ public class Main extends JFrame {
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
 		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
 
-		open = new OpenAction(this);
+		
 		savePng = new SaveAsPngAction(this);
 		saveas = new SaveAsAction(this);
 
-		openA.addActionListener(open);
 		exportA.addActionListener(savePng);
 		saveAsA.addActionListener(saveas);
 

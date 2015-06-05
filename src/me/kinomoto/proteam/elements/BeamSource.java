@@ -17,6 +17,8 @@ public class BeamSource {
 	private static final int MARGIN = 10;
 	private static final int WIDTH_M = WIDTH + 2 * MARGIN;
 	private static final int HEIGHT_M = HIEGHT + 2 * MARGIN;
+	
+	private static final double DOUBLE_2PI = 2 * Math.PI;
 
 	Segment segment;
 	private double wavelength;
@@ -73,7 +75,7 @@ public class BeamSource {
 	}
 
 	public void setAngle(double angle) {
-		this.angle = angle % 360.0;
+		this.angle = angle % DOUBLE_2PI;
 		updateTrig();
 		segment.end = new Point(segment.begin.x + cosA, segment.begin.y + sinA);
 	}
