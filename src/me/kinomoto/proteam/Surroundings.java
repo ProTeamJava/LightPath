@@ -309,29 +309,26 @@ public class Surroundings {
 		}
 	}
 
-	public void save() {
-		try {
-			DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
-			os.writeInt(MAGIC_NUMBER);
-			os.writeDouble(getIor());
+	public void save() throws IOException {
+		DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
+		os.writeInt(MAGIC_NUMBER);
+		os.writeDouble(getIor());
 
-			os.writeInt(sources.size());
-			for (BeamSource s : sources) {
-				s.save(os);
-			}
-
-			os.writeInt(elements.size());
-			for (AbstractOpticalElement element : elements) {
-				element.save(os);
-			}
-
-			os.close();
-		} catch (IOException e) {
-			// TODO save error
+		os.writeInt(sources.size());
+		for (BeamSource s : sources) {
+			s.save(os);
 		}
+
+		os.writeInt(elements.size());
+		for (AbstractOpticalElement element : elements) {
+			element.save(os);
+		}
+
+		os.close();
+
 	}
 
-	public void saveAs(String path) {
+	public void saveAs(String path) throws IOException {
 		this.path = path;
 		save();
 	}
@@ -405,33 +402,41 @@ public class Surroundings {
 		}
 	}
 
+	private void mouseOverBeamSource(Component c, Point p) {
+		switch (selectedBeamSource.isPointInside(p, selectedBeamSource)) {
+		case POINT_INSIDE:
+			c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			break;
+		case POINT_ROTATE:
+			c.setCursor(Main.getRotateCursor());
+			break;
+		default:
+			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			break;
+		}
+	}
+
+	private void mouseOverElement(Component c, Point p) {
+		switch (selectedElement.isPointInsideSelected(p)) {
+		case POINT_INSIDE:
+			c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			break;
+		case POINT_ROTATE:
+			c.setCursor(Main.getRotateCursor());
+			break;
+		default:
+			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			break;
+		}
+	}
+
 	public void mouseOver(Component c, Point p) {
 		switch (selection) {
 		case SELECTED_BEAM_SOURCE:
-			switch (selectedBeamSource.isPointInside(p, selectedBeamSource)) {
-			case POINT_INSIDE:
-				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
-				break;
-			case POINT_ROTATE:
-				c.setCursor(Main.getRotateCursor());
-				break;
-			default:
-				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				break;
-			}
+			mouseOverBeamSource(c, p);
 			break;
 		case SELECTED_ELEMENT:
-			switch (selectedElement.isPointInsideSelected(p)) {
-			case POINT_INSIDE:
-				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
-				break;
-			case POINT_ROTATE:
-				c.setCursor(Main.getRotateCursor());
-				break;
-			default:
-				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				break;
-			}
+			mouseOverElement(c, p);
 			break;
 		default:
 			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -544,6 +549,20 @@ public class Surroundings {
 
 	public boolean hasPath() {
 		return path != "";
+	}
+
+	public double getIorAt(Point p, AbstractOpticalElement e) {
+		for (AbstractOpticalElement element : elements) {
+			if (e != element && element.isPointInside(p)) {
+				try {
+					Prism prism = (Prism) element;
+					return prism.getIOR();
+				} catch (ClassCastException e1) {
+					// nth
+				}
+			}
+		}
+		return ior;
 	}
 
 }

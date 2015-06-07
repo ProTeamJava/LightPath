@@ -14,6 +14,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -28,7 +29,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-import me.kinomoto.proteam.action.SaveAsPngAction;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.settings.SettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
@@ -68,9 +68,7 @@ public class Main extends JFrame {
 	private static ImageIcon deleteI;
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
-	public final ImageIcon appIcon = getIcon("LightPathIcon.png");
-
-	private SaveAsPngAction savePng;
+	private final ImageIcon appIcon = getIcon("LightPathIcon.png");
 
 	private SurroundingsView surroundingsView;
 
@@ -81,6 +79,7 @@ public class Main extends JFrame {
 
 	private double vSliderPos;
 	private double hSliderPos;
+	private JMenuBar menubar;
 
 	public Main() throws HeadlessException {
 		super("LightPath");
@@ -96,7 +95,7 @@ public class Main extends JFrame {
 		this.setSize(WIDTH, HEIGHT);
 		this.setLayout(new BorderLayout());
 
-		this.setIconImage(appIcon.getImage());
+		this.setIconImage(getAppIcon().getImage());
 
 		initIcons();
 		initMenu();
@@ -199,9 +198,7 @@ public class Main extends JFrame {
 		return new ImageIcon(getClass().getClassLoader().getResource(name));
 	}
 
-	private void initMenu() {
-		JMenuBar menubar = new JMenuBar();
-
+	private void initFileMenu() {
 		JMenu fileM = new JMenu(Messages.get("file"));
 		openA = new JMenuItem(Messages.get("open"), openI);
 		openA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("openM")));
@@ -224,20 +221,18 @@ public class Main extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (surroundingsView.hasPath()) {
-					surroundingsView.save();
-				} else {
-					JFileChooser fc = new JFileChooser();
-					if (fc.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-						// save
-						surroundingsView.saveAs(fc.getSelectedFile().getAbsolutePath());
-					}
-				}
+				save();
 			}
 		});
 
 		exportA = new JMenuItem(Messages.get("export"), exportI);
 		exportA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("exportM")));
+		exportA.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveAsPng();
+			}
+		});
 
 		saveAsA = new JMenuItem(Messages.get("saveAs"), saveAsI);
 		saveAsA.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(Messages.getChar("saveAsM")));
@@ -246,20 +241,12 @@ public class Main extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fc = new JFileChooser();
-				if (fc.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-					// save
-					surroundingsView.saveAs(fc.getSelectedFile().getAbsolutePath());
-				}
+				saveAs();
 			}
 		});
 
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
 		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
-
-		savePng = new SaveAsPngAction(this);
-
-		exportA.addActionListener(savePng);
 
 		fileM.add(openA);
 		fileM.add(saveA);
@@ -268,7 +255,9 @@ public class Main extends JFrame {
 		fileM.add(exportA);
 		fileM.add(exitA);
 		menubar.add(fileM);
+	}
 
+	private void initEditMenu() {
 		JMenu editM = new JMenu(Messages.get("edit"));
 
 		undoA = new JMenuItem(Messages.get("undo"), undoI);
@@ -307,6 +296,9 @@ public class Main extends JFrame {
 		editM.add(redoA);
 		menubar.add(editM);
 
+	}
+
+	private void initViewMenu() {
 		JMenu viewM = new JMenu(Messages.get("view"));
 
 		zoomInA = new JMenuItem(Messages.get("zoomIn"), zoomInI);
@@ -336,12 +328,23 @@ public class Main extends JFrame {
 		viewM.add(zoomInA);
 		viewM.add(zoomOutA);
 		menubar.add(viewM);
+	}
 
+	private void initHelpMenu() {
 		JMenu helpM = new JMenu(Messages.get("help"));
 		aboutA = new JMenuItem(Messages.get("about"));
 
 		helpM.add(aboutA);
 		menubar.add(helpM);
+	}
+
+	private void initMenu() {
+		menubar = new JMenuBar();
+
+		initFileMenu();
+		initEditMenu();
+		initViewMenu();
+		initHelpMenu();
 
 		setJMenuBar(menubar);
 	}
@@ -351,8 +354,7 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (surroundingsView.surroundings.isModyfied() && JOptionPane.showConfirmDialog(Main.this, "Do you want to save file?", "Not saved modyfications!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-					// TODO :)
-
+					save();
 				}
 				Main.this.dispose();
 			}
@@ -400,8 +402,12 @@ public class Main extends JFrame {
 		scroll.getViewport().setViewPosition(pos);
 	}
 
-	public void saveAsPng() {
-		surroundingsView.saveAsPng();
+	private void saveAsPng() {
+		try {
+			surroundingsView.saveAsPng();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(Main.this, e.getMessage());
+		}
 	}
 
 	public static ImageIcon getDeleteI() {
@@ -414,5 +420,33 @@ public class Main extends JFrame {
 
 	public SurroundingsView getSurroundingsView() {
 		return surroundingsView;
+	}
+
+	public ImageIcon getAppIcon() {
+		return appIcon;
+	}
+
+	private void saveAs() {
+		JFileChooser fc = new JFileChooser();
+		if (fc.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
+			try {
+				surroundingsView.saveAs(fc.getSelectedFile().getAbsolutePath());
+			} catch (IOException e1) {
+				JOptionPane.showMessageDialog(Main.this, e1.getMessage());
+			}
+		}
+	}
+
+	private void save() {
+		if (surroundingsView.hasPath()) {
+			try {
+				surroundingsView.save();
+			} catch (IOException e1) {
+				JOptionPane.showMessageDialog(Main.this, e1.getMessage());
+			}
+		} else {
+			saveAs();
+		}
+
 	}
 }

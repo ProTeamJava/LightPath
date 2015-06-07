@@ -114,6 +114,14 @@ public abstract class AbstractOpticalElement {
 		return new Point(vertices.get(i).x + position.x, vertices.get(i).y + position.y);
 	}
 
+	private boolean checkSegmentCollision(Point a1, Point a2, Point b1, Point b2) {
+		short d1 = direction(a1, a2, b1);
+		short d2 = direction(a1, a2, b2);
+		short d3 = direction(b1, b2, a1);
+		short d4 = direction(b1, b2, a2);
+		return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+	}
+
 	/**
 	 * 
 	 * @return <code>null</code> - no collision
@@ -131,13 +139,8 @@ public abstract class AbstractOpticalElement {
 				// protection against multiple collisions with the same segment
 				continue;
 			}
-
-			short d1 = direction(checkingSegment.begin, checkingSegment.end, s.begin);
-			short d2 = direction(checkingSegment.begin, checkingSegment.end, s.end);
-			short d3 = direction(s.begin, s.end, checkingSegment.begin);
-			short d4 = direction(s.begin, s.end, checkingSegment.end);
-
-			if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
+			
+			if (checkSegmentCollision(checkingSegment.begin, checkingSegment.end, s.begin, s.end)) {
 				// collision
 				if (tmp == null) {
 					// 1st collision
@@ -321,13 +324,15 @@ public abstract class AbstractOpticalElement {
 			p.x -= x;
 			p.y -= y;
 		}
-		
-		if(withMove) {
-			position = position.moveBy(new Point(x,y));
+
+		if (withMove) {
+			position = position.moveBy(new Point(x, y));
 		}
-		
+
+		calcBounds();
 	}
-	
+
 	public abstract void addNewVertex(Point p);
+
 	public abstract boolean endDrawing();
 }

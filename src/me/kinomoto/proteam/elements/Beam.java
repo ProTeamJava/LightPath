@@ -62,12 +62,10 @@ public class Beam {
 			for (AbstractOpticalElement e : s.getElements()) {
 				try {
 					Collision p = e.collision(tmp, lastColision);
-					if (p != null) {
-						if (collision == null || !collision.getLine().isEqual(p.getLine())) {
-							collisionElement = e;
-							collision = p;
-							collisionNum++;
-						}
+					if (p != null && (collision == null || !collision.getLine().isEqual(p.getLine()))) {
+						collisionElement = e;
+						collision = p;
+						collisionNum++;
 					}
 				} catch (MultipleCollisionsException ex) {
 					collisionNum += 2;

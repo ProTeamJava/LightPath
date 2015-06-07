@@ -7,6 +7,7 @@ public abstract class HistoryNodeAbstract {
 	
 	public HistoryNodeAbstract(Surroundings s) {
 		this.s = s;
+		s.setModyfied(true);
 	}
 	
 	public abstract void undo();

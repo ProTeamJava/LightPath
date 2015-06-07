@@ -12,7 +12,8 @@ import me.kinomoto.proteam.settings.PrismSettingsPanel;
 
 public class Prism extends AbstractOpticalElement {
 	public static final int MAGIC_NUMBER = 0x7072;
-	public static final double GLASS_IOR = 1.5; // todo check if correct
+	public static final double GLASS_IOR = 1.5;
+	public static final double WATTER_IOR = 4.0/3.0;
 	/**
 	 * Should be less than 1.
 	 */
@@ -41,11 +42,11 @@ public class Prism extends AbstractOpticalElement {
 	}
 
 	public static Prism getSquarePrism(Point position) {
-		return new Prism(position, 1.33, AbstractOpticalElement.getSquare());
+		return new Prism(position, WATTER_IOR, AbstractOpticalElement.getSquare());
 	}
 
 	public static Prism getTrianglePrism(Point position) {
-		return new Prism(position, 1.33, AbstractOpticalElement.getTriangle());
+		return new Prism(position, WATTER_IOR, AbstractOpticalElement.getTriangle());
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class Prism extends AbstractOpticalElement {
 		double div2 = Math.sqrt(sl);
 		sy /= div2;
 		sx /= div2;
-		// sufrace normal unit vertor coordinates
+		// Surface normal unit vector coordinates
 		double ny = seg.begin.x - seg.end.x;
 		double nx = seg.begin.y - seg.end.y;
 
@@ -72,12 +73,12 @@ public class Prism extends AbstractOpticalElement {
 		ny /= div;
 		nx /= div;
 
-		// cooeficient ratio
+		// Coefficient ratio
 		// incident to reflected
-		// TODO getIorAtPoint – nie zawsze surroundings
-		double nir = s.getIor() / ior;
+		double surroundingsIOR = s.getIorAt(b.segment.end, this);
+		double nir = surroundingsIOR / ior;
 		// reflected to incident
-		double nri = ior / s.getIor();
+		double nri = ior / surroundingsIOR;
 
 		// refracted or reflected beam vector coordinates
 		double rx;

@@ -75,7 +75,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 
 		surroundings.add(Prism.getTrianglePrism(new Point(0, 0)));
 		surroundings.add(Mirror.getMirror(new Point(235, 55)));
-		surroundings.add(new BeamSource(new Segment(new Point(-300, 50), new Point(0,0)), Beam.RED));
+		surroundings.add(new BeamSource(new Segment(new Point(-300, 50), new Point(0, 0)), Beam.RED));
 	}
 
 	public SurroundingsView(SettingsPanel settingsPanel, Main ref, String path) throws LoadException {
@@ -138,28 +138,23 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		updateSize();
 	}
 
-	public void saveAsPng() {
+	public void saveAsPng() throws IOException {
 
 		Image png = createImage(this.getWidth(), this.getHeight());
 		Graphics2D paint = (Graphics2D) png.getGraphics();
 		this.paint(paint);
 		int returnVal = fc.showSaveDialog(this);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			try {
-				if (!ImageIO.write((RenderedImage) png, "png", fc.getSelectedFile())) {
-					// TODO save error
-				}
-			} catch (IOException e) {
-				// TODO save error
-			}
+		if (returnVal == JFileChooser.APPROVE_OPTION && !ImageIO.write((RenderedImage) png, "png", fc.getSelectedFile())) {
+			throw new IOException("Can't write to " + fc.getSelectedFile().getCanonicalPath());
+
 		}
 	}
 
-	public void saveAs(String path) {
+	public void saveAs(String path) throws IOException {
 		surroundings.saveAs(path);
 	}
 
-	public void save() {
+	public void save() throws IOException {
 		surroundings.save();
 	}
 
@@ -172,7 +167,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	}
 
 	public void setSelectedTool(TOOL selectedTool) {
-		if(this.selectedTool == TOOL.DRAW_MIRROR || this.selectedTool == TOOL.DRAW_PRISM) {
+		if (this.selectedTool == TOOL.DRAW_MIRROR || this.selectedTool == TOOL.DRAW_PRISM) {
 			surroundings.endDrawing();
 		}
 		this.selectedTool = selectedTool;
@@ -216,9 +211,9 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (selectedTool == TOOL.DRAW_MIRROR || selectedTool == TOOL.DRAW_PRISM) {
-			if(e.getButton() == MouseEvent.BUTTON1) {
-			surroundings.addNewVertexToDrawing(selectedTool == TOOL.DRAW_MIRROR, mouseEventToSurroundingsPosition(e));
-			} else if(e.getButton() == MouseEvent.BUTTON3) {
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				surroundings.addNewVertexToDrawing(selectedTool == TOOL.DRAW_MIRROR, mouseEventToSurroundingsPosition(e));
+			} else if (e.getButton() == MouseEvent.BUTTON3) {
 				surroundings.endDrawing();
 			}
 			repaint();
