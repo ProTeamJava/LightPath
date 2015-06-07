@@ -39,11 +39,10 @@ public class Main extends JFrame {
 	private static final int MIN_HEIGHT = 400;
 	private static final int WIDTH = 1200;
 	private static final int HEIGHT = 600;
-	
-	private static final Point ROTATE_CURSOR_HOTSPOT = new Point(8,8);
-	
+
+	private static final Point ROTATE_CURSOR_HOTSPOT = new Point(8, 8);
+
 	private static final int SCROLL_MULTIPLIER = 5;
-	
 
 	private JMenuItem openA;
 	private JMenuItem exportA;
@@ -69,6 +68,7 @@ public class Main extends JFrame {
 	private static ImageIcon deleteI;
 	private ImageIcon zoomInI;
 	private ImageIcon zoomOutI;
+	public final ImageIcon appIcon = getIcon("LightPathIcon.png");
 
 	private SaveAsPngAction savePng;
 
@@ -96,7 +96,6 @@ public class Main extends JFrame {
 		this.setSize(WIDTH, HEIGHT);
 		this.setLayout(new BorderLayout());
 
-		ImageIcon appIcon = new ImageIcon(getClass().getClassLoader().getResource("LightPathIcon.png"));
 		this.setIconImage(appIcon.getImage());
 
 		initIcons();
@@ -255,7 +254,6 @@ public class Main extends JFrame {
 		exitA = new JMenuItem(Messages.get("exit"), exitI);
 		exitA.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
 
-		
 		savePng = new SaveAsPngAction(this);
 
 		exportA.addActionListener(savePng);
@@ -361,7 +359,7 @@ public class Main extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				AboutWindow about = new AboutWindow(Messages.get("aboutTitle"));
+				AboutWindow about = new AboutWindow(Messages.get("aboutTitle"), Main.this);
 				about.setVisible(true);
 			}
 		});

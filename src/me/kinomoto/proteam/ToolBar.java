@@ -20,16 +20,20 @@ public class ToolBar extends JPanel {
 		ButtonGroup btnGroup = new ButtonGroup();
 
 		JToggleButton pointerSelectButton = new JToggleButton(main.getIcon("transform-move.png"));
-		JToggleButton mirrorSelectButton = new JToggleButton(main.getIcon("draw-line.png"));
-		JToggleButton triangularPrismButton = new JToggleButton(main.getIcon("draw-triangle1.png"));
-		JToggleButton squarePrismButton = new JToggleButton(main.getIcon("draw-rectangle.png"));
+		JToggleButton mirrorSelectButton = new JToggleButton(main.getIcon("mirror.png"));
+		JToggleButton triangularPrismButton = new JToggleButton(main.getIcon("triangle_prism.png"));
+		JToggleButton squarePrismButton = new JToggleButton(main.getIcon("cube_prism.png"));
 		JToggleButton sourceButton = new JToggleButton(main.getIcon("source.png"));
+		JToggleButton drawMirrorButton = new JToggleButton(main.getIcon("draw_mirror.png"));
+		JToggleButton drawPrismButton = new JToggleButton(main.getIcon("draw_prism.png"));
 
 		btnGroup.add(pointerSelectButton);
 		btnGroup.add(mirrorSelectButton);
 		btnGroup.add(triangularPrismButton);
 		btnGroup.add(squarePrismButton);
 		btnGroup.add(sourceButton);
+		btnGroup.add(drawPrismButton);
+		btnGroup.add(drawMirrorButton);
 		
 		pointerSelectButton.setSelected(true);
 
@@ -38,6 +42,8 @@ public class ToolBar extends JPanel {
 		this.add(triangularPrismButton);
 		this.add(squarePrismButton);
 		this.add(sourceButton);
+		this.add(drawMirrorButton);
+		this.add(drawPrismButton);
 
 		pointerSelectButton.addActionListener(new ActionListener() {
 			

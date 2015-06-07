@@ -26,8 +26,9 @@ public class AboutWindow extends JFrame {
 	private static final int MINIMUM_WIDTH = 400;
 	private static final int MINIMUM_HEIGHT = 350;
 
-	public AboutWindow(String title) throws HeadlessException {
+	public AboutWindow(String title, Main m) throws HeadlessException {
 		super(title);
+		this.setIconImage(m.appIcon.getImage());
 		this.setMinimumSize(new Dimension(MINIMUM_WIDTH, MINIMUM_HEIGHT));
 		getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("default:grow"),},
