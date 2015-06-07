@@ -89,6 +89,22 @@ public class ToolBar extends JPanel {
 				
 			}
 		});
+		
+		drawMirrorButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				main.getSurroundingsView().setSelectedTool(TOOL.DRAW_MIRROR);
+			}
+		});
+		
+		drawPrismButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				main.getSurroundingsView().setSelectedTool(TOOL.DRAW_PRISM);
+			}
+		});
 	}
 
 }

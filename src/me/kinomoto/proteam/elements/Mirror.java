@@ -18,12 +18,22 @@ public class Mirror extends AbstractOpticalElement {
 	private double absorption = .99;
 
 	public Mirror(Point position) {
-		super(position, AbstractOpticalElement.getMirror());
+		super(position);
+		vertices.add(new Point(0, 0));
 	}
-	
+
 	public Mirror(Point position, List<Point> verts, DataInputStream is) throws IOException {
 		super(position, verts);
 		absorption = is.readDouble();
+	}
+
+	public Mirror(Point position, List<Point> verts) {
+		super(position, verts);
+		calcCentroid(false, true);
+	}
+
+	public static Mirror getMirror(Point position) {
+		return new Mirror(position, AbstractOpticalElement.getMirror());
 	}
 
 	public double getAbsorption() {
@@ -114,6 +124,22 @@ public class Mirror extends AbstractOpticalElement {
 		os.writeInt(MAGIC_NUMBER);
 		saveAbstract(os);
 		os.writeDouble(absorption);
+	}
+
+	@Override
+	public void addNewVertex(Point p) {
+		vertices.add(p.moveBy(position.mul(-1)));
+	}
+
+	@Override
+	public boolean endDrawing() {
+		if (vertices.size() < 2)
+			return false;
+
+		checkRightOrLeft();
+		calcCentroid(true, true);
+		calcBounds();
+		return true;
 	}
 
 }

@@ -61,7 +61,6 @@ public abstract class AbstractOpticalElement {
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
 		this.vertices = vertices;
-		calcCentroid();
 		calcBounds();
 	}
 
@@ -258,7 +257,7 @@ public abstract class AbstractOpticalElement {
 		position.y += y;
 	}
 
-	private void calcBounds() {
+	protected void calcBounds() {
 		r = (int) (Collections.min(vertices, Point.xComparator).x + BOUND_SIZE);
 		l = (int) (Collections.max(vertices, Point.xComparator).x - BOUND_SIZE);
 		b = (int) (Collections.min(vertices, Point.yComparator).y + BOUND_SIZE);
@@ -305,11 +304,12 @@ public abstract class AbstractOpticalElement {
 		rotationRight = sum > 0;
 	}
 
-	protected void calcCentroid() {
+	protected void calcCentroid(boolean withMove, boolean isMirror) {
 		double x = 0;
 		double y = 0;
 		int n = 0;
-		for (; n < vertices.size() - 1; n++) {
+		int max = isMirror ? vertices.size() : vertices.size() - 1;
+		for (; n < max; n++) {
 			x += vertices.get(n).x;
 			y += vertices.get(n).y;
 		}
@@ -321,5 +321,13 @@ public abstract class AbstractOpticalElement {
 			p.x -= x;
 			p.y -= y;
 		}
+		
+		if(withMove) {
+			position = position.moveBy(new Point(x,y));
+		}
+		
 	}
+	
+	public abstract void addNewVertex(Point p);
+	public abstract boolean endDrawing();
 }

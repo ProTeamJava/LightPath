@@ -12,6 +12,7 @@ import me.kinomoto.proteam.settings.PrismSettingsPanel;
 
 public class Prism extends AbstractOpticalElement {
 	public static final int MAGIC_NUMBER = 0x7072;
+	public static final double GLASS_IOR = 1.5; // todo check if correct
 	/**
 	 * Should be less than 1.
 	 */
@@ -20,14 +21,17 @@ public class Prism extends AbstractOpticalElement {
 	private double ior;
 
 	public Prism(Point position, double ior) {
-		super(position, AbstractOpticalElement.getSquare());
+		super(position);
+		vertices.add(new Point(0,0));
+		vertices.add(new Point(0,0));
 		this.ior = ior;
-		checkRightOrLeft();
+		
 	}
 
 	public Prism(Point position, double ior, List<Point> vert) {
 		super(position, vert);
 		this.ior = ior;
+		calcCentroid(false, false);
 		checkRightOrLeft();
 	}
 	
@@ -146,6 +150,22 @@ public class Prism extends AbstractOpticalElement {
 		os.writeInt(MAGIC_NUMBER);
 		saveAbstract(os);
 		os.writeDouble(ior);
+	}
+
+	@Override
+	public void addNewVertex(Point p) {
+		vertices.add(vertices.size() - 1, p.moveBy(position.mul(-1)));		
+	}
+
+	@Override
+	public boolean endDrawing() {
+		if(vertices.size() < 4)
+			return false;
+		
+		checkRightOrLeft();
+		calcCentroid(true, false);
+		calcBounds();
+		return true;
 	}
 
 }

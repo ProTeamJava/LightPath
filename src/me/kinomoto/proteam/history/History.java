@@ -6,6 +6,7 @@ import java.util.List;
 public class History {
 	private static List<HistoryNodeAbstract> past = new LinkedList<>();
 	private static List<HistoryNodeAbstract> future = new LinkedList<>();
+	private static boolean stopHistory = false;
 
 	private History() {
 	}
@@ -19,6 +20,8 @@ public class History {
 	}
 
 	public static void back() {
+		if(stopHistory)
+			return;
 		for (;;) {
 			if (!isBackable())
 				return;
@@ -35,6 +38,8 @@ public class History {
 	}
 
 	public static void foward() {
+		if(stopHistory)
+			return;
 		if (!isForwardable())
 			return;
 		HistoryNodeAbstract node = ((LinkedList<HistoryNodeAbstract>) future).getLast();
@@ -55,5 +60,9 @@ public class History {
 	public static void clean() {
 		past.clear();
 		future.clear();
+	}
+	
+	public static void setStop(boolean stop) {
+		stopHistory = stop;
 	}
 }

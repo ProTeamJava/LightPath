@@ -18,7 +18,9 @@ import javax.swing.JPanel;
 import me.kinomoto.proteam.elements.AbstractOpticalElement;
 import me.kinomoto.proteam.elements.Beam;
 import me.kinomoto.proteam.elements.BeamSource;
+import me.kinomoto.proteam.elements.Mirror;
 import me.kinomoto.proteam.elements.Point;
+import me.kinomoto.proteam.elements.Prism;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.history.HistoryNodeDeleteElement;
 import me.kinomoto.proteam.history.HistoryNodeDeleteSource;
@@ -32,31 +34,15 @@ import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
 public class Surroundings {
+	/**
+	 * Used to check if file is saved by this application.
+	 */
 	private static final int MAGIC_NUMBER = 0x5F6C7068;
 
-	private List<AbstractOpticalElement> elements;
-	private List<BeamSource> sources;
-	private List<Beam> beams;
-
-	private double ior = 1;
-
-	private SurroundingsView view;
-
-	private String path = "";
-	private boolean modyfied = false;
-
-	private boolean isSimulating = false;
-	private boolean simQueue = false;
-
-	private SelectionType newDrawType = SelectionType.SURROUNDINGS;
-	private AbstractOpticalElement newElement = null;
-	private BeamSource newSource = null;
-
-	private Main ref = null;
-	
+	// selection stroke constants
 	private static final float SELECTION_STROKE_WIDTH = 1.0f;
 	private static final float SELECTION_STROKE_MITER_LIMIT = 10.0f;
-	private static final float[] SELECTION_STROKE_DASH_PATERN = new float[] {2.0f, 2.0f};
+	private static final float[] SELECTION_STROKE_DASH_PATERN = new float[] { 2.0f, 2.0f };
 	private static final float SELECTION_STROKE_DASH_FASE = 0.0f;
 	public static final BasicStroke selectionStroke = new BasicStroke(SELECTION_STROKE_WIDTH, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, SELECTION_STROKE_MITER_LIMIT, SELECTION_STROKE_DASH_PATERN, SELECTION_STROKE_DASH_FASE);
 
@@ -68,9 +54,38 @@ public class Surroundings {
 		SELECTED_BEAM_SOURCE, SELECTED_ELEMENT, SURROUNDINGS
 	}
 
+	private Main ref = null;
+
+	// model variables
+	private List<AbstractOpticalElement> elements;
+	private List<BeamSource> sources;
+	private List<Beam> beams;
+
+	private double ior = 1;
+
+	private SurroundingsView view;
+
+	// file variables
+	private String path = "";
+	private boolean modyfied = false;
+
+	// simulation variables
+	private boolean isSimulating = false;
+	private boolean simQueue = false;
+
+	// adding new elements variables
+	private SelectionType newDrawType = SelectionType.SURROUNDINGS;
+	private AbstractOpticalElement newElement = null;
+	private BeamSource newSource = null;
+
+	// selection variables
 	private SelectionType selection = SelectionType.SURROUNDINGS;
 	private BeamSource selectedBeamSource = null;
 	private AbstractOpticalElement selectedElement = null;
+
+	// drawing variables
+	private boolean drawing = false;
+	private AbstractOpticalElement drawingElement = null;
 
 	public Surroundings(SurroundingsView view, String path, Main ref) throws LoadException {
 		this.path = path;
@@ -164,8 +179,11 @@ public class Surroundings {
 		}
 
 		if (newSource != null) {
-			// TODO color
 			newSource.paint(g);
+		}
+
+		if (drawing) {
+			drawingElement.paint(g);
 		}
 
 		switch (selection) {
@@ -177,6 +195,35 @@ public class Surroundings {
 			break;
 		default:
 			break;
+		}
+	}
+
+	public void addNewVertexToDrawing(boolean mirrorOrPrism, Point p) {
+		History.setStop(true);
+		if (!drawing) {
+			// make new drawing
+			if (mirrorOrPrism) {
+				// mirror
+				drawingElement = new Mirror(p);
+			} else {
+				// prism
+				drawingElement = new Prism(p, Prism.GLASS_IOR);
+			}
+			drawing = true;
+		} else {
+			drawingElement.addNewVertex(p);
+		}
+	}
+
+	public void endDrawing() {
+		History.setStop(false);
+		if (drawing) {
+			if (drawingElement.endDrawing()) {
+				add(drawingElement);
+				History.addNode(new HistoryNodeNewElement(this, drawingElement));
+			}
+			drawing = false;
+			drawingElement = null;
 		}
 	}
 
@@ -243,19 +290,18 @@ public class Surroundings {
 				is.close();
 				throw new LoadException("Unknow file type.");
 			}
-			
+
 			setIor(is.readDouble());
-			
+
 			int sourcesSize = is.readInt();
-			for(int i = 0; i < sourcesSize; i++) {
+			for (int i = 0; i < sourcesSize; i++) {
 				sources.add(new BeamSource(is));
 			}
-			
-			int  elementsSize = is.readInt();
-			for(int i = 0; i < elementsSize; i++){
+
+			int elementsSize = is.readInt();
+			for (int i = 0; i < elementsSize; i++) {
 				elements.add(AbstractOpticalElement.load(is));
 			}
-			
 
 			is.close();
 		} catch (IOException e) {
@@ -268,7 +314,7 @@ public class Surroundings {
 			DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
 			os.writeInt(MAGIC_NUMBER);
 			os.writeDouble(getIor());
-			
+
 			os.writeInt(sources.size());
 			for (BeamSource s : sources) {
 				s.save(os);
@@ -495,10 +541,9 @@ public class Surroundings {
 		}
 		simulate();
 	}
-	
+
 	public boolean hasPath() {
 		return path != "";
 	}
-
 
 }

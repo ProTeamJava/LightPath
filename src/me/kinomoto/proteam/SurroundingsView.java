@@ -37,7 +37,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	private static final long serialVersionUID = 5447523639086911950L;
 
 	public enum TOOL {
-		POINTER, ROTATE, MIRROR, TRIANGLE_PRISM, SQUARE_PRISM, SOURCE
+		POINTER, ROTATE, MIRROR, TRIANGLE_PRISM, SQUARE_PRISM, SOURCE, DRAW_PRISM, DRAW_MIRROR
 	}
 
 	private JPopupMenu menuPopup = new JPopupMenu();
@@ -54,7 +54,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	private static final float MAX_SCALE = 10;
 	private static final float MIN_SCALE = .2f;
 	private static final double SCALE_STEP = Math.sqrt(2);
-	
+
 	private static final int HALF_BASE_WIDTH = BASE_WIDTH / 2;
 	private static final int HALF_BASE_HEIGHT = BASE_HEIGHT / 2;
 
@@ -73,9 +73,9 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 
 		initUI();
 
-		surroundings.add(new Mirror(new Point(100, 100)));
-		surroundings.add(new Prism(new Point(150, 180), 1.5));
-		surroundings.add(new Mirror(new Point(75, 200)));
+		surroundings.add(Mirror.getMirror(new Point(100, 100)));
+		surroundings.add(Prism.getSquarePrism(new Point(150, 150)));
+		surroundings.add(Mirror.getMirror(new Point(75, 200)));
 		surroundings.add(new BeamSource(new Point(200, 0), 105 / 180.0 * Math.PI, 650));
 		surroundings.add(new BeamSource(new Segment(new Point(50, 100), new Point(100, 90)), Beam.BLUE));
 		surroundings.add(new BeamSource(new Segment(new Point(210, 250), new Point(100, 150)), 450));
@@ -177,6 +177,9 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	}
 
 	public void setSelectedTool(TOOL selectedTool) {
+		if(this.selectedTool == TOOL.DRAW_MIRROR || this.selectedTool == TOOL.DRAW_PRISM) {
+			surroundings.endDrawing();
+		}
 		this.selectedTool = selectedTool;
 		if (selectedTool != TOOL.ROTATE && selectedTool != TOOL.POINTER) {
 			surroundings.setSelection(SelectionType.SURROUNDINGS);
@@ -191,11 +194,11 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		if (selectedTool == TOOL.ROTATE || selectedTool == TOOL.POINTER) {
 			PointPosition pos = surroundings.mousePressed(t);
 			surroundings.mouseOver(SurroundingsView.this, t);
-			
-			if(pos == PointPosition.POINT_ROTATE) {
-				selectedTool = TOOL.ROTATE;				
+
+			if (pos == PointPosition.POINT_ROTATE) {
+				selectedTool = TOOL.ROTATE;
 			} else {
-				selectedTool = TOOL.POINTER;				
+				selectedTool = TOOL.POINTER;
 			}
 
 			settingsPanel.setPanel(surroundings.getSelectedSettingsPanel());
@@ -217,9 +220,18 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		surroundings.mouseRelased();
-		surroundings.simulate();
-		mouseEntered(e);
+		if (selectedTool == TOOL.DRAW_MIRROR || selectedTool == TOOL.DRAW_PRISM) {
+			if(e.getButton() == MouseEvent.BUTTON1) {
+			surroundings.addNewVertexToDrawing(selectedTool == TOOL.DRAW_MIRROR, mouseEventToSurroundingsPosition(e));
+			} else if(e.getButton() == MouseEvent.BUTTON3) {
+				surroundings.endDrawing();
+			}
+			repaint();
+		} else {
+			surroundings.mouseRelased();
+			surroundings.simulate();
+			mouseEntered(e);
+		}
 	}
 
 	@Override
@@ -227,7 +239,7 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		Point t = mouseEventToSurroundingsPosition(e);
 
 		if (selectedTool == TOOL.MIRROR) {
-			surroundings.newElement(new Mirror(t));
+			surroundings.newElement(Mirror.getMirror(t));
 			repaint();
 		} else if (selectedTool == TOOL.SQUARE_PRISM) {
 			surroundings.newElement(Prism.getSquarePrism(t));
