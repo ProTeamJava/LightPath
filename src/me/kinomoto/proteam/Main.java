@@ -167,6 +167,9 @@ public class Main extends JFrame {
 			surroundingsView = new SurroundingsView(settingsPanel, this, path);
 		} catch (LoadException e) {
 			initSurroundings();
+			revalidate();
+			repaint();
+			initScrollListeners();
 			JOptionPane.showMessageDialog(Main.this, e.getMessage());
 			return;
 		}
@@ -390,6 +393,10 @@ public class Main extends JFrame {
 		java.awt.Point pos = scroll.getViewport().getViewPosition();
 		pos.x += dx;
 		pos.y += dy;
+		if (pos.x < 0)
+			pos.x = 0;
+		if (pos.y < 0)
+			pos.y = 0;
 		scroll.getViewport().setViewPosition(pos);
 	}
 

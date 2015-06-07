@@ -73,14 +73,9 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 
 		initUI();
 
-		surroundings.add(Mirror.getMirror(new Point(100, 100)));
-		surroundings.add(Prism.getSquarePrism(new Point(150, 150)));
-		surroundings.add(Mirror.getMirror(new Point(75, 200)));
-		surroundings.add(new BeamSource(new Point(200, 0), 105 / 180.0 * Math.PI, 650));
-		surroundings.add(new BeamSource(new Segment(new Point(50, 100), new Point(100, 90)), Beam.BLUE));
-		surroundings.add(new BeamSource(new Segment(new Point(210, 250), new Point(100, 150)), 450));
-		surroundings.add(new BeamSource(new Point(280, 200), 190 * Math.PI / 180.0, 400));
-		surroundings.add(new BeamSource(new Point(0, 0), .5 * Math.PI, Beam.RED));
+		surroundings.add(Prism.getTrianglePrism(new Point(0, 0)));
+		surroundings.add(Mirror.getMirror(new Point(235, 55)));
+		surroundings.add(new BeamSource(new Segment(new Point(-300, 50), new Point(0,0)), Beam.RED));
 	}
 
 	public SurroundingsView(SettingsPanel settingsPanel, Main ref, String path) throws LoadException {

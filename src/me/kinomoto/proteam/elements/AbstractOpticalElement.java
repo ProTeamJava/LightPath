@@ -43,7 +43,7 @@ public abstract class AbstractOpticalElement {
 	private static final int ROTATION_POINT_PLUS = 7;
 	private static final int ROTATION_POINT_MINUS = 4;
 
-	private static final double TRIANGLE_LENGHT = 40;
+	private static final double TRIANGLE_LENGHT = 70;
 	private static final double TRIANGLE_HALF_LENGHT = TRIANGLE_LENGHT / 2;
 	private static final double TRIANGLE_HEIGHT = TRIANGLE_LENGHT * Math.sqrt(3) / 2;
 
