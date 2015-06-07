@@ -1,6 +1,7 @@
 package me.kinomoto.proteam.elements;
 
 import java.awt.Graphics2D;
+import java.io.Serializable;
 
 import me.kinomoto.proteam.Collision;
 import me.kinomoto.proteam.MultipleCollisionsException;
@@ -8,7 +9,9 @@ import me.kinomoto.proteam.Surroundings;
 
 import com.mindprod.wavelength.Wavelength;
 
-public class Beam {
+public class Beam  implements Serializable{
+	private static final long serialVersionUID = 3031149333626031030L;
+	
 	public static final double RED = 700;
 	public static final double BLUE = 400;
 	private static final int MAX_LENGTH = 4500;

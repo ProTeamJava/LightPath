@@ -16,6 +16,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -87,7 +89,7 @@ public class Main extends JFrame {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
 		} catch (Exception e) {
-			// catch
+			Logger.getGlobal().log(Level.INFO, e.getLocalizedMessage());
 		}
 
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -406,6 +408,7 @@ public class Main extends JFrame {
 		try {
 			surroundingsView.saveAsPng();
 		} catch (IOException e) {
+			Logger.getGlobal().log(Level.INFO, e.getLocalizedMessage());
 			JOptionPane.showMessageDialog(Main.this, e.getMessage());
 		}
 	}
@@ -432,6 +435,7 @@ public class Main extends JFrame {
 			try {
 				surroundingsView.saveAs(fc.getSelectedFile().getAbsolutePath());
 			} catch (IOException e1) {
+				Logger.getGlobal().log(Level.INFO, e1.getLocalizedMessage());
 				JOptionPane.showMessageDialog(Main.this, e1.getMessage());
 			}
 		}
@@ -442,6 +446,7 @@ public class Main extends JFrame {
 			try {
 				surroundingsView.save();
 			} catch (IOException e1) {
+				Logger.getGlobal().log(Level.INFO, e1.getLocalizedMessage());
 				JOptionPane.showMessageDialog(Main.this, e1.getMessage());
 			}
 		} else {

@@ -3,6 +3,8 @@ package me.kinomoto.proteam;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Messages {
 	private static final String PREFIX = "me.kinomoto.proteam.messages";
@@ -18,6 +20,7 @@ public class Messages {
 		try {
 			resourceBundle = ResourceBundle.getBundle(bundleName);
 		} catch (Exception e) {
+			Logger.getGlobal().log(Level.INFO, e.getLocalizedMessage());
 			resourceBundle = ResourceBundle.getBundle(PREFIX + "_en_US");
 		}
 	}
@@ -26,6 +29,7 @@ public class Messages {
 		try {
 			return resourceBundle.getString(key);
 		} catch (MissingResourceException e) {
+			Logger.getGlobal().log(Level.INFO, e.getLocalizedMessage());
 			return '!' + key + '!';
 		}
 	}
@@ -34,6 +38,7 @@ public class Messages {
 		try {
 			return resourceBundle.getString(key).charAt(0);
 		} catch (Exception e) {
+			Logger.getGlobal().log(Level.INFO, e.getLocalizedMessage());	
 			return 0;
 		}
 	}

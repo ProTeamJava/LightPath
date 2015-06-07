@@ -10,8 +10,11 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
@@ -33,7 +36,9 @@ import me.kinomoto.proteam.history.HistoryNodeRotationSource;
 import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
-public class Surroundings {
+public class Surroundings implements Serializable {
+	private static final long serialVersionUID = -5054686324248695647L;
+
 	/**
 	 * Used to check if file is saved by this application.
 	 */
@@ -305,6 +310,7 @@ public class Surroundings {
 
 			is.close();
 		} catch (IOException e) {
+			Logger.getGlobal().log(Level.INFO, e.getLocalizedMessage());
 			throw new LoadException("Can't open file");
 		}
 	}

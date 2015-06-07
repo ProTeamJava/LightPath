@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +20,7 @@ import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.Surroundings.PointPosition;
 
 /**
- * 
+ * Comment
  * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds
  * an implementation of beam collision with the object detection
  * 
@@ -32,7 +33,9 @@ import me.kinomoto.proteam.Surroundings.PointPosition;
  * @method findCollisionPoint is to give exact point of collision
  *
  */
-public abstract class AbstractOpticalElement {
+public abstract class AbstractOpticalElement implements Serializable{
+	private static final long serialVersionUID = 1025746597866882092L;
+	
 	private static final int STROKE_WIDTH = 2;
 	private static final int DOT_SIZE = 4;
 	private static final int HALF_DOT_SIZE = DOT_SIZE / 2;

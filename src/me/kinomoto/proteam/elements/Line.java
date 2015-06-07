@@ -1,6 +1,10 @@
 package me.kinomoto.proteam.elements;
 
-public class Line {
+import java.io.Serializable;
+
+public class Line implements Serializable {
+	private static final long serialVersionUID = -959526529300895798L;
+
 	private boolean verticalOrHorizontal;
 	private double a = 0;
 	private double b = 0;

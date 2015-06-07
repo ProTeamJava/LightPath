@@ -3,8 +3,10 @@ package me.kinomoto.proteam.elements;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Segment {
+public class Segment implements Serializable {
+	private static final long serialVersionUID = -5517733610365859910L;
 	private static final int HASHCODE_CONST = 103456;
 	public Point begin, end;
 
@@ -28,6 +30,7 @@ public class Segment {
 		end.save(os);
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		try {
 			Segment s = (Segment) obj;
@@ -41,7 +44,7 @@ public class Segment {
 	public int hashCode() {
 		return begin.hashCode() * HASHCODE_CONST + end.hashCode();
 	}
-	
+
 	@Override
 	public String toString() {
 		return begin.toString() + " " + end.toString();

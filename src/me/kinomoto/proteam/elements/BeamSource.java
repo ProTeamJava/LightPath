@@ -6,23 +6,25 @@ import java.awt.Graphics2D;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.Surroundings.PointPosition;
 
-public class BeamSource {
+public class BeamSource implements Serializable {
+	private static final long serialVersionUID = 7548919196723640310L;
+
 	private static final int WIDTH = 40;
 	private static final int HEIGHT = 20;
 	private static final int MARGIN = 10;
 	private static final int STROKE_WIDTH = 2;
-	
+
 	private static final int WIDTH_M = WIDTH + 2 * MARGIN;
 	private static final int HEIGHT_M = HEIGHT + 2 * MARGIN;
 	private static final int HALF_WIDTH_M = WIDTH_M / 2;
 	private static final int HALF_HEIGHT_M = HEIGHT_M / 2;
 	private static final int HALF_WIDTH = WIDTH / 2;
 	private static final int HALF_HEIGHT = HEIGHT / 2;
-	
 
 	private static final double DOUBLE_2PI = 2 * Math.PI;
 	private static final int DOT_SIZE = 4;
@@ -36,7 +38,6 @@ public class BeamSource {
 	private double angle;
 	private double cosA;
 	private double sinA;
-	
 
 	public BeamSource(DataInputStream is) throws IOException {
 		segment = new Segment(is);
@@ -68,7 +69,7 @@ public class BeamSource {
 	}
 
 	public Beam getBeam() {
-		return new Beam(segment.moveBy(new Point(HEIGHT*cosA, HEIGHT*sinA)), wavelength, 1, null);
+		return new Beam(segment.moveBy(new Point(HEIGHT * cosA, HEIGHT * sinA)), wavelength, 1, null);
 	}
 
 	private void updateTrig() {

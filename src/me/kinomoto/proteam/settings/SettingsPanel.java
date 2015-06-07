@@ -1,6 +1,7 @@
 package me.kinomoto.proteam.settings;
 
 import java.awt.Dimension;
+import java.io.Serializable;
 
 import javax.swing.JPanel;
 
@@ -9,7 +10,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class SettingsPanel extends JPanel {
+public class SettingsPanel extends JPanel implements Serializable {
 	private static final long serialVersionUID = 7756992612679667166L;
 	private static final int PREFFERED_WIDTH = 200;
 	private JPanel panel;

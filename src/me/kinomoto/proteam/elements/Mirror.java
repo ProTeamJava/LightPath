@@ -11,6 +11,8 @@ import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.settings.MirrorSettingsPanel;
 
 public class Mirror extends AbstractOpticalElement {
+	private static final long serialVersionUID = 8234823565685168819L;
+	
 	public static final int MAGIC_NUMBER = 0x6D69;
 	private static final int NEAR_DISTANCE = 5;
 	private static final int NEAR_DISTANCE_SQUAED = NEAR_DISTANCE * NEAR_DISTANCE;

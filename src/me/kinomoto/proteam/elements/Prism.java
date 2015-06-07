@@ -11,6 +11,8 @@ import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.settings.PrismSettingsPanel;
 
 public class Prism extends AbstractOpticalElement {
+	private static final long serialVersionUID = -1035892637722066740L;
+	
 	public static final int MAGIC_NUMBER = 0x7072;
 	public static final double GLASS_IOR = 1.5;
 	public static final double WATTER_IOR = 4.0/3.0;

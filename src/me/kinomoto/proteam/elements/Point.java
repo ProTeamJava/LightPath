@@ -3,9 +3,12 @@ package me.kinomoto.proteam.elements;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class Point {
+public class Point implements Serializable {
+	private static final long serialVersionUID = -7537942395847131117L;
+	
 	public double x;
 	public double y;
 
@@ -62,6 +65,7 @@ public class Point {
 		return new Point(x + dp.x, y + dp.y);
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		try {
 			Point p = (Point) obj;
