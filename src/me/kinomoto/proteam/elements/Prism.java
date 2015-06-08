@@ -52,7 +52,7 @@ public class Prism extends AbstractOpticalElement {
 	}
 
 	@Override
-	void findCollisionSolution(Surroundings s, Beam b, Segment seg, Line l) {
+	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
 
 		// incident beam unit vector coordinates
 		double sx = b.segment.end.x - b.segment.begin.x;
@@ -117,7 +117,7 @@ public class Prism extends AbstractOpticalElement {
 		double bright = b.brightness * PRISM_ABSORPTION;
 		if (bright > Beam.MIN_BRIGHTNESS) {
 			Segment tmp = new Segment(b.segment.end, end);
-			s.add(new Beam(tmp, b.wavelenght, bright, l));
+			s.add(new Beam(tmp, b.wavelenght, bright));
 		}
 
 	}

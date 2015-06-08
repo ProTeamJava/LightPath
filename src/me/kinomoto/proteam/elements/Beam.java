@@ -15,7 +15,7 @@ public class Beam  implements Serializable{
 	public static final double RED = 700;
 	public static final double BLUE = 400;
 	private static final int MAX_LENGTH = 4500;
-	private static final double STEP_SIZE = 200.0 / MAX_LENGTH;
+	private static final double STEP_SIZE = 10.0 / MAX_LENGTH;
 	public static final double MIN_BRIGHTNESS = .2;
 
 	Segment segment;
@@ -23,10 +23,7 @@ public class Beam  implements Serializable{
 	double wavelenght;
 	double brightness = 1;
 
-	private Line lastColision;
-
-	public Beam(Segment segment, double wavelenght, double lightness, Line line) {
-		lastColision = line;
+	public Beam(Segment segment, double wavelenght, double lightness) {
 		double dx = segment.end.x - segment.begin.x;
 		double dy = segment.end.y - segment.begin.y;
 		double max = Math.abs(dx) < Math.abs(dy) ? Math.abs(dy) : Math.abs(dx);
@@ -47,9 +44,9 @@ public class Beam  implements Serializable{
 		int collisionNum = 0;
 		Collision collision = null;
 		AbstractOpticalElement collisionElement = null;
-		double start = 0;
+		double start = 0.001;
 		double end = 1;
-		for (;;) {
+		for (int nn = 0;nn < 1e4;nn++) {
 			double dx, dy;
 			dx = segment.end.x - segment.begin.x;
 			dy = segment.end.y - segment.begin.y;
@@ -64,8 +61,8 @@ public class Beam  implements Serializable{
 			Segment tmp = new Segment(new Point(nbx, nby), new Point(nex, ney));
 			for (AbstractOpticalElement e : s.getElements()) {
 				try {
-					Collision p = e.collision(tmp, lastColision);
-					if (p != null && (collision == null || !collision.getLine().isEqual(p.getLine()))) {
+					Collision p = e.collision(tmp);
+					if (p != null) {
 						collisionElement = e;
 						collision = p;
 						collisionNum++;
@@ -78,7 +75,7 @@ public class Beam  implements Serializable{
 
 			if (collisionNum == 1) {
 				segment.end = collision.getPoint();
-				collisionElement.findCollisionSolution(s, this, collision.getSegment(), collision.getLine());
+				collisionElement.findCollisionSolution(s, this, collision.getSegment());
 				break;
 			} else if (collisionNum == 0 && end == 1) {
 				break;
@@ -86,11 +83,11 @@ public class Beam  implements Serializable{
 				start = end;
 				end += step;
 			} else {
-				end = (end - start) / 1.5;
+				end = (end - start) / 1.7;
 				if (step == 1)
 					step = STEP_SIZE;
 				else
-					step /= 1.5;
+					step /= 1.7;
 			}
 			collisionNum = 0;
 		}
