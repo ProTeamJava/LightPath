@@ -68,7 +68,7 @@ public class BeamSource {
 	}
 
 	public Beam getBeam() {
-		return new Beam(segment.moveBy(new Point(HEIGHT*cosA, HEIGHT*sinA)), wavelength, 1, null);
+		return new Beam(segment.moveBy(new Point(HEIGHT*cosA, HEIGHT*sinA)), wavelength, 1);
 	}
 
 	private void updateTrig() {

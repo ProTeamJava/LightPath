@@ -128,23 +128,17 @@ public abstract class AbstractOpticalElement {
 	 * @throws MultipleCollisionsException
 	 *             if there are multiple collisions
 	 */
-	public Collision collision(Segment s, Line colisionLine) throws MultipleCollisionsException {
+	public Collision collision(Segment s) throws MultipleCollisionsException {
 		Collision tmp = null;
 
 		for (int i = 0, j = 1; j < vertices.size(); i++, j++) {
 			Segment checkingSegment = new Segment(get(i), get(j));
-			Line checkingLine = new Line(checkingSegment);
-
-			if (colisionLine != null && colisionLine.isEqual(checkingLine)) {
-				// protection against multiple collisions with the same segment
-				continue;
-			}
 			
 			if (checkSegmentCollision(checkingSegment.begin, checkingSegment.end, s.begin, s.end)) {
 				// collision
 				if (tmp == null) {
 					// 1st collision
-					tmp = new Collision(findCollisionPoint(checkingSegment.begin, checkingSegment.end, s.begin, s.end), checkingSegment, checkingLine);
+					tmp = new Collision(findCollisionPoint(checkingSegment.begin, checkingSegment.end, s.begin, s.end), checkingSegment);
 				} else {
 					// next collision
 					throw new MultipleCollisionsException();
@@ -193,7 +187,7 @@ public abstract class AbstractOpticalElement {
 		return point;
 	}
 
-	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg, Line l);
+	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
 
 	public void paint(Graphics2D g) {
 		paint(g, Color.BLACK);
