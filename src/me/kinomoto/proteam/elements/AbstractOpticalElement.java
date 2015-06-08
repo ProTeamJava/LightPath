@@ -23,10 +23,7 @@ import me.kinomoto.proteam.Surroundings.PointPosition;
  * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds
  * an implementation of beam collision with the object detection
  * 
- * @param posistion
- *            is the point of reference to the optical element
- * @param vertices
- *            is the list of the vertex points of the optical element
+
  * 
  * @method findCollision is the algorithm of beam collision with the object detection
  * @method findCollisionPoint is to give exact point of collision
@@ -58,12 +55,20 @@ public abstract class AbstractOpticalElement {
 
 	protected boolean rotationRight = true;
 
+	/** The constructor of abstract optical object
+	 * @param position is the point of reference to the optical element         
+	 * @param vertices is the list of the vertex points of the optical element
+	 */
 	public AbstractOpticalElement(Point position, List<Point> vertices) {
 		this.position = position;
 		this.vertices = vertices;
 		calcBounds();
 	}
 
+	/** The constructor of abstract optical object
+	 * @param position is the point of reference to the optical element         
+	 * @param vertices is the list of the vertex points of the optical element
+	 */
 	public AbstractOpticalElement(Point position) {
 		this.position = position;
 		this.vertices = new ArrayList<Point>();
@@ -231,6 +236,13 @@ public abstract class AbstractOpticalElement {
 		}
 	}
 
+	/**
+	 * The method creating the optical object while reading the input file
+	 * @param is the DataInputStream
+	 * @return
+	 * @throws IOException
+	 * @throws LoadException
+	 */
 	public static AbstractOpticalElement load(DataInputStream is) throws IOException, LoadException {
 		int magicNum = is.readInt();
 		Point position = new Point(is);
@@ -254,6 +266,9 @@ public abstract class AbstractOpticalElement {
 		position.y += y;
 	}
 
+	/**
+	 * The method calculating the best adjustment of the bounds of the selected objects
+	 */
 	protected void calcBounds() {
 		r = (int) (Collections.min(vertices, Point.xComparator).x + BOUND_SIZE);
 		l = (int) (Collections.max(vertices, Point.xComparator).x - BOUND_SIZE);
@@ -270,6 +285,10 @@ public abstract class AbstractOpticalElement {
 		return Math.atan2(p.y - position.y, p.x - position.x);
 	}
 
+	/**
+	 * The method changing vertices positions coordinates after rotation
+	 * @param da the difference angle after rotation
+	 */
 	public void rotate(double da) {
 		selectionAngle += da;
 		double sin = Math.sin(da);
@@ -291,6 +310,9 @@ public abstract class AbstractOpticalElement {
 		position = p;
 	}
 
+	/**
+	 * The method implementing distinction between right and left handed figures
+	 */
 	protected void checkRightOrLeft() {
 		double sum = 0;
 
@@ -301,6 +323,11 @@ public abstract class AbstractOpticalElement {
 		rotationRight = sum > 0;
 	}
 
+	/**
+	 * The method calculating the geometric center of the figure 
+	 * @param withMove the Boolean indicating whether the coordinates of the center is to be changed 
+	 * @param isMirror the Boolean indicating whether the optical object that is being calculated is Mirror or Prism
+	 */
 	protected void calcCentroid(boolean withMove, boolean isMirror) {
 		double x = 0;
 		double y = 0;

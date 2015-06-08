@@ -16,6 +16,10 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+
+/**
+ * The class creates the informational window that can be opened form About menu bar
+ */
 public class AboutWindow extends JFrame {
 	private static final long serialVersionUID = 8894819342901772083L;
 	private static final String FONT_NAME = "Dialog";
