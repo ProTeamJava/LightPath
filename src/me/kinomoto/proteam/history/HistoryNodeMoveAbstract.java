@@ -3,6 +3,9 @@ package me.kinomoto.proteam.history;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.Point;
 
+/**
+ * The class is the abstract prototype for creating HistoryNodes for translations in the Surroundings
+ */
 public abstract class HistoryNodeMoveAbstract extends HistoryNodeAbstract {
 
 	protected Point moveBy = new Point(0, 0);

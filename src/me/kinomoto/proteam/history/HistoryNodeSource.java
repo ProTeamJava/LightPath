@@ -3,6 +3,9 @@ package me.kinomoto.proteam.history;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.BeamSource;
 
+/**
+ *The class is creating a HistoryNode after changing parameters of the BeamSource
+ */
 public class HistoryNodeSource extends HistoryNodeAbstract {
 	BeamSource bs;
 	double wave;

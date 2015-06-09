@@ -10,6 +10,9 @@ import javax.swing.JPanel;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.settings.MirrorSettingsPanel;
 
+/**
+ * Mirror class is representing the Mirror optical properties 
+ */
 public class Mirror extends AbstractOpticalElement {
 	public static final int MAGIC_NUMBER = 0x6D69;
 	private static final int NEAR_DISTANCE = 5;
@@ -44,6 +47,11 @@ public class Mirror extends AbstractOpticalElement {
 		this.absorption = absorption;
 	}
 
+	/**
+	 * The reflection and absorption algorithms implemented. The reflection algorithm is using the dot product. In the collision Point there is a new Beam created.
+	 * 
+	 * @see me.kinomoto.proteam.elements.AbstractOpticalElement#findCollisionSolution(me.kinomoto.proteam.Surroundings, me.kinomoto.proteam.elements.Beam, me.kinomoto.proteam.elements.Segment)
+	 */
 	@Override
 	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
 		double ny = seg.end.x - seg.begin.x;
@@ -79,13 +87,10 @@ public class Mirror extends AbstractOpticalElement {
 	/**
 	 * Checks if point distance to line is less than 5 units;
 	 * 
-	 * @param p1
-	 *            - begin of segment
-	 * @param p2
-	 *            - end of segment
-	 * @param s
-	 *            - point to check
-	 * @return
+	 * @param p1 begin of segment
+	 * @param p2 end of segment
+	 * @param s point to be checked
+	 * @return boolean
 	 */
 	private boolean pointNearLine(Point p1, Point p2, Point s) {
 		double px = p2.x - p1.x;
@@ -122,6 +127,10 @@ public class Mirror extends AbstractOpticalElement {
 		return new MirrorSettingsPanel(this, s);
 	}
 
+	/**
+	 * There is absorption parameter being saved and magic numer to distingiush between types of optical elements 
+	 * @see me.kinomoto.proteam.elements.AbstractOpticalElement#save(java.io.DataOutputStream)
+	 */
 	@Override
 	public void save(DataOutputStream os) throws IOException {
 		os.writeInt(MAGIC_NUMBER);
@@ -134,6 +143,10 @@ public class Mirror extends AbstractOpticalElement {
 		vertices.add(p.moveBy(position.mul(-1)));
 	}
 
+	/** 
+	 * The Mirror drawing cannot be finished unless two Point are chosen
+	 * @see me.kinomoto.proteam.elements.AbstractOpticalElement#endDrawing()
+	 */
 	@Override
 	public boolean endDrawing() {
 		if (vertices.size() < 2)

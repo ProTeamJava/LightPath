@@ -3,6 +3,9 @@ package me.kinomoto.proteam.history;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.Mirror;
 
+/**
+ *The class is creating a HistoryNode after changing parameters of the Mirror
+ */
 public class HistoryNodeMirror extends HistoryNodeAbstract {
 	private double absorption = .99;
 	private Mirror m;

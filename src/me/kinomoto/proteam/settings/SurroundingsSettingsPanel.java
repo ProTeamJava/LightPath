@@ -17,6 +17,9 @@ import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.history.HistoryNodeSurroundings;
 
+/**
+ * JPanel on SettingsPanel where properties of the Surroundings can be modified
+ */
 public class SurroundingsSettingsPanel extends JPanel {
 	private static final long serialVersionUID = -8039564944519925324L;
 	private static final double MAX_IOR = 10;

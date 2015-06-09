@@ -3,6 +3,9 @@ package me.kinomoto.proteam.history;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * History class store the nodes of actions that may be repeated or deleted by using Back and Forward options from the menu.
+ */
 public class History {
 	private static List<HistoryNodeAbstract> past = new LinkedList<>();
 	private static List<HistoryNodeAbstract> future = new LinkedList<>();

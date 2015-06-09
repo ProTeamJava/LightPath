@@ -2,6 +2,9 @@ package me.kinomoto.proteam.history;
 
 import me.kinomoto.proteam.Surroundings;
 
+/**
+ * The class is the abstract prototype for creating HistoryNodes for actions in the Surroundings
+ */
 public abstract class HistoryNodeAbstract {
 	protected Surroundings s;
 	

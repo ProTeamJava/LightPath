@@ -33,6 +33,11 @@ import me.kinomoto.proteam.history.HistoryNodeRotationSource;
 import me.kinomoto.proteam.settings.BeamSourceSettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
+/**
+ * Surroundings in the container for all the objects placed in the working plane.
+ * It is a key class connecting user interface with objects and options parameters and states.
+ * It is responsible for simulating, saving, drawing, adding and removing objects etc.
+ */
 public class Surroundings {
 	/**
 	 * Used to check if file is saved by this application.
@@ -106,6 +111,9 @@ public class Surroundings {
 		this.ref = ref;
 	}
 
+	/**
+	 * Simulating the surroundings by creating Beams after every change in the plane
+	 */
 	public void simulate() {
 		if (isSimulating) {
 			simQueue = true;
@@ -159,7 +167,11 @@ public class Surroundings {
 		}
 		return true;
 	}
-
+	
+	/**
+	 * Method implementing graphical representation of all the objects in the Surroundings.
+	 * @param g Graphics2D object 
+	 */
 	public void paint(Graphics2D g) {
 
 		for (Beam beam : beams) {
@@ -198,6 +210,11 @@ public class Surroundings {
 		}
 	}
 
+	/**
+	 * Method adding the vertices to the elements that are being drawn, distinguishing between the Mirror and Prism properties
+	 * @param mirrorOrPrism boolean distinguishing drawing type
+	 * @param p Point where new vertex is to be places 
+	 */
 	public void addNewVertexToDrawing(boolean mirrorOrPrism, Point p) {
 		History.setStop(true);
 		if (!drawing) {
@@ -215,6 +232,9 @@ public class Surroundings {
 		}
 	}
 
+	/**
+	 * The method invoked by specified listener adds drawn element to the plane
+	 */
 	public void endDrawing() {
 		History.setStop(false);
 		if (drawing) {
@@ -227,6 +247,11 @@ public class Surroundings {
 		}
 	}
 
+	/**
+	 * The method is indicating whether the selected Point is inside of some BeamSource 
+	 * @param p Point
+	 * @return PointPosition
+	 */
 	public PointPosition mousePressed(Point p) {
 
 		for (BeamSource beamSource : sources) {
@@ -260,6 +285,9 @@ public class Surroundings {
 		return PointPosition.POINT_OUTSIDE;
 	}
 
+	/**
+	 * The method is returning the JPanel on the SettingsPanel that refers to the selected object
+	 */
 	public JPanel getSelectedSettingsPanel() {
 		switch (getSelection()) {
 		case SURROUNDINGS:
@@ -282,6 +310,10 @@ public class Surroundings {
 		view.settingsPanel.setPanel(getSelectedSettingsPanel());
 	}
 
+	/**
+	 * The method loading the data from the input file
+	 * @throws LoadException
+	 */
 	public void load() throws LoadException {
 		try {
 			DataInputStream is = new DataInputStream(new FileInputStream(path));
@@ -309,6 +341,11 @@ public class Surroundings {
 		}
 	}
 
+	/**
+	 * The method saving the data to the output file. 
+	 * While the path is already determined it saves changes.
+	 * @throws IOException
+	 */
 	public void save() throws IOException {
 		DataOutputStream os = new DataOutputStream(new FileOutputStream(path));
 		os.writeInt(MAGIC_NUMBER);
@@ -328,6 +365,11 @@ public class Surroundings {
 
 	}
 
+	/**
+	 * The method saving data to the chosen output file.
+	 * @param path output file path
+	 * @throws IOException
+	 */
 	public void saveAs(String path) throws IOException {
 		this.path = path;
 		save();
@@ -357,6 +399,9 @@ public class Surroundings {
 		this.elements = elements;
 	}
 
+	/**
+	 * The method implementing deletion of the selected object
+	 */
 	public void deleteSelected() {
 		switch (getSelection()) {
 		case SELECTED_BEAM_SOURCE:
@@ -386,6 +431,11 @@ public class Surroundings {
 		updateSettingsPanel();
 	}
 
+	/**
+	 * The method implementing translation of the whole plain
+	 * @param x
+	 * @param y
+	 */
 	public void moveBy(int x, int y) {
 		switch (selection) {
 		case SELECTED_BEAM_SOURCE:
@@ -443,7 +493,9 @@ public class Surroundings {
 			break;
 		}
 	}
-
+	/**
+	 * The implementation of getting angle between the given Point and selected element
+	 */
 	public double getSelectedAngle(Point p) {
 		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
 			return selectedBeamSource.getAngle(p);
@@ -453,6 +505,10 @@ public class Surroundings {
 		return 0;
 	}
 
+	/**
+	 * The implementation of consequences of rotation of the selected element
+	 * @param da the difference of the angles that the object should be rotated by
+	 */
 	public void rotateSelected(double da) {
 		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
 			selectedBeamSource.rotate(da);
@@ -461,6 +517,9 @@ public class Surroundings {
 		}
 	}
 
+	/**
+	 * The implementation of consequences of mouse release to the selection and drawing options
+	 */
 	public void mouseRelased() {
 		if (selection == SelectionType.SELECTED_ELEMENT) {
 			selectedElement.addAngle();

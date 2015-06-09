@@ -2,6 +2,9 @@ package me.kinomoto.proteam.history;
 
 import me.kinomoto.proteam.Surroundings;
 
+/**
+ *The class is creating a HistoryNode after changing parameters of the Surroundings
+ */
 public class HistoryNodeSurroundings extends HistoryNodeAbstract {
 	private double ior;
 	

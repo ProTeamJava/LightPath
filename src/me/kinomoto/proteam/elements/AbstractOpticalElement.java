@@ -20,13 +20,8 @@ import me.kinomoto.proteam.Surroundings.PointPosition;
 
 /**
  * 
- * AbstractOplitalElement class is temporarily holding the prototype optical elements such: as triangular and square prism and flat mirror. It holds
+ * AbstractOplitalElement abstract class is representing general properties of Mirror and Prism
  * an implementation of beam collision with the object detection
- * 
-
- * 
- * @method findCollision is the algorithm of beam collision with the object detection
- * @method findCollisionPoint is to give exact point of collision
  *
  */
 public abstract class AbstractOpticalElement {
@@ -67,7 +62,7 @@ public abstract class AbstractOpticalElement {
 
 	/** The constructor of abstract optical object
 	 * @param position is the point of reference to the optical element         
-	 * @param vertices is the list of the vertex points of the optical element
+	 * @param vertices is the list of the vertex points of the optical element that is not determined yet
 	 */
 	public AbstractOpticalElement(Point position) {
 		this.position = position;
@@ -83,8 +78,18 @@ public abstract class AbstractOpticalElement {
 		return tmp;
 	}
 
+	/**
+	 * The method checking whether the given Point is inside the object
+	 * @param p given Point
+	 * @return boolean
+	 */
 	public abstract boolean isPointInside(Point p);
 
+	/**
+	 * The method checking whether the given Point is inside the object so that the optical can be selected on the working plain
+	 * @param p given Point
+	 * @return PointPosition whether outside or inside
+	 */
 	public Surroundings.PointPosition isPointInsideSelected(Point p) {
 		int nx = (int) (p.x - position.x);
 		int ny = (int) (p.y - position.y);
@@ -128,7 +133,8 @@ public abstract class AbstractOpticalElement {
 	}
 
 	/**
-	 * 
+	 * The method is detecting collision with the incident Beam segment
+	 * @param s Segment of the incident Beam
 	 * @return <code>null</code> - no collision
 	 * @throws MultipleCollisionsException
 	 *             if there are multiple collisions
@@ -154,6 +160,13 @@ public abstract class AbstractOpticalElement {
 		return tmp;
 	}
 
+	/**
+	 * The method is checking whether normal line is to inside or to outside of the object
+	 * @param pi
+	 * @param pj
+	 * @param pk
+	 * @return
+	 */
 	private short direction(Point pi, Point pj, Point pk) {
 		double tmp = (pk.x - pi.x) * (pj.y - pi.y) - (pj.x - pi.x) * (pk.y - pi.y);
 		if (tmp > 0)
@@ -163,6 +176,14 @@ public abstract class AbstractOpticalElement {
 		return 0;
 	}
 
+	/**
+	 * The method is to give exact point of collision, by calculating the common Point of two segments
+	 * @param p1 beginning {@link Point} of the first {@link Segment}
+	 * @param p2 ending {@link Point} of the first {@link Segment}
+	 * @param p3 beginning {@link Point} of the second{@link Segment}
+	 * @param p4 ending {@link Point} of the second{@link Segment}
+	 * @return {@link Point}
+	 */
 	private Point findCollisionPoint(Point p1, Point p2, Point p3, Point p4) {
 
 		Point point = null;
@@ -192,12 +213,24 @@ public abstract class AbstractOpticalElement {
 		return point;
 	}
 
+	/**
+	 * The method is the algorithm of beam collision with the object outcome
+	 * In case of the Mirror it is reflection, In case of the Prism refraction algorithm.
+	 * @param s Surroundings is where objects are located
+	 * @param b Beam
+	 * @param seg Segment is the side of the optical object
+	 */
 	abstract void findCollisionSolution(Surroundings s, Beam b, Segment seg);
 
 	public void paint(Graphics2D g) {
 		paint(g, Color.BLACK);
 	}
 
+
+	/**
+	 * Method implementing graphical representation of the optical element.
+	 * @param g Graphics2D object 
+	 */
 	public void paint(Graphics2D g, Color c) {
 		Graphics2D p = (Graphics2D) g.create();
 		p.setColor(c);
@@ -210,6 +243,10 @@ public abstract class AbstractOpticalElement {
 		}
 	}
 
+	/**
+	 * Method implementing graphical representation of the optical element selection that is shown when the object is marked on the plain.
+	 * @param g Graphics2D object 
+	 */
 	public void paintSelection(Graphics2D g) {
 		Graphics2D p = (Graphics2D) g.create();
 		p.translate(position.x, position.y);
@@ -223,10 +260,20 @@ public abstract class AbstractOpticalElement {
 		p.fillRect(r - HALF_DOT_SIZE, b - HALF_DOT_SIZE, DOT_SIZE, DOT_SIZE);
 	}
 
+	/**
+	 * The method is to show the properties of the optical element the right SettingsPanel when the object is selected
+	 * @param s Surroundings
+	 * @return JPanel on the right SettingsPanel
+	 */
 	public abstract JPanel getSettingsPanel(Surroundings s);
 
 	public abstract void save(DataOutputStream os) throws IOException;
 
+	/**
+	 * The method is saving to the file the optical element general parameters: the number of vertices and vertices positions
+	 * @param os DataOutputStream
+	 * @throws IOException the exception served while problems DataOutputSteam
+	 */
 	protected void saveAbstract(DataOutputStream os) throws IOException {
 		position.save(os);
 
@@ -237,7 +284,7 @@ public abstract class AbstractOpticalElement {
 	}
 
 	/**
-	 * The method creating the optical object while reading the input file
+	 * The method creating the optical object while reading the input file it distinguish between Mirror and Prism by magic number
 	 * @param is the DataInputStream
 	 * @return
 	 * @throws IOException
@@ -261,9 +308,14 @@ public abstract class AbstractOpticalElement {
 		}
 	}
 
-	public void moveBy(int x, int y) {
-		position.x += x;
-		position.y += y;
+	/**
+	 * The method is changing the geometric center of the figure after translation
+	 * @param dx 
+	 * @param dy
+	 */
+	public void moveBy(int dx, int dy) {
+		position.x += dx;
+		position.y += dy;
 	}
 
 	/**
@@ -355,5 +407,9 @@ public abstract class AbstractOpticalElement {
 
 	public abstract void addNewVertex(Point p);
 
+	/**
+	 * The method indicating how user created optical object is finished
+	 * @return
+	 */
 	public abstract boolean endDrawing();
 }

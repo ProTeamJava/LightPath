@@ -9,6 +9,9 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+/**
+ * SettingsPanel class creates the JPanel on the right side of the interface where properties of the selected elements can be modified
+ */
 public class SettingsPanel extends JPanel {
 	private static final long serialVersionUID = 7756992612679667166L;
 	private static final int PREFFERED_WIDTH = 200;

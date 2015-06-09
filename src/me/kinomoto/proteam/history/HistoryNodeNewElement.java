@@ -3,6 +3,9 @@ package me.kinomoto.proteam.history;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.AbstractOpticalElement;
 
+/**
+ *The class is creating a HistoryNode after creating new optical element on the working plain
+ */
 public class HistoryNodeNewElement extends HistoryNodeAbstract {
 	AbstractOpticalElement element;
 

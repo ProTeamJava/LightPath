@@ -17,6 +17,9 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+/**
+ * JPanel on SettingsPanel where properties of the Mirror can be modified
+ */
 public class MirrorSettingsPanel extends JPanel {
 	private static final long serialVersionUID = -724826379637207733L;
 

@@ -8,6 +8,10 @@ import me.kinomoto.proteam.Surroundings;
 
 import com.mindprod.wavelength.Wavelength;
 
+/**
+ * Beam class is implementing the Beam of light creating methods as well as simulating its light path through different physical objects.
+ *
+ */
 public class Beam {
 	public static final double RED = 700;
 	public static final double BLUE = 400;
@@ -20,7 +24,14 @@ public class Beam {
 	double wavelenght;
 	double brightness = 1;
 
-	public Beam(Segment segment, double wavelenght, double lightness) {
+	/**
+	 * The constructor attributing segment coordinates, wavelength and brightness to the beam. 
+	 * It is adjusting the beam length to the working plain dimensions. 
+	 * @param segment
+	 * @param wavelenght
+	 * @param brightness
+	 */
+	public Beam(Segment segment, double wavelenght, double brightness) {
 		double dx = segment.end.x - segment.begin.x;
 		double dy = segment.end.y - segment.begin.y;
 		double max = Math.abs(dx) < Math.abs(dy) ? Math.abs(dy) : Math.abs(dx);
@@ -30,13 +41,29 @@ public class Beam {
 
 		this.segment = segment;
 		this.wavelenght = wavelenght;
-		this.brightness = lightness;
+		this.brightness = brightness;
 	}
 
+	/**
+	 * @return collisionChecked Boolean indicating whether the simulation of collisions on the light path of the beam took place
+	 */
 	public boolean getIfSimulated() {
 		return collisionChecked;
 	}
 
+	/**
+	 * The method simulating its  light path through different physical objects.
+	 * The method is checking the collisions with optical objects and is adjusting the length to the bound of different media.
+	 * 
+	 * The methodology of checking collision: 
+	 * A temporary segment is being elongated step by step.
+	 * During the every elongation there is collision between beam and every {@link AbstractOpticalElement} on the plain being detected.
+	 * If the segment is elongated too much and multiple collision was detected, program throws the exception and shorten the temporary segment. 
+	 * When only one collision is detected, the point of collision is calculated by external functions and attributed to the end of the segment beam. 
+	 * There is also collision solution calculated by {@link findCollisionSolution} method.
+	 * 
+	 * @param s Surroundings provides the list of the optical elements on the plain
+	 */
 	public void simulate(Surroundings s) {
 		int collisionNum = 0;
 		Collision collision = null;
@@ -92,6 +119,11 @@ public class Beam {
 		collisionChecked = true;
 	}
 
+	/**
+	 * Method implementing graphical representation of the beam.
+	 * It uses external library changing the wavelength in nanometers an brightness into color.
+	 * @param g Graphics2D object 
+	 */
 	public void paint(Graphics2D g) {
 		g.setColor(Wavelength.wvColor((float) wavelenght, (float) brightness));
 		g.drawLine((int) segment.begin.x, (int) segment.begin.y, (int) segment.end.x, (int) segment.end.y);

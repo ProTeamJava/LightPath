@@ -5,6 +5,7 @@ import me.kinomoto.proteam.elements.Segment;
 
 
 
+
 /**
  * The class Collision object store information about point of intersection of beam and optical object as well as the incident beam
  */

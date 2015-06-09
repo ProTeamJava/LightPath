@@ -10,6 +10,9 @@ import javax.swing.JPanel;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.settings.PrismSettingsPanel;
 
+/**
+ * Prism class is representing the Prism optical properties 
+ */
 public class Prism extends AbstractOpticalElement {
 	public static final int MAGIC_NUMBER = 0x7072;
 	public static final double GLASS_IOR = 1.5;
@@ -49,6 +52,11 @@ public class Prism extends AbstractOpticalElement {
 		return new Prism(position, WATTER_IOR, AbstractOpticalElement.getTriangle());
 	}
 
+	/** 
+	 * The refraction, reflection and absorbtion algorithms implementation using vectors and dot products calculations.
+	 * In the collisionPoint there is new Beam generated in the calculated direction.
+	 * @see me.kinomoto.proteam.elements.AbstractOpticalElement#findCollisionSolution(me.kinomoto.proteam.Surroundings, me.kinomoto.proteam.elements.Beam, me.kinomoto.proteam.elements.Segment)
+	 */
 	@Override
 	void findCollisionSolution(Surroundings s, Beam b, Segment seg) {
 
@@ -158,6 +166,10 @@ public class Prism extends AbstractOpticalElement {
 		vertices.add(vertices.size() - 1, p.moveBy(position.mul(-1)));		
 	}
 
+	/** 
+	 * There is no possibility to stop creating the Prism unless four vertices are created, however the last vertex is automatically equal the first one. 
+	 * @see me.kinomoto.proteam.elements.AbstractOpticalElement#endDrawing()
+	 */
 	@Override
 	public boolean endDrawing() {
 		if(vertices.size() < 4)

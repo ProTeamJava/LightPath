@@ -33,6 +33,10 @@ import me.kinomoto.proteam.history.History;
 import me.kinomoto.proteam.settings.SettingsPanel;
 import me.kinomoto.proteam.settings.SurroundingsSettingsPanel;
 
+/**
+ * Main class including the window and all the panels creation
+ *
+ */
 public class Main extends JFrame {
 	private static final long serialVersionUID = 9128707449024404584L;
 	private static final int MIN_WIDTH = 600;
@@ -81,6 +85,9 @@ public class Main extends JFrame {
 	private double hSliderPos;
 	private JMenuBar menubar;
 
+	/**
+	 * @throws HeadlessException
+	 */
 	public Main() throws HeadlessException {
 		super("LightPath");
 
@@ -113,6 +120,9 @@ public class Main extends JFrame {
 
 	}
 
+	/**
+	 * Method enabling to scroll the plane
+	 */
 	private void initScrollListeners() {
 		Rectangle bounds = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
@@ -142,6 +152,9 @@ public class Main extends JFrame {
 		});
 	}
 
+	/**
+	 * Method implementing user interface panels
+	 */
 	private void initUI() {
 		toolBar = new ToolBar(this);
 		settingsPanel = new SettingsPanel();
@@ -151,6 +164,9 @@ public class Main extends JFrame {
 		this.add(settingsPanel, BorderLayout.EAST);
 	}
 
+	/**
+	 * Method implementing SurroundingsView panel and its scrolling
+	 */
 	private void initSurroundings() {
 		surroundingsView = new SurroundingsView(settingsPanel, this);
 		settingsPanel.setPanel(new SurroundingsSettingsPanel(surroundingsView.surroundings));
@@ -158,6 +174,10 @@ public class Main extends JFrame {
 		this.add(scroll, BorderLayout.CENTER);
 	}
 
+	/**
+	 * The creation of the Main from the saved file
+	 * @param path input file path
+	 */
 	public void loadFromPath(String path) {
 		History.clean();
 		this.remove(scroll);
@@ -181,6 +201,9 @@ public class Main extends JFrame {
 		initScrollListeners();
 	}
 
+	/**
+	 * Method initializing icons
+	 */
 	private void initIcons() {
 		openI = getIcon("document-open.png");
 		saveI = getIcon("document-save.png");
@@ -194,10 +217,18 @@ public class Main extends JFrame {
 		zoomOutI = getIcon("zoom-out.png");
 	}
 
+	/**
+	 * Method implementing icons recognition
+	 * @param name
+	 * @return
+	 */
 	public ImageIcon getIcon(String name) {
 		return new ImageIcon(getClass().getClassLoader().getResource(name));
 	}
 
+	/**
+	 * The method initializing the FileMenu 
+	 */
 	private void initFileMenu() {
 		JMenu fileM = new JMenu(Messages.get("file"));
 		openA = new JMenuItem(Messages.get("open"), openI);
@@ -257,6 +288,9 @@ public class Main extends JFrame {
 		menubar.add(fileM);
 	}
 
+	/**
+	 * The method initializing the EditMenu 
+	 */
 	private void initEditMenu() {
 		JMenu editM = new JMenu(Messages.get("edit"));
 
@@ -298,6 +332,9 @@ public class Main extends JFrame {
 
 	}
 
+	/**
+	 * The method initializing the ViewMenu 
+	 */
 	private void initViewMenu() {
 		JMenu viewM = new JMenu(Messages.get("view"));
 
@@ -330,6 +367,9 @@ public class Main extends JFrame {
 		menubar.add(viewM);
 	}
 
+	/**
+	 * The method initializing the HelpMenu
+	 */
 	private void initHelpMenu() {
 		JMenu helpM = new JMenu(Messages.get("help"));
 		aboutA = new JMenuItem(Messages.get("about"));
@@ -338,6 +378,9 @@ public class Main extends JFrame {
 		menubar.add(helpM);
 	}
 
+	/**
+	 * The method initializing the {@link JMenuBar}
+	 */
 	private void initMenu() {
 		menubar = new JMenuBar();
 
@@ -349,6 +392,9 @@ public class Main extends JFrame {
 		setJMenuBar(menubar);
 	}
 
+	/**
+	 * The method initializing listeners that open new windows - exit and about
+	 */
 	private void initListeners() {
 		exitA.addActionListener(new ActionListener() {
 			@Override
@@ -370,12 +416,19 @@ public class Main extends JFrame {
 		});
 	}
 
+	/**
+	 * The main method creating the window
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Messages.setLocale(Locale.getDefault());
 		@SuppressWarnings("unused")
 		Main window = new Main();
 	}
 
+	/**
+	 * The method saving sliders positions after scrolling
+	 */
 	private void saveSliderPositions() {
 		Rectangle rect = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
@@ -383,6 +436,9 @@ public class Main extends JFrame {
 		hSliderPos = (rect.height / 2 + rect.y) / size.getHeight();
 	}
 
+	/**
+	 * 	The method saving sliders positions after scrolling
+	 */
 	private void restoreSliderPositions() {
 		Rectangle rect = scroll.getViewport().getViewRect();
 		Dimension size = scroll.getViewport().getViewSize();
@@ -391,6 +447,11 @@ public class Main extends JFrame {
 		scroll.getViewport().setViewPosition(new java.awt.Point(nx, ny));
 	}
 
+	/**
+	 * The method placing the scrolls positions
+	 * @param dx
+	 * @param dy
+	 */
 	public void scroll(int dx, int dy) {
 		java.awt.Point pos = scroll.getViewport().getViewPosition();
 		pos.x += dx;
@@ -402,6 +463,9 @@ public class Main extends JFrame {
 		scroll.getViewport().setViewPosition(pos);
 	}
 
+	/**
+	 * The method enabling save a created PNG picture of the plane to the file.
+	 */
 	private void saveAsPng() {
 		try {
 			surroundingsView.saveAsPng();
@@ -409,6 +473,7 @@ public class Main extends JFrame {
 			JOptionPane.showMessageDialog(Main.this, e.getMessage());
 		}
 	}
+
 
 	public static ImageIcon getDeleteI() {
 		return deleteI;
@@ -426,6 +491,9 @@ public class Main extends JFrame {
 		return appIcon;
 	}
 
+	/**
+	 * Saving to the chosen directory method
+	 */
 	private void saveAs() {
 		JFileChooser fc = new JFileChooser();
 		if (fc.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
@@ -437,6 +505,9 @@ public class Main extends JFrame {
 		}
 	}
 
+	/**
+	 * Saving method
+	 */
 	private void save() {
 		if (surroundingsView.hasPath()) {
 			try {

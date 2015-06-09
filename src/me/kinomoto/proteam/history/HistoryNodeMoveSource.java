@@ -3,6 +3,9 @@ package me.kinomoto.proteam.history;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.BeamSource;
 
+/**
+ *The class is creating a HistoryNode after translating BeamSource on the working plain
+ */
 public class HistoryNodeMoveSource extends HistoryNodeMoveAbstract {
 	BeamSource bs;
 

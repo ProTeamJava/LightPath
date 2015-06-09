@@ -10,6 +10,10 @@ import java.io.IOException;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.Surroundings.PointPosition;
 
+/**
+ * BeamSource class is implementing the BeamSource of light creating, saving, painting, moving, rotating and changing parameters methods.
+ *
+ */
 public class BeamSource {
 	private static final int WIDTH = 40;
 	private static final int HEIGHT = 20;
@@ -38,6 +42,11 @@ public class BeamSource {
 	private double sinA;
 	
 
+	/**
+	 * The constructor that is creating the {@link BeamSource} from the input file
+	 * @param is input stream 
+	 * @throws IOException reading from input stream exception
+	 */
 	public BeamSource(DataInputStream is) throws IOException {
 		segment = new Segment(is);
 		wavelength = is.readDouble();
@@ -45,6 +54,11 @@ public class BeamSource {
 		updateTrig();
 	}
 
+	/**
+	 * The constructor that is creating the {@link BeamSource} with given parameters and along the certain direction 
+	 * @param segment indicated the direction in which the BeamSource is orientated 
+	 * @param wavelength the double parameter in nanometers 
+	 */
 	public BeamSource(Segment segment, double wavelength) {
 		this.segment = segment;
 		this.wavelength = wavelength;
@@ -52,6 +66,12 @@ public class BeamSource {
 		updateTrig();
 	}
 
+	/**
+	 * The constructor that is creating the {@link BeamSource} with given parameters after rotation
+	 * @param pos Point that is geometric center of the object
+	 * @param angle the angle along which the BeamSource is created
+	 * @param wavelength the double parameter in nanometers 
+	 */
 	public BeamSource(Point pos, double angle, double wavelength) {
 		this.wavelength = wavelength;
 		this.angle = angle;
@@ -67,6 +87,10 @@ public class BeamSource {
 		this.wavelength = wavelength;
 	}
 
+	/**
+	 * The method is creating the Beam that the BeamSource is producing 
+	 * @return Beam 
+	 */
 	public Beam getBeam() {
 		return new Beam(segment.moveBy(new Point(HEIGHT*cosA, HEIGHT*sinA)), wavelength, 1);
 	}
@@ -90,6 +114,10 @@ public class BeamSource {
 		segment.end = new Point(segment.begin.x + cosA, segment.begin.y + sinA);
 	}
 
+	/**
+	 * Method implementing graphical representation of the beam source.
+	 * @param g Graphics2D object 
+	 */
 	public void paint(Graphics2D g) {
 		Graphics2D p = (Graphics2D) g.create();
 		p.setStroke(new BasicStroke(STROKE_WIDTH));
@@ -102,6 +130,10 @@ public class BeamSource {
 		p.drawRect(-HALF_WIDTH, -HALF_HEIGHT, WIDTH, HEIGHT);
 	}
 
+	/**
+	 * Method implementing graphical representation of the beam source selection that is shown when the object is marked on the plain.
+	 * @param g Graphics2D object 
+	 */
 	public void paintSelection(Graphics2D g) {
 		Graphics2D p = (Graphics2D) g.create();
 		p.translate(segment.begin.x, segment.begin.y);
@@ -120,6 +152,12 @@ public class BeamSource {
 
 	}
 
+	/**
+	 * The method checking whether the given Point is inside the object so that the BeamSourve can be selected on the working plain
+	 * @param p given Point
+	 * @param selected BeamSource to be selected
+	 * @return Surroundings.PointPosition
+	 */
 	public Surroundings.PointPosition isPointInside(Point p, BeamSource selected) {
 		Point t = p.min(segment.begin);
 		double x = Math.abs(t.x * cosA + t.y * sinA);
@@ -138,11 +176,21 @@ public class BeamSource {
 		return PointPosition.POINT_OUTSIDE;
 	}
 
+	/**
+	 * The method is saving to the file the BeamSource parameters
+	 * @param os DataOutputStream
+	 * @throws IOException the exception served while problems DataOutputSteam
+	 */
 	public void save(DataOutputStream os) throws IOException {
 		segment.save(os);
 		os.writeDouble(wavelength);
 	}
 
+	/**
+	 * The method updating the BeamSource coordinated after moving object
+	 * @param dx
+	 * @param dy
+	 */
 	public void moveBy(int dx, int dy) {
 		segment = segment.moveBy(new Point(dx, dy));
 		updateAngle();
@@ -158,6 +206,10 @@ public class BeamSource {
 		return Math.atan2(p.y - segment.begin.y, p.x - segment.begin.x);
 	}
 
+	/**
+	 * The method updating angle after rotation
+	 * @param da
+	 */
 	public void rotate(double da) {
 		setAngle(angle + da);
 	}

@@ -10,6 +10,9 @@ import javax.swing.JToggleButton;
 
 import me.kinomoto.proteam.SurroundingsView.TOOL;
 
+/**
+ * JPanel on left side of the user interfaces where working plain modifying options can be selected
+ */
 public class ToolBar extends JPanel {
 
 	private static final long serialVersionUID = 9011244837363357691L;

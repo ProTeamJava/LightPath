@@ -2,6 +2,10 @@ package me.kinomoto.proteam.history;
 
 import me.kinomoto.proteam.Surroundings;
 
+
+/**
+ * The class is the abstract prototype for creating HistoryNodes for rotations in the Surroundings
+ */
 public abstract class HistoryNodeRotationAbstract extends HistoryNodeAbstract {
 	protected double rotateBy = 0;
 

@@ -3,6 +3,9 @@ package me.kinomoto.proteam.history;
 import me.kinomoto.proteam.Surroundings;
 import me.kinomoto.proteam.elements.Prism;
 
+/**
+ *The class is creating a HistoryNode after changing parameters of the Prism
+ */
 public class HistoryNodePrism  extends HistoryNodeAbstract{
 	private double ior;
 	private Prism p;

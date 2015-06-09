@@ -17,6 +17,9 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+/**
+ * JPanel on SettingsPanel where properties of the Prism can be modified
+ */
 public class PrismSettingsPanel extends JPanel {
 	private static final long serialVersionUID = 7397840660030370677L;
 	private static final double MAX_IOR = 10;

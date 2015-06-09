@@ -33,6 +33,9 @@ import me.kinomoto.proteam.history.HistoryNodeMoveAbstract;
 import me.kinomoto.proteam.history.HistoryNodeRotationAbstract;
 import me.kinomoto.proteam.settings.SettingsPanel;
 
+/**
+ *JPanel representing working plane
+ */
 public class SurroundingsView extends JPanel implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 5447523639086911950L;
 
@@ -67,6 +70,11 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 	int y = 0;
 	double a = 0;
 
+	/**
+	 * The constructor of default working plane  with triangular Prism, Mirror and BeamSource of the red light
+	 * @param settingsPanel SettingsPanel
+	 * @param ref Main
+	 */
 	public SurroundingsView(SettingsPanel settingsPanel, Main ref) {
 		surroundings = new Surroundings(this, ref);
 		this.settingsPanel = settingsPanel;
@@ -78,12 +86,22 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		surroundings.add(new BeamSource(new Segment(new Point(-300, 50), new Point(0, 0)), Beam.RED));
 	}
 
+	/**
+	 * The constructor of the working plane loaded from the file 
+	 * @param settingsPanel SettingsPanel
+	 * @param ref Main
+	 * @param path input file path
+	 * @throws LoadException
+	 */
 	public SurroundingsView(SettingsPanel settingsPanel, Main ref, String path) throws LoadException {
 		surroundings = new Surroundings(this, path, ref);
 		this.settingsPanel = settingsPanel;
 		initUI();
 	}
 
+	/**
+	 * The method setting the plane size are implementing MouseListeners and object removal
+	 */
 	private void initUI() {
 
 		this.setPreferredSize(new Dimension(viewWidth, viewHeight));
@@ -102,6 +120,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 
 	}
 
+	/**
+	 * The graphical representation of the plain with antialiasing implementation
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		g.setColor(Color.WHITE);
@@ -114,6 +136,9 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		surroundings.paint(g2);
 	}
 
+	/**
+	 * The method updating size of the plane taking into account scaling options
+	 */
 	private void updateSize() {
 		viewWidth = (int) (scale * BASE_WIDTH);
 		viewHeight = (int) (scale * BASE_HEIGHT);
@@ -138,6 +163,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		updateSize();
 	}
 
+	/**
+	 * The method is enabling savint the working plane to the PNG file
+	 * @throws IOException
+	 */
 	public void saveAsPng() throws IOException {
 
 		Image png = createImage(this.getWidth(), this.getHeight());
@@ -166,6 +195,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		return selectedTool;
 	}
 
+	/**
+	 * The method serves the actions with the selected tools from the ToolBar and updates the plane
+	 * @param selectedTool
+	 */
 	public void setSelectedTool(TOOL selectedTool) {
 		if (this.selectedTool == TOOL.DRAW_MIRROR || this.selectedTool == TOOL.DRAW_PRISM) {
 			surroundings.endDrawing();
@@ -177,6 +210,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		}
 	}
 
+	/**
+	 * The method serves the mouse action for rotating and pointing the objects
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Point t = mouseEventToSurroundingsPosition(e);
@@ -208,6 +245,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		}
 	}
 
+	/**
+	 * The method serves the mouse action for drawing the objects
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (selectedTool == TOOL.DRAW_MIRROR || selectedTool == TOOL.DRAW_PRISM) {
@@ -224,6 +265,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		}
 	}
 
+	/**
+	 * The method serves the mouse action for placing instant objects onto the plane
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		Point t = mouseEventToSurroundingsPosition(e);
@@ -254,6 +299,10 @@ public class SurroundingsView extends JPanel implements MouseListener, MouseMoti
 		// nth
 	}
 
+	/**
+	 * The method serves the mouse action for rotating and pointing the objects
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		Point t = mouseEventToSurroundingsPosition(e);
