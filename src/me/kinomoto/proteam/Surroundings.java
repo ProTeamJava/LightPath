@@ -92,6 +92,9 @@ public class Surroundings {
 	private boolean drawing = false;
 	private AbstractOpticalElement drawingElement = null;
 
+	// last cursor
+	private PointPosition lastCursor = PointPosition.POINT_OUTSIDE;
+
 	public Surroundings(SurroundingsView view, String path, Main ref) throws LoadException {
 		this.path = path;
 		this.view = view;
@@ -167,10 +170,12 @@ public class Surroundings {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Method implementing graphical representation of all the objects in the Surroundings.
-	 * @param g Graphics2D object 
+	 * 
+	 * @param g
+	 *            Graphics2D object
 	 */
 	public void paint(Graphics2D g) {
 
@@ -212,8 +217,11 @@ public class Surroundings {
 
 	/**
 	 * Method adding the vertices to the elements that are being drawn, distinguishing between the Mirror and Prism properties
-	 * @param mirrorOrPrism boolean distinguishing drawing type
-	 * @param p Point where new vertex is to be places 
+	 * 
+	 * @param mirrorOrPrism
+	 *            boolean distinguishing drawing type
+	 * @param p
+	 *            Point where new vertex is to be places
 	 */
 	public void addNewVertexToDrawing(boolean mirrorOrPrism, Point p) {
 		History.setStop(true);
@@ -248,8 +256,10 @@ public class Surroundings {
 	}
 
 	/**
-	 * The method is indicating whether the selected Point is inside of some BeamSource 
-	 * @param p Point
+	 * The method is indicating whether the selected Point is inside of some BeamSource
+	 * 
+	 * @param p
+	 *            Point
 	 * @return PointPosition
 	 */
 	public PointPosition mousePressed(Point p) {
@@ -312,6 +322,7 @@ public class Surroundings {
 
 	/**
 	 * The method loading the data from the input file
+	 * 
 	 * @throws LoadException
 	 */
 	public void load() throws LoadException {
@@ -342,8 +353,9 @@ public class Surroundings {
 	}
 
 	/**
-	 * The method saving the data to the output file. 
+	 * The method saving the data to the output file.
 	 * While the path is already determined it saves changes.
+	 * 
 	 * @throws IOException
 	 */
 	public void save() throws IOException {
@@ -367,7 +379,9 @@ public class Surroundings {
 
 	/**
 	 * The method saving data to the chosen output file.
-	 * @param path output file path
+	 * 
+	 * @param path
+	 *            output file path
 	 * @throws IOException
 	 */
 	public void saveAs(String path) throws IOException {
@@ -433,6 +447,7 @@ public class Surroundings {
 
 	/**
 	 * The method implementing translation of the whole plain
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -455,13 +470,22 @@ public class Surroundings {
 	private void mouseOverBeamSource(Component c, Point p) {
 		switch (selectedBeamSource.isPointInside(p, selectedBeamSource)) {
 		case POINT_INSIDE:
-			c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			if (lastCursor != PointPosition.POINT_INSIDE) {
+				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+				lastCursor = PointPosition.POINT_INSIDE;
+			}
 			break;
 		case POINT_ROTATE:
-			c.setCursor(Main.getRotateCursor());
+			if (lastCursor != PointPosition.POINT_ROTATE) {
+				c.setCursor(Main.getRotateCursor());
+				lastCursor = PointPosition.POINT_ROTATE;
+			}
 			break;
 		default:
-			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			if (lastCursor != PointPosition.POINT_OUTSIDE) {
+				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				lastCursor = PointPosition.POINT_OUTSIDE;
+			}
 			break;
 		}
 	}
@@ -469,13 +493,22 @@ public class Surroundings {
 	private void mouseOverElement(Component c, Point p) {
 		switch (selectedElement.isPointInsideSelected(p)) {
 		case POINT_INSIDE:
-			c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			if (lastCursor != PointPosition.POINT_INSIDE) {
+				c.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+				lastCursor = PointPosition.POINT_INSIDE;
+			}
 			break;
 		case POINT_ROTATE:
-			c.setCursor(Main.getRotateCursor());
+			if (lastCursor != PointPosition.POINT_ROTATE) {
+				c.setCursor(Main.getRotateCursor());
+				lastCursor = PointPosition.POINT_ROTATE;
+			}
 			break;
 		default:
-			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			if (lastCursor != PointPosition.POINT_OUTSIDE) {
+				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				lastCursor = PointPosition.POINT_OUTSIDE;
+			}
 			break;
 		}
 	}
@@ -489,10 +522,14 @@ public class Surroundings {
 			mouseOverElement(c, p);
 			break;
 		default:
-			c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			if (lastCursor != PointPosition.POINT_OUTSIDE) {
+				c.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				lastCursor = PointPosition.POINT_OUTSIDE;
+			}
 			break;
 		}
 	}
+
 	/**
 	 * The implementation of getting angle between the given Point and selected element
 	 */
@@ -507,7 +544,9 @@ public class Surroundings {
 
 	/**
 	 * The implementation of consequences of rotation of the selected element
-	 * @param da the difference of the angles that the object should be rotated by
+	 * 
+	 * @param da
+	 *            the difference of the angles that the object should be rotated by
 	 */
 	public void rotateSelected(double da) {
 		if (selection == SelectionType.SELECTED_BEAM_SOURCE) {
